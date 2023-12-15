@@ -84,7 +84,7 @@ export default function AppProvider({ children }: { children: React.ReactNode })
   }, [pathname, menus]);
 
   return (
-    <ConfigProvider theme={{ token: { colorBgContainer: "white", borderRadius: 2 } }}>
+    <ConfigProvider theme={{ token: { colorBgContainer: "white", borderRadius: 6 } }}>
       {loading || access === undefined ? <LoadingPage /> : <App>{access === true ? children : <NotAccess />}</App>}
     </ConfigProvider>
   );

@@ -13,11 +13,13 @@ import { FilterValue, SorterResult } from "antd/es/table/interface";
 import { pageSizeOptions } from "@/interfaces/page-size-options";
 import { translate } from "@/utils/translate";
 import { StoreContext } from "../context-provider";
+import KanbanView from "./kanban/kanban";
 
 const DataView = ({
   titleHeader,
   model,
   columnsTable,
+  listKanban,
   tableBoder,
   filter,
   formLayout,
@@ -31,6 +33,7 @@ const DataView = ({
   titleHeader?: string;
   model: string;
   columnsTable?: any[];
+  listKanban?: any[];
   tableBoder?: boolean;
   filter?: Object;
   formLayout?: (
@@ -103,16 +106,27 @@ const DataView = ({
     }
   };
 
+  /// Kiểu xem
   let viewTypes: string[] = [];
 
+  /// Kiểu xem bảng
   if (columnsTable && !viewTypes.includes("table")) {
     viewTypes.push("table");
   }
+
+  /// Kiểu xem form tạo
   if (formLayout && !viewTypes.includes("create")) {
     viewTypes.push("create");
   }
+
+  /// Kiểu xem form cập nhật
   if (formLayout && !viewTypes.includes("update")) {
     viewTypes.push("update");
+  }
+
+  /// Kiểu xem kanban
+  if (listKanban && !viewTypes.includes("kanban")) {
+    viewTypes.push("kanban");
   }
 
   let newColumnsTable = [...(columnsTable ?? [])];
@@ -468,8 +482,9 @@ const DataView = ({
           </Space>
         }
       />
-      <div className="page-content">
-        {viewType === "table" && (
+
+      {viewType === "table" && (
+        <div className="page-content">
           <TableView
             model={model}
             columnsTable={newColumnsTable}
@@ -481,12 +496,21 @@ const DataView = ({
             tableParams={tableParams}
             handleTableChange={handleTableChange}
           />
-        )}
-        {(viewType === "create" || viewType === "update") && formLayout !== undefined && (
+          <div style={{ height: 100 }}></div>
+        </div>
+      )}
+
+      {(viewType === "create" || viewType === "update") && formLayout !== undefined && (
+        <div className="page-content">
           <FormView formLayout={formLayout(form, onFinishForm, viewType, getDisableForm())} />
-        )}
-        <div style={{ height: 100 }}></div>
-      </div>
+        </div>
+      )}
+
+      {viewType === "kanban" && (
+        <div>
+          <KanbanView datas={datas} />
+        </div>
+      )}
     </div>
   );
 };
