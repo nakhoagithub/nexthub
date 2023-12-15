@@ -1,0 +1,65 @@
+"use client";
+import React, { useContext } from "react";
+import { StoreContext } from "../components/context-provider";
+import { Button, Form, Input } from "antd";
+import app from "@/utils/axios";
+import { useRouter } from "next/navigation";
+
+const Page = () => {
+  const router = useRouter();
+  const store = useContext(StoreContext);
+  const { login } = store.getState();
+  const onFinish = async (values: any) => {
+    try {
+      const {
+        data: { data, code },
+      } = await app.post(`/api/user/create-admin`, { ...values });
+      if (code === 200) {
+        login(data);
+        router.push("/login");
+      }
+    } catch (error) {}
+  };
+
+  const onFinishFailed = (errorInfo: any) => {
+  };
+
+  return (
+    <div className="login-page">
+      <div className="login-title">Initial user Admin</div>
+      <Form
+        name="init"
+        layout="vertical"
+        labelCol={{ span: 8 }}
+        wrapperCol={{ span: 24 }}
+        style={{ width: 400 }}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+      >
+        <Form.Item
+          label="Username"
+          name="username"
+          rules={[{ required: true, message: "Please input your username!" }]}
+        >
+          <Input placeholder="Username" />
+        </Form.Item>
+
+        <Form.Item
+          label="Password"
+          name="password"
+          rules={[{ required: true, message: "Please input your password!" }]}
+        >
+          <Input.Password placeholder="Password" />
+        </Form.Item>
+
+        <Form.Item>
+          <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
+            Init
+          </Button>
+        </Form.Item>
+      </Form>
+    </div>
+  );
+};
+
+export default Page;

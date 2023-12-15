@@ -1,0 +1,7 @@
+id,name,modelName,description,read,create,update,delete,active
+"access","Access model Access","access","Quyền cho model Access",true,false,true,true,true
+"user","Access model User","user","Quyền cho model User",true,true,true,true,true
+"group","Access model Group","group","Quyền cho model Group",true,true,true,true,true
+"document.access","Access model DocumentAccess","document-access","Quyền cho model DocumentAccess",true,true,true,true,true
+"translation.language","Access model Language","language","Quyền cho model Language",true,false,true,false,true
+"translation.translated-term","Access model Translate Term","translate-term","Quyền cho model Translate Term",true,true,true,true,true

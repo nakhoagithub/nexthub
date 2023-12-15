@@ -1,0 +1,4 @@
+id,name,description,state,active
+"admin","Administrator","Nhóm quyền cho người quản trị","base",true
+"manager","Manager","Nhóm quyền cho quản lý","base",true
+"user","User","Nhóm quyền cho người dùng","base",true
