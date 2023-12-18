@@ -1,17 +1,23 @@
 "use client";
+import { StoreContext } from "@/app/components/context-provider";
 import DataView from "@/app/components/data-view/data-view";
 import { getItemInArray } from "@/utils/tool";
 import { translate } from "@/utils/translate";
 import { Button, Checkbox, Form, FormInstance, Input, InputNumber, Select } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { ColumnsType } from "antd/es/table";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 const { Option } = Select;
 
 const ViewForm = (form: FormInstance<any>, onFinish: (value: any) => void, viewType: string, dataIds: any) => {
+  const store = useContext(StoreContext);
   return (
     <Form name="form" form={form} layout="vertical" style={{ width: 600 }} onFinish={onFinish}>
-      <Form.Item label="Name" name="name" rules={[{ required: true, message: translate({ source: "This field cannot be left blank" }) }]}>
+      <Form.Item
+        label="Name"
+        name="name"
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
+      >
         <Input />
       </Form.Item>
       <Form.Item label="Short name" name="shortName">

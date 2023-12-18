@@ -1,8 +1,9 @@
+import { StoreContext } from "@/app/components/context-provider";
 import app from "@/utils/axios";
 import { translate } from "@/utils/translate";
 import { App, Form, Input, Modal } from "antd";
 import { useForm } from "antd/es/form/Form";
-import React from "react";
+import React, { useContext } from "react";
 
 const ModalChangePassword = ({
   open,
@@ -15,6 +16,7 @@ const ModalChangePassword = ({
 }) => {
   const [form] = useForm();
   const useApp = App.useApp();
+  const store = useContext(StoreContext);
 
   async function onFinish(values: any) {
     try {
@@ -48,7 +50,10 @@ const ModalChangePassword = ({
       afterOpenChange={() => form.resetFields()}
     >
       <Form form={form} onFinish={onFinish}>
-        <Form.Item name="password" rules={[{ required: true, message: translate({ source: "This field cannot be left blank" }) }]}>
+        <Form.Item
+          name="password"
+          rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
+        >
           <Input.Password placeholder="New password" />
         </Form.Item>
       </Form>

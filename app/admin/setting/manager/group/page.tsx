@@ -1,4 +1,5 @@
 "use client";
+import { StoreContext } from "@/app/components/context-provider";
 import DataView from "@/app/components/data-view/data-view";
 import One2ManyView from "@/app/components/data-view/o2m-view/o2m-view";
 import { AccessRightModel } from "@/interfaces/access-right-model";
@@ -6,7 +7,7 @@ import { translate } from "@/utils/translate";
 import { Checkbox, Form, FormInstance, Input, Tabs } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { ColumnsType } from "antd/es/table";
-import React from "react";
+import React, { useContext } from "react";
 
 const ViewForm = (
   form: FormInstance<any>,
@@ -14,6 +15,8 @@ const ViewForm = (
   viewType: string,
   disabledForm?: boolean
 ) => {
+  const store = useContext(StoreContext);
+
   const columnsUser: ColumnsType<any> = [
     {
       title: "Username",
@@ -190,11 +193,15 @@ const ViewForm = (
       <Form.Item
         label="ID"
         name="id"
-        rules={[{ required: true, message: translate({ source: "This field cannot be left blank" }) }]}
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
         <Input />
       </Form.Item>
-      <Form.Item label="Name" name="name" rules={[{ required: true, message: translate({ source: "This field cannot be left blank" }) }]}>
+      <Form.Item
+        label="Name"
+        name="name"
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
+      >
         <Input />
       </Form.Item>
       <Form.Item label="Description" name="description">

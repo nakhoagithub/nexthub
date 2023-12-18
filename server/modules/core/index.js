@@ -26,6 +26,7 @@ Menu();
 await createModule("core", {
   id: "core",
   name: "Core",
+  description: "Module mặc định",
   models: ["group", "access", "document-access", "model", "schema", "menu"],
   state: "base",
   folderName: "core",

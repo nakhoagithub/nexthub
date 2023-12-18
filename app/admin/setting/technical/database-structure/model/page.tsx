@@ -1,10 +1,11 @@
 "use client";
+import { StoreContext } from "@/app/components/context-provider";
 import DataView from "@/app/components/data-view/data-view";
 import { translate } from "@/utils/translate";
 import { Checkbox, Form, FormInstance, Input, Select } from "antd";
 const { Option } = Select;
 import { ColumnsType } from "antd/es/table";
-import React from "react";
+import React, { useContext } from "react";
 
 const ViewForm = (
   form: FormInstance<any>,
@@ -12,25 +13,34 @@ const ViewForm = (
   viewType: string,
   disabledForm?: boolean
 ) => {
+  const store = useContext(StoreContext);
   return (
     <Form name="form" form={form} layout="vertical" labelWrap style={{ width: 800 }} onFinish={onFinish}>
-      <Form.Item label="ID" name="id" rules={[{ required: true, message: translate({ source: "This field cannot be left blank" }) }]}>
+      <Form.Item
+        label="ID"
+        name="id"
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
+      >
         <Input />
       </Form.Item>
-      <Form.Item label="Name" name="name" rules={[{ required: true, message: translate({ source: "This field cannot be left blank" }) }]}>
+      <Form.Item
+        label="Name"
+        name="name"
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
+      >
         <Input />
       </Form.Item>
       <Form.Item
         label="Locale Code"
         name="localeCode"
-        rules={[{ required: true, message: translate({ source: "This field cannot be left blank" }) }]}
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
         <Input />
       </Form.Item>
       <Form.Item
         label="Direction"
         name="direction"
-        rules={[{ required: true, message: translate({ source: "This field cannot be left blank" }) }]}
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
         <Select>
           <Option key="ltr" label="Left-To-Right">
@@ -44,7 +54,7 @@ const ViewForm = (
       <Form.Item
         label="ISO Code"
         name="isoCode"
-        rules={[{ required: true, message: translate({ source: "This field cannot be left blank" }) }]}
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
         <Input />
       </Form.Item>

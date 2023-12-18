@@ -1,10 +1,11 @@
 "use client";
+import { StoreContext } from "@/app/components/context-provider";
 import DataView from "@/app/components/data-view/data-view";
 import { translate } from "@/utils/translate";
 import { Checkbox, Form, FormInstance, Input, Select } from "antd";
 const { Option } = Select;
 import { ColumnsType } from "antd/es/table";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 const ViewForm = (
   form: FormInstance<any>,
@@ -13,6 +14,7 @@ const ViewForm = (
   disabledForm?: boolean,
   dataIds?: any
 ) => {
+  const store = useContext(StoreContext);
   return (
     <Form name="form" form={form} layout="vertical" labelWrap style={{ width: 800 }} onFinish={onFinish}>
       {/* <Form.Item label="ID" name="id">
@@ -21,14 +23,14 @@ const ViewForm = (
       <Form.Item
         label="Source Term"
         name="sourceTerm"
-        rules={[{ required: true, message: translate({ source: "This field cannot be left blank" }) }]}
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
         <Input />
       </Form.Item>
       <Form.Item
         label="Translate Value"
         name="translationValue"
-        rules={[{ required: true, message: translate({ source: "This field cannot be left blank" }) }]}
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
         <Input />
       </Form.Item>
@@ -36,7 +38,7 @@ const ViewForm = (
       <Form.Item
         label="Locale Code"
         name="localeCode"
-        rules={[{ required: true, message: translate({ source: "This field cannot be left blank" }) }]}
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
         <Select
           allowClear

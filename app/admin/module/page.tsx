@@ -1,11 +1,12 @@
 "use client";
+import { StoreContext } from "@/app/components/context-provider";
 import DataView from "@/app/components/data-view/data-view";
 import { translate } from "@/utils/translate";
 import { Avatar, Button, Card, Checkbox, Form, FormInstance, Input, Select, Space } from "antd";
 import Meta from "antd/es/card/Meta";
 const { Option } = Select;
 import { ColumnsType } from "antd/es/table";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 const ViewForm = (
   form: FormInstance<any>,
@@ -14,6 +15,7 @@ const ViewForm = (
   disabledForm?: boolean,
   dataIds?: any
 ) => {
+  const store = useContext(StoreContext);
   return (
     <Form name="form" form={form} layout="vertical" labelWrap style={{ width: 800 }} onFinish={onFinish}>
       {/* <Form.Item label="ID" name="id">
@@ -22,14 +24,19 @@ const ViewForm = (
       <Form.Item
         label="Source Term"
         name="sourceTerm"
-        rules={[{ required: true, message: translate({ source: "This field cannot be left blank" }) }]}
+        rules={[
+          {
+            required: true,
+            message: translate({ store: store, source: "This field cannot be left blank" }),
+          },
+        ]}
       >
         <Input />
       </Form.Item>
       <Form.Item
         label="Translate Value"
         name="translationValue"
-        rules={[{ required: true, message: translate({ source: "This field cannot be left blank" }) }]}
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
         <Input />
       </Form.Item>
@@ -37,7 +44,7 @@ const ViewForm = (
       <Form.Item
         label="Locale Code"
         name="localeCode"
-        rules={[{ required: true, message: translate({ source: "This field cannot be left blank" }) }]}
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
         <Select
           allowClear
@@ -66,6 +73,7 @@ const ViewForm = (
 
 const Page = () => {
   const [dataIds, setDataIds] = useState<any>();
+  const store = useContext(StoreContext);
   const columns: ColumnsType<any> = [
     // {
     //   title: "ID",
@@ -73,28 +81,28 @@ const Page = () => {
     //   width: 200,
     // },
     {
-      title: "Source term",
+      title: translate({ store: store, source: "Source term" }),
       dataIndex: "sourceTerm",
       width: 500,
     },
     {
-      title: "Translate Value",
+      title: translate({ store: store, source: "Translate Value" }),
       dataIndex: "translationValue",
       width: 500,
     },
     {
-      title: "Locale Code",
+      title: translate({ store: store, source: "Locale Code" }),
       dataIndex: "localeCode",
       width: 100,
     },
     {
-      title: "Model Name",
+      title: translate({ store: store, source: "Model Name" }),
       dataIndex: "modelName",
       width: 200,
     },
     { title: "", key: "none" },
     {
-      title: "Active",
+      title: translate({ store: store, source: "Active" }),
       width: 100,
       align: "center",
       render: (value: any, record: any, index: number) => {
@@ -109,15 +117,17 @@ const Page = () => {
       titleHeader="Module"
       hideActionCreate
       renderItemKanban={(value: any, index: number) => (
-        <Card>
+        <Card style={{ height: "160px", flexDirection: "column", display: "flex", justifyContent: "space-between" }}>
           <Meta
             avatar={<Avatar src="" />}
-            title={translate({ source: value.name ?? "(Module name)" })}
-            description={translate({ source: value.description ?? "" })}
+            title={translate({ store: store, source: value.name ?? "(Module name)" })}
+            description={translate({ store: store, source: value.description ?? "" })}
           />
           <Space style={{ marginTop: "20px" }}>
             <Button type="primary" disabled={value.state === "base"}>
-              Install
+              {value.install
+                ? translate({ store: store, source: "Uninstall" })
+                : translate({ store: store, source: "Install" })}
             </Button>
             {/* <Button>Info</Button> */}
           </Space>

@@ -3,14 +3,16 @@ import DataView from "@/app/components/data-view/data-view";
 import { Button, Checkbox, Form, FormInstance, Input, Select, Tabs } from "antd";
 const { Option } = Select;
 import { ColumnsType } from "antd/es/table";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import ModalChangePassword from "./components/modal-change-password";
 import One2ManyView from "@/app/components/data-view/o2m-view/o2m-view";
 import { userStates } from "@/utils/config";
 import { getItemInArray } from "@/utils/tool";
 import { translate } from "@/utils/translate";
+import { StoreContext } from "@/app/components/context-provider";
 
 const ViewForm = (form: FormInstance<any>, onFinish: (value: any) => void, viewType: string, dataIds: any) => {
+  const store = useContext(StoreContext);
   const columnsOrg: ColumnsType<any> = [
     {
       title: "Name",
@@ -38,14 +40,14 @@ const ViewForm = (form: FormInstance<any>, onFinish: (value: any) => void, viewT
       <Form.Item
         label="Username"
         name="username"
-        rules={[{ required: true, message: translate({ source: "This field cannot be left blank" }) }]}
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
         <Input disabled={viewType === "update"} />
       </Form.Item>
       <Form.Item
         label="Password"
         name="password"
-        rules={[{ required: true, message: translate({ source: "This field cannot be left blank" }) }]}
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
         <Input.Password disabled={viewType === "update"} />
       </Form.Item>
@@ -53,7 +55,7 @@ const ViewForm = (form: FormInstance<any>, onFinish: (value: any) => void, viewT
       <Form.Item
         label="State"
         name="state"
-        rules={[{ required: true, message: translate({ source: "This field cannot be left blank" }) }]}
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
         initialValue={"user"}
       >
         <Select>

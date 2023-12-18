@@ -446,7 +446,7 @@ const DataView = ({
   return (
     <div>
       <PageHeader
-        title={translate({ modelName: model, source: titleHeader ?? "(No title)" })}
+        title={translate({ store: store, modelName: model, source: titleHeader ?? "(No title)" })}
         action={
           <Space wrap>
             {(viewType === "create" || viewType === "update") && <Button onClick={() => router.back()}>Back</Button>}
