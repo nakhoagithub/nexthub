@@ -1,20 +1,19 @@
 import mongoose from "mongoose";
 
-const name = "area";
+const name = "breed";
 
-const collectionName = "farm.area";
+const collectionName = "farm.breed";
 
 const schema = new mongoose.Schema(
   {
     id: { type: String, required: true },
     name: { type: String, required: true },
-    idParent: { type: mongoose.Types.ObjectId },
-    idFarm: { type: mongoose.Types.ObjectId, ref: "farm" },
     description: { type: String },
+    idBreedCategory: { type: mongoose.Types.ObjectId, ref: "breed-category" },
     sortIndex: { type: Number },
     active: { type: Boolean, default: true },
   },
   { timestamps: true, versionKey: false, collection: collectionName }
 );
 
-export const Area = mongoose.model(name, schema);
+export const Breed = mongoose.model(name, schema);

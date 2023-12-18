@@ -11,6 +11,7 @@ import { StoreContext } from "@/app/components/context-provider";
 import TextArea from "antd/es/input/TextArea";
 import { StoreApi } from "zustand";
 import { StoreApp } from "@/store/store";
+import { getItemInArray } from "@/utils/tool";
 
 const ViewForm = (
   store: StoreApi<StoreApp>,
@@ -19,25 +20,6 @@ const ViewForm = (
   viewType: string,
   dataIds: any
 ) => {
-  const columnsOrg: ColumnsType<any> = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      width: 200,
-      key: "name",
-    },
-    {
-      title: "Short name",
-      dataIndex: "shortName",
-      width: 160,
-      key: "name",
-    },
-    {
-      title: "",
-      key: "none",
-    },
-  ];
-
   return (
     <Form name="form" form={form} layout="vertical" style={{ width: 600 }} onFinish={onFinish}>
       <Form.Item
@@ -54,26 +36,43 @@ const ViewForm = (
       >
         <Input />
       </Form.Item>
-      <Form.Item label="Address" name="address">
+
+      <Form.Item label="ID Parent" name="idParent">
+        <Select
+          allowClear
+          onClear={() => {
+            form.setFieldValue("idParent", "");
+          }}
+        >
+          {(dataIds?.["area"] ?? [])?.map((e: any) => (
+            <Option key={e._id} label={e.name}>
+              <span>{e.name}</span>
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+
+      <Form.Item label="Farm" name="idFarm">
+        <Select
+          allowClear
+          onClear={() => {
+            form.setFieldValue("idFarm", "");
+          }}
+        >
+          {(dataIds?.["farm"] ?? [])?.map((e: any) => (
+            <Option key={e._id} label={e.name}>
+              <span>{e.name}</span>
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+
+      <Form.Item label="Description" name="description">
         <TextArea />
       </Form.Item>
-      <Form.Item label="IP Public" name="ipPublic">
-        <Input />
-      </Form.Item>
-      <Form.Item label="IP Private" name="ipPrivate">
-        <Input />
-      </Form.Item>
-      <Form.Item label="Port" name="port" initialValue={27017}>
-        <InputNumber min={1} max={65536} value={27017} />
-      </Form.Item>
-      <Form.Item label="Username" name="username">
-        <Input />
-      </Form.Item>
-      <Form.Item label="Password" name="password">
-        <Input.Password />
-      </Form.Item>
-      <Form.Item label="Database Name" name="database">
-        <Input />
+
+      <Form.Item label="Sort Index" name="sortIndex" initialValue={1}>
+        <InputNumber min={1} value={1} />
       </Form.Item>
 
       <Form.Item label="Active" name="active" valuePropName="checked" initialValue={true}>
@@ -101,11 +100,23 @@ const Page = () => {
       width: 160,
     },
     {
-      title: "Address",
-      dataIndex: "address",
+      title: "Farm",
       width: 200,
+      render: (value, record, index) => {
+        return <div>{record.idFarm && getItemInArray(dataIds?.["farm"] ?? [], record.idFarm, "_id")?.name}</div>;
+      },
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      width: 300,
     },
     { title: "", key: "none" },
+    {
+      title: "Sort Index",
+      dataIndex: "sortIndex",
+      width: 100,
+    },
     {
       title: "Active",
       width: 100,
@@ -119,23 +130,26 @@ const Page = () => {
   return (
     <div>
       <DataView
-        model="farm"
-        titleHeader="Farm"
+        model="area"
+        titleHeader="Area"
         columnsTable={columns}
         tableBoder={true}
         formLayout={(form, onFinish, viewType) => ViewForm(store, form, onFinish, viewType, dataIds)}
         ids={[
           {
-            org: {
+            farm: {
+              fields: ["_id", "name"],
+              filter: { active: true },
+            },
+          },
+          {
+            area: {
               fields: ["_id", "name"],
               filter: { active: true },
             },
           },
         ]}
         dataIdsCallback={(value) => setDataIds(value)}
-        actions={(keys?: any[]) => [
-          <div>{keys?.length === 1 && <Button onClick={() => {}}>Update to Server IoT</Button>}</div>,
-        ]}
       />
     </div>
   );

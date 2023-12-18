@@ -17,5 +17,6 @@ await createModule("user", {
   models: ["user"],
   state: "base",
   install: true,
+
   datas: [],
 });

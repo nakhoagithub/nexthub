@@ -1,2 +1,5 @@
 id,name,modelName,description,read,create,update,delete,active
-"access.farm","Access model Farm","access","Quyền cho model Farm",true,false,true,true,true
+access.farm.farm,Access model Farm,farm,Quyền cho model Farm,true,true,true,true,true
+access.area.area,Access model Area,area,Quyền cho model Area,true,true,true,true,true
+access.breed,Access model Breed,breed,Quyền cho model Breed,true,true,true,true,true
+access.breed.category,Access model Breed Category,breed-category,Quyền cho model Breed Category,true,true,true,true,true

@@ -4,13 +4,12 @@ import { Button, Checkbox, Form, FormInstance, Input, InputNumber, Select, Tabs 
 const { Option } = Select;
 import { ColumnsType } from "antd/es/table";
 import React, { useContext, useState } from "react";
-import One2ManyView from "@/app/components/data-view/o2m-view/o2m-view";
-import { userStates } from "@/utils/config";
 import { translate } from "@/utils/translate";
 import { StoreContext } from "@/app/components/context-provider";
 import TextArea from "antd/es/input/TextArea";
 import { StoreApi } from "zustand";
 import { StoreApp } from "@/store/store";
+import { getItemInArray } from "@/utils/tool";
 
 const ViewForm = (
   store: StoreApi<StoreApp>,
@@ -54,26 +53,32 @@ const ViewForm = (
       >
         <Input />
       </Form.Item>
-      <Form.Item label="Address" name="address">
+
+      <Form.Item
+        label="Breed Category"
+        name="idBreedCategory"
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
+      >
+        <Select
+          allowClear
+          onClear={() => {
+            form.setFieldValue("idBreedCategory", "");
+          }}
+        >
+          {(dataIds?.["breed-category"] ?? []).map((e: any) => (
+            <Option key={e._id} label={e.name}>
+              <span>{e.name}</span>
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+
+      <Form.Item label="Description" name="description">
         <TextArea />
       </Form.Item>
-      <Form.Item label="IP Public" name="ipPublic">
-        <Input />
-      </Form.Item>
-      <Form.Item label="IP Private" name="ipPrivate">
-        <Input />
-      </Form.Item>
-      <Form.Item label="Port" name="port" initialValue={27017}>
-        <InputNumber min={1} max={65536} value={27017} />
-      </Form.Item>
-      <Form.Item label="Username" name="username">
-        <Input />
-      </Form.Item>
-      <Form.Item label="Password" name="password">
-        <Input.Password />
-      </Form.Item>
-      <Form.Item label="Database Name" name="database">
-        <Input />
+
+      <Form.Item label="Sort Index" name="sortIndex" initialValue={1}>
+        <InputNumber min={1} value={1} />
       </Form.Item>
 
       <Form.Item label="Active" name="active" valuePropName="checked" initialValue={true}>
@@ -101,9 +106,21 @@ const Page = () => {
       width: 160,
     },
     {
-      title: "Address",
-      dataIndex: "address",
+      title: "Breed Category",
       width: 200,
+      render: (value, record, index) => {
+        return (
+          <div>
+            {record.idBreedCategory &&
+              getItemInArray(dataIds?.["breed-category"] ?? [], record.idBreedCategory, "_id")?.name}
+          </div>
+        );
+      },
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      width: 500,
     },
     { title: "", key: "none" },
     {
@@ -119,23 +136,20 @@ const Page = () => {
   return (
     <div>
       <DataView
-        model="farm"
-        titleHeader="Farm"
+        model="breed"
+        titleHeader="Breed"
         columnsTable={columns}
         tableBoder={true}
         formLayout={(form, onFinish, viewType) => ViewForm(store, form, onFinish, viewType, dataIds)}
         ids={[
           {
-            org: {
+            "breed-category": {
               fields: ["_id", "name"],
               filter: { active: true },
             },
           },
         ]}
         dataIdsCallback={(value) => setDataIds(value)}
-        actions={(keys?: any[]) => [
-          <div>{keys?.length === 1 && <Button onClick={() => {}}>Update to Server IoT</Button>}</div>,
-        ]}
       />
     </div>
   );

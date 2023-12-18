@@ -6,7 +6,7 @@ const collectionName = "farm.farm";
 
 const schema = new mongoose.Schema(
   {
-    id: { type: String, required: true, unique: true },
+    id: { type: String, required: true },
     name: { type: String, required: true },
     address: { type: String },
     ipPublic: { type: String, default: "" },

@@ -47,7 +47,7 @@ export async function createModule(id, data) {
 
       // model data
 
-      const modelData = await Model.findOne({ id: model });
+      // const modelData = await Model.findOne({ id: model });
 
       let newModelData = {
         id: model,
@@ -56,7 +56,7 @@ export async function createModule(id, data) {
         idsSchema: idsSchema,
         timestamp: ModelMongoose.schema.options.timestamps,
         versionKey: ModelMongoose.schema.options.versionKey,
-        install: modelData?.install ?? data.install,
+        install: moduleData?.install ?? data.install,
       };
 
       await Model.updateOne({ id: newModelData.id }, { ...newModelData }, { upsert: true });
