@@ -18,5 +18,11 @@ await createModule("farm", {
       file: "base.access.csv",
       primaryKey: "id",
     },
+    {
+      model: "menu",
+      folder: "farm",
+      file: "base.menu.csv",
+      primaryKey: "id",
+    },
   ],
 });

@@ -63,7 +63,7 @@ plugin.router.get("/model/:name/get", checkAuth, checkAccessRight, async (req, r
         datas.push(newData);
       }
     } catch (error) {
-      logger(error);
+      logger(error, "API: /model/:name/get");
       return res.status(200).json({ code: 400, message: "Invalid query (filter, sort)" });
     }
 

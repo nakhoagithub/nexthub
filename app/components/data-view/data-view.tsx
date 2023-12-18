@@ -22,6 +22,7 @@ const DataView = ({
   renderItemKanban,
   tableBoder,
   filter,
+  sort,
   formLayout,
   updateField,
   hideActionCreate,
@@ -36,6 +37,7 @@ const DataView = ({
   renderItemKanban?: (value: any, index: number, fetchData?: () => Promise<void>) => React.ReactNode;
   tableBoder?: boolean;
   filter?: Object;
+  sort?: Object;
   formLayout?: (
     form: FormInstance<any>,
     onFinish: (value: any) => void,
@@ -173,7 +175,9 @@ const DataView = ({
             useApp.message.error(message ?? "");
           }
         }
-      } catch (error) {}
+      } catch (error) {
+        useApp.notification.error({ message: "Internal Server Error" });
+      }
     }
 
     if (viewType === "update") {
@@ -204,7 +208,9 @@ const DataView = ({
             useApp.message.error(message ?? "");
           }
         }
-      } catch (error) {}
+      } catch (error) {
+        useApp.notification.error({ message: "Internal Server Error" });
+      }
     }
   }
 
@@ -244,7 +250,9 @@ const DataView = ({
           }
         },
       });
-    } catch (error) {}
+    } catch (error) {
+      useApp.notification.error({ message: "Internal Server Error" });
+    }
   }
 
   async function getAccess() {
@@ -256,12 +264,19 @@ const DataView = ({
       if (code === 200) {
         setAccessRightModel(access);
       }
-    } catch (error) {}
+    } catch (error) {
+      useApp.notification.error({ message: "Internal Server Error" });
+    }
   }
 
   async function getDatas() {
     try {
       let newQuery = getParamFilter(tableParams);
+      let newSort = newQuery.sort;
+      if (sort) {
+        newSort = sort;
+      }
+
       let newFilter: any = {};
 
       if (filter) {
@@ -271,7 +286,7 @@ const DataView = ({
       const {
         data: { datas, code, total },
       } = await app.get(
-        `/api/model/${model}/get?filter=${JSON.stringify(newFilter)}&sort=${JSON.stringify(newQuery.sort)}&limit=${
+        `/api/model/${model}/get?filter=${JSON.stringify(newFilter)}&sort=${JSON.stringify(newSort)}&limit=${
           newQuery.limit
         }&skip=${newQuery.skip}`
       );
@@ -286,7 +301,9 @@ const DataView = ({
           },
         });
       }
-    } catch (error) {}
+    } catch (error) {
+      useApp.notification.error({ message: "Internal Server Error" });
+    }
   }
 
   async function getDataIds() {
@@ -325,7 +342,9 @@ const DataView = ({
       if (dataIdsCallback) {
         dataIdsCallback(newDataIds);
       }
-    } catch (error) {}
+    } catch (error) {
+      useApp.notification.error({ message: "Internal Server Error" });
+    }
   }
 
   // function setQueryParam(paramKey: string, value: string) {
@@ -371,7 +390,9 @@ const DataView = ({
         const query = search ? `?${search}` : "";
         router.push(`${pathname}${query}`);
       }
-    } catch (error) {}
+    } catch (error) {
+      useApp.notification.error({ message: "Internal Server Error" });
+    }
   };
 
   async function fetchLanguageModel() {
@@ -383,7 +404,9 @@ const DataView = ({
       if (code === 200) {
         setLanguageData({ datas: datas });
       }
-    } catch (error) {}
+    } catch (error) {
+      useApp.notification.error({ message: "Internal Server Error" });
+    }
   }
 
   async function fetchData() {
@@ -434,7 +457,9 @@ const DataView = ({
         form.resetFields();
         form?.setFieldsValue({ ...datas[0] });
       }
-    } catch (error) {}
+    } catch (error) {
+      useApp.notification.error({ message: "Internal Server Error" });
+    }
   }
 
   useEffect(() => {

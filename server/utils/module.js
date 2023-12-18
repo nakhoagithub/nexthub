@@ -13,7 +13,8 @@ import { installModel, uninstallModel } from "../modules/core/services/init-data
  * @param data.datas.noUpdate nếu là `false` thì dữ liệu sẽ cập nhật theo file csv
  */
 export async function createModule(id, data) {
-  await Module.updateOne({ id: id }, { ...data }, { upsert: true });
+  const moduleData = await Module.findOne({ id: id });
+  await Module.updateOne({ id: id }, { ...data, install: moduleData.install }, { upsert: true });
 
   // create model database
   for (var model of data.models) {
@@ -45,6 +46,9 @@ export async function createModule(id, data) {
       const idsSchema = idsSchemaData.map((e) => e._id.toHexString());
 
       // model data
+
+      const modelData = await Model.findOne({ id: model });
+
       let newModelData = {
         id: model,
         name: model,
@@ -52,7 +56,7 @@ export async function createModule(id, data) {
         idsSchema: idsSchema,
         timestamp: ModelMongoose.schema.options.timestamps,
         versionKey: ModelMongoose.schema.options.versionKey,
-        install: data.install,
+        install: modelData.install ?? data.install,
       };
 
       await Model.updateOne({ id: newModelData.id }, { ...newModelData }, { upsert: true });
@@ -101,7 +105,8 @@ export async function createModule(id, data) {
   // delete model not install
   for (var model of data.models) {
     try {
-      if (data.install || data.install === true) {
+      const modelData = await Model.findOne({ id: model });
+      if (modelData.install || modelData.install === true) {
       } else {
         const ModelMongoose = mongoose.model(model);
         delete mongoose.connection.models[model];

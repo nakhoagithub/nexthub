@@ -15,7 +15,7 @@ plugin.router.get("/auth", checkAuth, async (req, res) => {
 
     return res.status(200).json({ code: 200, data: newUser });
   } catch (error) {
-    logger(error);
+    logger(error, "API /auth");
     return res.status(500).json({ code: 500, error: error });
   }
 });

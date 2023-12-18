@@ -127,7 +127,7 @@ const Page = () => {
       title: "Locale Code",
       width: 200,
       render: (value, record, index) => {
-        return <div>{getItemInArray(dataIds?.["language"] ?? [], record.localeCode, "localeCode").name}</div>;
+        return <div>{getItemInArray(dataIds?.["language"] ?? [], record.localeCode, "localeCode")?.name ?? ""}</div>;
       },
     },
     {

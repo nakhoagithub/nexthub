@@ -124,7 +124,9 @@ const Page = () => {
       } else {
         useApp.message.error(translate({ store: store, source: message }));
       }
-    } catch (error) {}
+    } catch (error) {
+      useApp.notification.error({ message: "Internal Server Error" });
+    }
   }
 
   async function installModule(model: string) {
@@ -138,7 +140,9 @@ const Page = () => {
       } else {
         useApp.message.error(translate({ store: store, source: message }));
       }
-    } catch (error) {}
+    } catch (error) {
+      useApp.notification.error({ message: "Internal Server Error" });
+    }
   }
 
   return (
@@ -147,6 +151,7 @@ const Page = () => {
         model="module"
         titleHeader="Module"
         hideActionCreate
+        sort={{ name: 1 }}
         renderItemKanban={(value: any, index: number, fetchData?: () => Promise<void>) => (
           <Card
             style={{}}

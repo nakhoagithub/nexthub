@@ -1,4 +1,4 @@
-import { Button, Form, FormInstance, Space, Table } from "antd";
+import { App, Button, Form, FormInstance, Space, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import React, { useEffect, useState } from "react";
 import ModalTableSelection from "./modal-table-selection";
@@ -27,6 +27,7 @@ const One2ManyView = ({
   showAdd?: boolean;
   form?: FormInstance<any>;
 }) => {
+  const useApp = App.useApp();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -116,7 +117,9 @@ const One2ManyView = ({
           },
         });
       }
-    } catch (error) {}
+    } catch (error) {
+      useApp.notification.error({ message: "Internal Server Error" });
+    }
   }
 
   async function fetchDataFormUpdate() {
@@ -131,7 +134,9 @@ const One2ManyView = ({
       if (code === 200) {
         if (datas[0][idsField].length > 0) setIds(datas[0][idsField]);
       }
-    } catch (error) {}
+    } catch (error) {
+      useApp.notification.error({ message: "Internal Server Error" });
+    }
   }
 
   async function fetchData() {

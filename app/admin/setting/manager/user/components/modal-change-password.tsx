@@ -37,7 +37,9 @@ const ModalChangePassword = ({
           useApp.message.error(message ?? "");
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      useApp.notification.error({ message: "Internal Server Error" });
+    }
   }
 
   return (

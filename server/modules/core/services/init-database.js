@@ -99,6 +99,7 @@ export async function initDb() {
       await installModel(model.id);
     }
   } catch (error) {
-    logger(error);
+    console.log(error);
+    logger(error, "initDb");
   }
 }

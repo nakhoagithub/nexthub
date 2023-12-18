@@ -23,6 +23,7 @@ const ModalTableSelection = ({
   columnsTable?: ColumnsType<any>;
   onOk?: (values: any[]) => void;
 }) => {
+  const useApp = App.useApp();
   const [loading, setLoading] = useState(false);
   const [datas, setDatas] = useState<any[]>([]);
   const [datasSelected, setDatasSelected] = useState<any[]>([]);
@@ -65,7 +66,9 @@ const ModalTableSelection = ({
           },
         });
       }
-    } catch (error) {}
+    } catch (error) {
+      useApp.notification.error({ message: "Internal Server Error" });
+    }
   }
 
   async function fetchData() {
