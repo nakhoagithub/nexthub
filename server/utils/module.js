@@ -14,7 +14,7 @@ import { installModel, uninstallModel } from "../modules/core/services/init-data
  */
 export async function createModule(id, data) {
   const moduleData = await Module.findOne({ id: id });
-  await Module.updateOne({ id: id }, { ...data, install: moduleData.install }, { upsert: true });
+  await Module.updateOne({ id: id }, { ...data, install: moduleData?.install ?? false }, { upsert: true });
 
   // create model database
   for (var model of data.models) {
@@ -56,12 +56,12 @@ export async function createModule(id, data) {
         idsSchema: idsSchema,
         timestamp: ModelMongoose.schema.options.timestamps,
         versionKey: ModelMongoose.schema.options.versionKey,
-        install: modelData.install ?? data.install,
+        install: modelData?.install ?? data.install,
       };
 
       await Model.updateOne({ id: newModelData.id }, { ...newModelData }, { upsert: true });
     } catch (error) {
-      logger(error, "createModule delete model");
+      logger(error, "createModule");
     }
   }
 
@@ -106,7 +106,7 @@ export async function createModule(id, data) {
   for (var model of data.models) {
     try {
       const modelData = await Model.findOne({ id: model });
-      if (modelData.install || modelData.install === true) {
+      if (modelData?.install || modelData?.install === true) {
       } else {
         const ModelMongoose = mongoose.model(model);
         delete mongoose.connection.models[model];
@@ -127,17 +127,11 @@ export async function installModule(id) {
       return result;
     }
 
-    let ok = true;
     for (var model of moduleData.models) {
-      const result = await installModel(model);
-      if (!result) ok = false;
+      await installModel(model);
     }
 
-    result = ok;
-
-    if (ok) {
-      await Module.updateOne({ id: id }, { install: true });
-    }
+    await Module.updateOne({ id: id }, { install: true });
 
     // create data default
     if (moduleData.datas) {
@@ -174,6 +168,7 @@ export async function installModule(id) {
         }
       }
     }
+    result = true;
   } catch (error) {
     logger(error, "installModule");
   }
@@ -191,20 +186,14 @@ export async function uninstallModule(id) {
     }
 
     // uninstall model
-    let ok = true;
     for (var model of moduleData.models) {
-      const result = await uninstallModel(model);
-      if (!result) ok = false;
+      await uninstallModel(model);
     }
-    result = ok;
-    if (ok) {
-      await Module.updateOne({ id: id }, { install: false });
-    }
+    await Module.updateOne({ id: id }, { install: false });
 
     // delete data default
     if (moduleData.datas.length > 0) {
       for (var { file, folder, model, modelDescription, primaryKey, noUpdate } of moduleData.datas) {
-        console.log(model);
         const datasDefault = await readCSV(folder, file);
         try {
           const ModelMongoose = mongoose.model(model);
@@ -219,6 +208,7 @@ export async function uninstallModule(id) {
         }
       }
     }
+    result = true;
   } catch (error) {
     logger(error, "installModule");
   }

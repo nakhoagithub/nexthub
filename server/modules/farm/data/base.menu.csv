@@ -1,2 +1,4 @@
 id,name,description,url,idParent,isGroup,sequence,state,active
 farm,Nông trại,,/admin/farm,null,false,1,normal,true
+farm.farm,Quản lý nông trại,,/admin/farm/farm-manager,farm,false,1,normal,true
+farm.area,Quản lý nhà màng,,/admin/farm/area-manager,farm,false,2,normal,true
