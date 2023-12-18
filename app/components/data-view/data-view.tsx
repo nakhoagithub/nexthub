@@ -33,7 +33,7 @@ const DataView = ({
   titleHeader?: string;
   model: string;
   columnsTable?: any[];
-  renderItemKanban?: (value: any, index: number) => React.ReactNode;
+  renderItemKanban?: (value: any, index: number, fetchData?: () => Promise<void>) => React.ReactNode;
   tableBoder?: boolean;
   filter?: Object;
   formLayout?: (
@@ -508,7 +508,10 @@ const DataView = ({
 
       {viewType === "kanban" && (
         <div>
-          <KanbanView datas={datas} renderItemKanban={renderItemKanban} />
+          <KanbanView
+            datas={datas}
+            renderItemKanban={(value, index) => renderItemKanban && renderItemKanban(value, index, getDatas)}
+          />
         </div>
       )}
     </div>

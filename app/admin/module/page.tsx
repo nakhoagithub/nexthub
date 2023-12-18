@@ -1,8 +1,9 @@
 "use client";
 import { StoreContext } from "@/app/components/context-provider";
 import DataView from "@/app/components/data-view/data-view";
+import app from "@/utils/axios";
 import { translate } from "@/utils/translate";
-import { Avatar, Button, Card, Checkbox, Form, FormInstance, Input, Select, Space } from "antd";
+import { App, Avatar, Button, Card, Checkbox, Form, FormInstance, Input, Select, Space } from "antd";
 import Meta from "antd/es/card/Meta";
 const { Option } = Select;
 import { ColumnsType } from "antd/es/table";
@@ -74,6 +75,7 @@ const ViewForm = (
 const Page = () => {
   const [dataIds, setDataIds] = useState<any>();
   const store = useContext(StoreContext);
+  const useApp = App.useApp();
   const columns: ColumnsType<any> = [
     // {
     //   title: "ID",
@@ -111,29 +113,85 @@ const Page = () => {
     },
   ];
 
+  async function uninstallModule(model: string) {
+    try {
+      const {
+        data: { code, message },
+      } = await app.post(`/api/module/${model}/uninstall`);
+
+      if (code === 200) {
+        useApp.message.success(translate({ store: store, source: "Success" }));
+      } else {
+        useApp.message.error(translate({ store: store, source: message }));
+      }
+    } catch (error) {}
+  }
+
+  async function installModule(model: string) {
+    try {
+      const {
+        data: { code, message },
+      } = await app.post(`/api/module/${model}/install`);
+
+      if (code === 200) {
+        useApp.message.success(translate({ store: store, source: "Success" }));
+      } else {
+        useApp.message.error(translate({ store: store, source: message }));
+      }
+    } catch (error) {}
+  }
+
   return (
-    <DataView
-      model="module"
-      titleHeader="Module"
-      hideActionCreate
-      renderItemKanban={(value: any, index: number) => (
-        <Card style={{ height: "160px", flexDirection: "column", display: "flex", justifyContent: "space-between" }}>
-          <Meta
-            avatar={<Avatar src="" />}
-            title={translate({ store: store, source: value.name ?? "(Module name)" })}
-            description={translate({ store: store, source: value.description ?? "" })}
-          />
-          <Space style={{ marginTop: "20px" }}>
-            <Button type="primary" disabled={value.state === "base"}>
-              {value.install
-                ? translate({ store: store, source: "Uninstall" })
-                : translate({ store: store, source: "Install" })}
-            </Button>
-            {/* <Button>Info</Button> */}
-          </Space>
-        </Card>
-      )}
-    />
+    <div>
+      <DataView
+        model="module"
+        titleHeader="Module"
+        hideActionCreate
+        renderItemKanban={(value: any, index: number, fetchData?: () => Promise<void>) => (
+          <Card
+            style={{}}
+            actions={[
+              <Button
+                type="primary"
+                disabled={value.state === "base"}
+                onClick={async () => {
+                  if (value.install) {
+                    useApp.modal.confirm({
+                      title: "Comfirm",
+                      content: "Uninstall module",
+                      okText: "Yes",
+                      cancelText: "Cancel",
+                      onOk: async () => {
+                        await uninstallModule(value.id);
+                        fetchData && (await fetchData());
+                      },
+                    });
+                  } else {
+                    await installModule(value.id);
+                    fetchData && (await fetchData());
+                  }
+                }}
+              >
+                {value.install
+                  ? translate({ store: store, source: "Uninstall" })
+                  : translate({ store: store, source: "Install" })}
+              </Button>,
+            ]}
+          >
+            <Meta
+              style={{ height: "100px" }}
+              avatar={<Avatar src="" />}
+              title={translate({ store: store, source: value.name ?? "(Module name)" })}
+              description={
+                <div className="description-item-module">
+                  {translate({ store: store, source: value.description ?? "" })}
+                </div>
+              }
+            />
+          </Card>
+        )}
+      />
+    </div>
   );
 };
 

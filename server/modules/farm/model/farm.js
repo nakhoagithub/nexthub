@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const name = "farm";
 
-const collectionName = "farm.language";
+const collectionName = "farm.farm";
 
 const schema = new mongoose.Schema(
   {
