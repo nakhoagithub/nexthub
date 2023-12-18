@@ -19,7 +19,7 @@ const DataView = ({
   titleHeader,
   model,
   columnsTable,
-  listKanban,
+  renderItemKanban,
   tableBoder,
   filter,
   formLayout,
@@ -33,7 +33,7 @@ const DataView = ({
   titleHeader?: string;
   model: string;
   columnsTable?: any[];
-  listKanban?: any[];
+  renderItemKanban?: (value: any, index: number) => React.ReactNode;
   tableBoder?: boolean;
   filter?: Object;
   formLayout?: (
@@ -125,7 +125,7 @@ const DataView = ({
   }
 
   /// Kiểu xem kanban
-  if (listKanban && !viewTypes.includes("kanban")) {
+  if (renderItemKanban && !viewTypes.includes("kanban")) {
     viewTypes.push("kanban");
   }
 
@@ -508,7 +508,7 @@ const DataView = ({
 
       {viewType === "kanban" && (
         <div>
-          <KanbanView datas={datas} />
+          <KanbanView datas={datas} renderItemKanban={renderItemKanban} />
         </div>
       )}
     </div>

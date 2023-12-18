@@ -1,7 +1,8 @@
 "use client";
 import DataView from "@/app/components/data-view/data-view";
 import { translate } from "@/utils/translate";
-import { Checkbox, Form, FormInstance, Input, Select } from "antd";
+import { Avatar, Button, Card, Checkbox, Form, FormInstance, Input, Select, Space } from "antd";
+import Meta from "antd/es/card/Meta";
 const { Option } = Select;
 import { ColumnsType } from "antd/es/table";
 import React, { useState } from "react";
@@ -102,7 +103,28 @@ const Page = () => {
     },
   ];
 
-  return <DataView model="module" titleHeader="Module" hideActionCreate listKanban={[]} />;
+  return (
+    <DataView
+      model="module"
+      titleHeader="Module"
+      hideActionCreate
+      renderItemKanban={(value: any, index: number) => (
+        <Card>
+          <Meta
+            avatar={<Avatar src="" />}
+            title={translate({ source: value.name ?? "(Module name)" })}
+            description={translate({ source: value.description ?? "" })}
+          />
+          <Space style={{ marginTop: "20px" }}>
+            <Button type="primary" disabled={value.state === "base"}>
+              Install
+            </Button>
+            {/* <Button>Info</Button> */}
+          </Space>
+        </Card>
+      )}
+    />
+  );
 };
 
 export default Page;
