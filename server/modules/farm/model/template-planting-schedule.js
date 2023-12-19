@@ -12,7 +12,7 @@ const schema = new mongoose.Schema(
     numOfDaysIncurred: { type: Number },
     averageYield: { type: Number },
     active: { type: Boolean, default: true },
-    idsPeriod: [{ type: mongoose.Types.ObjectId }],
+    idsPeriod: { type: [mongoose.Types.ObjectId] },
   },
   { timestamps: true, versionKey: false, collection: collectionName }
 );

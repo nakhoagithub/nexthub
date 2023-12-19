@@ -26,12 +26,18 @@ export async function createModule(id, data) {
 
       // schema of model
       for (var keySchemaData of Object.keys(schemaData)) {
+        let type = schemaData[keySchemaData].instance;
+
+        if (schemaData[keySchemaData]["$isMongooseArray"] === true) {
+          type = "ArrayObjectId";
+        }
+
         let newSchemaData = {
           id: `${model}.${keySchemaData}`,
           modelName: model,
           comment: schemaData[keySchemaData]?.options?.comment,
           field: keySchemaData,
-          type: schemaData[keySchemaData].instance,
+          type: type,
           required: schemaData[keySchemaData]?.options?.required,
           unique: schemaData[keySchemaData]?.options?.unique,
           readonly: schemaData[keySchemaData]?.options?.readonly,

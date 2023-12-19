@@ -171,8 +171,9 @@ const Page = () => {
   return (
     <div className="page-content">
       <TableView
-        model={"language"}
-        columnsTable={columns}
+        model={"user"}
+        // columnsTable={columns}
+        columnsView={["_id", "name", "state", "idsOrg", "active"]}
         selectedRowKeys={selectedRowKeys}
         setSelectedRowKeys={setSelectedRowKeys}
         bordered={false}

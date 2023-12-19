@@ -13,8 +13,8 @@ const schema = new mongoose.Schema(
     session: { type: String, readonly: true },
     state: { type: String, default: "user" },
     active: { type: Boolean, default: true },
-    idsOrg: [{ type: mongoose.Types.ObjectId, ref: "org" }],
-    idsCurrentOrg: [{ type: mongoose.Types.ObjectId, ref: "org" }],
+    idsOrg: { type: [mongoose.Types.ObjectId], ref: "org" },
+    idsCurrentOrg: { type: [mongoose.Types.ObjectId], ref: "org" },
     localeCode: { type: String, default: "en_US" },
   },
   { timestamps: true, versionKey: false, collection: collectionName }
