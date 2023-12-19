@@ -17,6 +17,8 @@ const One2ManyView = ({
   columnsTable,
   showAdd,
   form,
+  addInline,
+  modelAddInline,
 }: {
   title?: string;
   titleModel?: string;
@@ -26,6 +28,8 @@ const One2ManyView = ({
   columnsTable?: ColumnsType<any> | undefined;
   showAdd?: boolean;
   form?: FormInstance<any>;
+  addInline?: boolean;
+  modelAddInline?: React.ReactNode;
 }) => {
   const useApp = App.useApp();
   const router = useRouter();
@@ -185,11 +189,21 @@ const One2ManyView = ({
           setDatas([...datas, ...newDatas]);
         }}
       />
+      {modelAddInline && modelAddInline}
       {title && <div style={{ fontSize: 20, fontWeight: "bold" }}>{title}</div>}
       <div style={{ margin: "12px 0" }}>
         <Space>
           {showAdd && (
-            <Button size="small" onClick={() => setOpenModelAdd(true)}>
+            <Button
+              size="small"
+              onClick={() => {
+                if (addInline) {
+                  console.log("add in line");
+                } else {
+                  setOpenModelAdd(true);
+                }
+              }}
+            >
               Add
             </Button>
           )}

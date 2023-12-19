@@ -12,6 +12,11 @@ import TextArea from "antd/es/input/TextArea";
 import { StoreApi } from "zustand";
 import { StoreApp } from "@/store/store";
 import { getItemInArray } from "@/utils/tool";
+import TableView from "@/app/components/data-view/data-view/table-view";
+
+const ViewFormAddPeriodInLine = () => {
+  return <Form></Form>;
+};
 
 const ViewForm = (
   store: StoreApi<StoreApp>,
@@ -20,7 +25,7 @@ const ViewForm = (
   viewType: string,
   dataIds: any
 ) => {
-  const columnsOrg: ColumnsType<any> = [
+  const columnsPeriod: ColumnsType<any> = [
     {
       title: "Name",
       dataIndex: "name",
@@ -28,10 +33,14 @@ const ViewForm = (
       key: "name",
     },
     {
-      title: "Short name",
-      dataIndex: "shortName",
-      width: 160,
-      key: "name",
+      title: "Number of days",
+      dataIndex: "numOfDays",
+      width: 100,
+    },
+    {
+      title: "Sort Index",
+      dataIndex: "sortIndex",
+      width: 100,
     },
     {
       title: "",
@@ -85,6 +94,28 @@ const ViewForm = (
       <Form.Item label="Active" name="active" valuePropName="checked" initialValue={true}>
         <Checkbox defaultChecked={true}>Active</Checkbox>
       </Form.Item>
+
+      <Tabs
+        type="card"
+        items={[
+          {
+            forceRender: true,
+            label: "Period",
+            key: "period",
+            children: (
+              <One2ManyView
+                showAdd
+                idsField="idsPeriod"
+                titleModel="Period"
+                model="template-planting-schedule"
+                toModel="template-planting-schedule-period"
+                columnsTable={columnsPeriod}
+                form={form}
+              />
+            ),
+          },
+        ]}
+      />
     </Form>
   );
 };
@@ -135,9 +166,18 @@ const Page = () => {
     },
   ];
 
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
   return (
-    <div>
-      <DataView
+    <div className="page-content">
+      <TableView
+        model={"language"}
+        columnsTable={columns}
+        selectedRowKeys={selectedRowKeys}
+        setSelectedRowKeys={setSelectedRowKeys}
+        bordered={false}
+      />
+      {/* <DataView
         model="template-planting-schedule"
         titleHeader="Template Planting Schedule"
         columnsTable={columns}
@@ -152,7 +192,7 @@ const Page = () => {
           },
         ]}
         dataIdsCallback={(value) => setDataIds(value)}
-      />
+      /> */}
     </div>
   );
 };
