@@ -7,6 +7,7 @@ import "./routers/model-update-array.js";
 import "./routers/model-delete.js";
 import "./routers/model.js";
 import "./routers/model-access.js";
+import "./routers/model-columns.js";
 import "./routers/module.js";
 import { Group } from "./models/group.js";
 import { Access } from "./models/access.js";

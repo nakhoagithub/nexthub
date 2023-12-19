@@ -171,12 +171,15 @@ const Page = () => {
   return (
     <div className="page-content">
       <TableView
-        model={"user"}
-        // columnsTable={columns}
-        columnsView={["_id", "name", "state", "idsOrg", "active"]}
+        model={"menu"}
+        // columnsView={[
+        //   { field: "name", title: "Name" },
+        //   { field: "state", title: "State" },
+        //   { field: "idsOrg", title: "Orgs" },
+        //   { field: "active", title: "Active" },
+        // ]}
         selectedRowKeys={selectedRowKeys}
         setSelectedRowKeys={setSelectedRowKeys}
-        bordered={false}
       />
       {/* <DataView
         model="template-planting-schedule"

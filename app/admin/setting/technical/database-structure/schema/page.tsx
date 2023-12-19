@@ -87,12 +87,12 @@ const Page = () => {
     {
       title: "Field",
       dataIndex: "field",
-      width: 100,
+      width: 200,
     },
     {
       title: "Type",
       dataIndex: "type",
-      width: 100,
+      width: 120,
     },
     {
       title: "Required",

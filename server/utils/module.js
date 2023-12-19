@@ -25,7 +25,9 @@ export async function createModule(id, data) {
       let schemaData = { ...ModelMongoose.schema.paths };
 
       // schema of model
+      let sortTemp = 0;
       for (var keySchemaData of Object.keys(schemaData)) {
+        sortTemp += 1;
         let type = schemaData[keySchemaData].instance;
 
         if (schemaData[keySchemaData]["$isMongooseArray"] === true) {
@@ -34,6 +36,7 @@ export async function createModule(id, data) {
 
         let newSchemaData = {
           id: `${model}.${keySchemaData}`,
+          title: schemaData[keySchemaData]?.options?.title,
           modelName: model,
           comment: schemaData[keySchemaData]?.options?.comment,
           field: keySchemaData,
@@ -44,6 +47,7 @@ export async function createModule(id, data) {
           default: schemaData[keySchemaData]?.defaultValue,
           select: schemaData[keySchemaData]?.selected,
           ref: schemaData[keySchemaData]?.options?.ref,
+          sortColumn: sortTemp,
         };
         await Schema.updateOne({ id: newSchemaData.id }, { ...newSchemaData }, { upsert: true });
       }
