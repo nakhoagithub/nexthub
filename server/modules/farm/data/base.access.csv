@@ -3,3 +3,4 @@ access.farm.farm,Access model Farm,farm,Quyền cho model Farm,true,true,true,tr
 access.area.area,Access model Area,area,Quyền cho model Area,true,true,true,true,true
 access.breed,Access model Breed,breed,Quyền cho model Breed,true,true,true,true,true
 access.breed.category,Access model Breed Category,breed-category,Quyền cho model Breed Category,true,true,true,true,true
+access.template.planting.schedule,Access model Template Planting Schedule,template-planting-schedule,Quyền cho model Template Planting Schedule,true,true,true,true,true

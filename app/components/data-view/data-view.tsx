@@ -14,6 +14,8 @@ import { pageSizeOptions } from "@/interfaces/page-size-options";
 import { translate } from "@/utils/translate";
 import { StoreContext } from "../context-provider";
 import KanbanView from "./kanban/kanban";
+import { StoreApi } from "zustand";
+import { StoreApp } from "@/store/store";
 
 const DataView = ({
   titleHeader,
@@ -38,12 +40,19 @@ const DataView = ({
   tableBoder?: boolean;
   filter?: Object;
   sort?: Object;
-  formLayout?: (
-    form: FormInstance<any>,
-    onFinish: (value: any) => void,
-    viewType: string,
-    disabled?: boolean
-  ) => React.ReactNode;
+  formLayout?: ({
+    store,
+    form,
+    onFinish,
+    viewType,
+    disabled,
+  }: {
+    store: StoreApi<StoreApp>;
+    form: FormInstance<any>;
+    onFinish: (value: any) => void;
+    viewType: string;
+    disabled?: boolean;
+  }) => React.ReactNode;
   updateField?: string;
   hideActionCreate?: boolean;
   hideActionUpdate?: boolean;
@@ -527,7 +536,9 @@ const DataView = ({
 
       {(viewType === "create" || viewType === "update") && formLayout !== undefined && (
         <div className="page-content">
-          <FormView formLayout={formLayout(form, onFinishForm, viewType, getDisableForm())} />
+          <FormView
+            formLayout={formLayout({ store, form, onFinish: onFinishForm, viewType, disabled: getDisableForm() })}
+          />
         </div>
       )}
 

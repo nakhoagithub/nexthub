@@ -1,26 +1,36 @@
 "use client";
 import { StoreContext } from "@/app/components/context-provider";
 import DataView from "@/app/components/data-view/data-view";
+import { StoreApp } from "@/store/store";
 import { translate } from "@/utils/translate";
 import { EditOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, FormInstance, Input, Space } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { ColumnsType } from "antd/es/table";
 import React, { useContext } from "react";
+import { StoreApi } from "zustand";
 
 const ViewForm = (
+  store: StoreApi<StoreApp>,
   form: FormInstance<any>,
   onFinish: (value: any) => void,
   viewType: string,
   disabledForm?: boolean
 ) => {
-  const store = useContext(StoreContext);
   return (
     <Form name="form" form={form} layout="vertical" labelWrap style={{ width: 800 }} onFinish={onFinish}>
-      <Form.Item label="ID" name="id" rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}>
+      <Form.Item
+        label="ID"
+        name="id"
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
+      >
         <Input />
       </Form.Item>
-      <Form.Item label="Name" name="name" rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}>
+      <Form.Item
+        label="Name"
+        name="name"
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
+      >
         <Input />
       </Form.Item>
       <Form.Item
@@ -121,7 +131,9 @@ const Page = () => {
       titleHeader="Access Right"
       columnsTable={columns}
       tableBoder={true}
-      formLayout={(form, onFinish, viewType, disableForm) => ViewForm(form, onFinish, viewType, disableForm)}
+      formLayout={({ store, form, onFinish, viewType, disabled }) =>
+        ViewForm(store, form, onFinish, viewType, disabled)
+      }
       updateField="id"
     />
   );

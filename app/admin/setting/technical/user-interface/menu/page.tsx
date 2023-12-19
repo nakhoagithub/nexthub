@@ -1,19 +1,21 @@
 "use client";
 import { StoreContext } from "@/app/components/context-provider";
 import DataView from "@/app/components/data-view/data-view";
+import { StoreApp } from "@/store/store";
 import { translate } from "@/utils/translate";
 import { Checkbox, Form, FormInstance, Input } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { ColumnsType } from "antd/es/table";
 import React, { useContext } from "react";
+import { StoreApi } from "zustand";
 
 const ViewForm = (
+  store: StoreApi<StoreApp>,
   form: FormInstance<any>,
   onFinish: (value: any) => void,
   viewType: string,
   disabledForm?: boolean
 ) => {
-  const store = useContext(StoreContext);
   return (
     <Form name="form" form={form} layout="vertical" style={{ width: 600 }} onFinish={onFinish}>
       <Form.Item
@@ -98,7 +100,7 @@ const Page = () => {
       titleHeader="Menu"
       columnsTable={columns}
       tableBoder={true}
-      formLayout={(form, onFinish, viewType, disableForm) => ViewForm(form, onFinish, viewType, disableForm)}
+      formLayout={({ store,form, onFinish, viewType, disabled}) => ViewForm(store, form, onFinish, viewType, disabled)}
       updateField="id"
     />
   );

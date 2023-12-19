@@ -1,16 +1,23 @@
 "use client";
 import { StoreContext } from "@/app/components/context-provider";
 import DataView from "@/app/components/data-view/data-view";
+import { StoreApp } from "@/store/store";
 import { getItemInArray } from "@/utils/tool";
 import { translate } from "@/utils/translate";
 import { Button, Checkbox, Form, FormInstance, Input, InputNumber, Select } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { ColumnsType } from "antd/es/table";
 import React, { useContext, useState } from "react";
+import { StoreApi } from "zustand";
 const { Option } = Select;
 
-const ViewForm = (form: FormInstance<any>, onFinish: (value: any) => void, viewType: string, dataIds: any) => {
-  const store = useContext(StoreContext);
+const ViewForm = (
+  store: StoreApi<StoreApp>,
+  form: FormInstance<any>,
+  onFinish: (value: any) => void,
+  viewType: string,
+  dataIds: any
+) => {
   return (
     <Form name="form" form={form} layout="vertical" style={{ width: 600 }} onFinish={onFinish}>
       <Form.Item
@@ -30,7 +37,7 @@ const ViewForm = (form: FormInstance<any>, onFinish: (value: any) => void, viewT
             form.setFieldValue("idParent", "");
           }}
         >
-          {dataIds["org"]?.map((e: any) => (
+          {(dataIds?.["org"] ?? [])?.map((e: any) => (
             <Option key={e._id} label={e.name}>
               <span>{e.name}</span>
             </Option>
@@ -61,6 +68,7 @@ const ViewForm = (form: FormInstance<any>, onFinish: (value: any) => void, viewT
 
 const Page = () => {
   const [dataIds, setDataIds] = useState<any>();
+  const store = useContext(StoreContext);
 
   const columns: ColumnsType<any> = [
     {
@@ -128,7 +136,7 @@ const Page = () => {
         titleHeader="Organization"
         columnsTable={columns}
         tableBoder={true}
-        formLayout={(form, onFinish, viewType) => ViewForm(form, onFinish, viewType, dataIds)}
+        formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
         ids={[
           { org: { fields: ["_id", "name"], filter: { active: true } } },
           { user: { fields: ["_id", "name"], filter: { active: true } } },

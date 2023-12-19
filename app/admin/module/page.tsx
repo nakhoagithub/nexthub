@@ -154,7 +154,8 @@ const Page = () => {
         sort={{ name: 1 }}
         renderItemKanban={(value: any, index: number, fetchData?: () => Promise<void>) => (
           <Card
-            style={{}}
+            
+
             actions={[
               <Button
                 type="primary"

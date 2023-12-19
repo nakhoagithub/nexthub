@@ -1,17 +1,17 @@
 "use client";
 import DataView from "@/app/components/data-view/data-view";
-import { Button, Checkbox, Form, FormInstance, Input, Select, Tabs } from "antd";
+import { Button, Checkbox, Form, FormInstance, Input, InputNumber, Select, Space, Tabs } from "antd";
 const { Option } = Select;
 import { ColumnsType } from "antd/es/table";
 import React, { useContext, useState } from "react";
-import ModalChangePassword from "./components/modal-change-password";
 import One2ManyView from "@/app/components/data-view/o2m-view/o2m-view";
 import { userStates } from "@/utils/config";
-import { getItemInArray } from "@/utils/tool";
 import { translate } from "@/utils/translate";
 import { StoreContext } from "@/app/components/context-provider";
+import TextArea from "antd/es/input/TextArea";
 import { StoreApi } from "zustand";
 import { StoreApp } from "@/store/store";
+import { getItemInArray } from "@/utils/tool";
 
 const ViewForm = (
   store: StoreApi<StoreApp>,
@@ -41,74 +41,50 @@ const ViewForm = (
 
   return (
     <Form name="form" form={form} layout="vertical" style={{ width: 600 }} onFinish={onFinish}>
-      <Form.Item label="Name" name="name">
+      <Form.Item
+        label="Name"
+        name="name"
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
+      >
         <Input />
       </Form.Item>
-      <Form.Item
-        label="Username"
-        name="username"
-        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
-      >
-        <Input disabled={viewType === "update"} />
-      </Form.Item>
-      <Form.Item
-        label="Password"
-        name="password"
-        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
-      >
-        <Input.Password disabled={viewType === "update"} />
-      </Form.Item>
 
       <Form.Item
-        label="State"
-        name="state"
+        label="Breed"
+        name="idBreed"
         rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
-        initialValue={"user"}
       >
-        <Select>
-          {...userStates.map((e) => (
-            <Option key={e.key}>
+        <Select
+          allowClear
+          onClear={() => {
+            form.setFieldValue("idBreed", "");
+          }}
+        >
+          {(dataIds?.["breed"] ?? []).map((e: any) => (
+            <Option key={e._id} label={e.name}>
               <span>{e.name}</span>
             </Option>
           ))}
         </Select>
       </Form.Item>
 
-      <Form.Item label="Locale Code" name="localeCode">
-        <Select>
-          {...(dataIds?.["language"] ?? []).map((e: any) => (
-            <Option key={e.localeCode}>
-              <span>{e.name}</span>
-            </Option>
-          ))}
-        </Select>
+      <Space>
+        <Form.Item label={translate({ store, source: "Number of days incurred" })} name="numOfDaysIncurred">
+          <InputNumber min={0} />
+        </Form.Item>
+
+        <Form.Item label={translate({ store, source: "Average Yield" })} name="averageYield">
+          <InputNumber min={0} />
+        </Form.Item>
+      </Space>
+
+      <Form.Item label={translate({ store, source: "Description" })} name="description">
+        <TextArea />
       </Form.Item>
 
       <Form.Item label="Active" name="active" valuePropName="checked" initialValue={true}>
         <Checkbox defaultChecked={true}>Active</Checkbox>
       </Form.Item>
-
-      <Tabs
-        type="card"
-        items={[
-          {
-            forceRender: true,
-            label: "Org",
-            key: "org",
-            children: (
-              <One2ManyView
-                showAdd
-                idsField="idsOrg"
-                titleModel="Org"
-                model="user"
-                toModel="org"
-                columnsTable={columnsOrg}
-                form={form}
-              />
-            ),
-          },
-        ]}
-      />
     </Form>
   );
 };
@@ -117,34 +93,38 @@ const Page = () => {
   const [openModalChangePassword, setOpenModalChangePassword] = useState(false);
   const [idUser, setIdUser] = useState<string>();
   const [dataIds, setDataIds] = useState<any>();
-  const store = useContext(StoreContext);
 
   const columns: ColumnsType<any> = [
     {
       title: "Name",
       dataIndex: "name",
-      width: 160,
+      width: 200,
     },
     {
-      title: "Username",
-      dataIndex: "username",
-      width: 160,
+      title: "Number of day incurred",
+      dataIndex: "numOfDaysIncurred",
+      width: 100,
+    },
+    {
+      title: "Average Yield",
+      dataIndex: "averageYield",
+      width: 100,
+    },
+    {
+      title: "Breed",
+      width: 300,
+      render: (value, record, index) => {
+        return (
+          <div>{(record.idBreed && getItemInArray(dataIds?.["breed"] ?? [], record.idBreed, "_id")?.name) ?? ""}</div>
+        );
+      },
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      width: 500,
     },
     { title: "", key: "none" },
-    {
-      title: "Locale Code",
-      width: 200,
-      render: (value, record, index) => {
-        return <div>{getItemInArray(dataIds?.["language"] ?? [], record.localeCode, "localeCode")?.name ?? ""}</div>;
-      },
-    },
-    {
-      title: "State",
-      width: 200,
-      render: (value, record, index) => {
-        return <div>{getItemInArray(userStates, record.state, "key").name}</div>;
-      },
-    },
     {
       title: "Active",
       width: 100,
@@ -157,37 +137,21 @@ const Page = () => {
 
   return (
     <div>
-      <ModalChangePassword open={openModalChangePassword} setOpen={setOpenModalChangePassword} id={idUser} />
       <DataView
-        model="user"
-        titleHeader="User"
+        model="template-planting-schedule"
+        titleHeader="Template Planting Schedule"
         columnsTable={columns}
         tableBoder={true}
         formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
-        updateField="username"
         ids={[
           {
-            language: {
-              fields: ["localeCode", "name"],
+            breed: {
+              fields: ["_id", "name"],
               filter: { active: true },
             },
           },
         ]}
         dataIdsCallback={(value) => setDataIds(value)}
-        actions={(keys?: any[]) => [
-          <div>
-            {keys?.length === 1 && (
-              <Button
-                onClick={() => {
-                  setOpenModalChangePassword(true);
-                  setIdUser(keys[0]);
-                }}
-              >
-                Change Password
-              </Button>
-            )}
-          </div>,
-        ]}
       />
     </div>
   );

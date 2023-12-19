@@ -1,20 +1,22 @@
 "use client";
 import { StoreContext } from "@/app/components/context-provider";
 import DataView from "@/app/components/data-view/data-view";
+import { StoreApp } from "@/store/store";
 import { translate } from "@/utils/translate";
 import { Checkbox, Form, FormInstance, Input, Select } from "antd";
 const { Option } = Select;
 import { ColumnsType } from "antd/es/table";
 import React, { useContext, useState } from "react";
+import { StoreApi } from "zustand";
 
 const ViewForm = (
+  store: StoreApi<StoreApp>,
   form: FormInstance<any>,
   onFinish: (value: any) => void,
   viewType: string,
   disabledForm?: boolean,
   dataIds?: any
 ) => {
-  const store = useContext(StoreContext);
   return (
     <Form name="form" form={form} layout="vertical" labelWrap style={{ width: 800 }} onFinish={onFinish}>
       {/* <Form.Item label="ID" name="id">
@@ -110,7 +112,9 @@ const Page = () => {
       titleHeader="Translated Term"
       columnsTable={columns}
       tableBoder={true}
-      formLayout={(form, onFinish, viewType, disableForm) => ViewForm(form, onFinish, viewType, disableForm, dataIds)}
+      formLayout={({ store, form, onFinish, viewType, disabled }) =>
+        ViewForm(store, form, onFinish, viewType, disabled, dataIds)
+      }
       ids={[{ language: { fields: ["_id", "name", "localeCode"], filter: { active: true } } }]}
       dataIdsCallback={(value: any) => setDataIds(value)}
     />

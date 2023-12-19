@@ -1,25 +1,35 @@
 "use client";
 import { StoreContext } from "@/app/components/context-provider";
 import DataView from "@/app/components/data-view/data-view";
+import { StoreApp } from "@/store/store";
 import { translate } from "@/utils/translate";
 import { Checkbox, Form, FormInstance, Input, Select } from "antd";
 const { Option } = Select;
 import { ColumnsType } from "antd/es/table";
 import React, { useContext } from "react";
+import { StoreApi } from "zustand";
 
 const ViewForm = (
+  store: StoreApi<StoreApp>,
   form: FormInstance<any>,
   onFinish: (value: any) => void,
   viewType: string,
   disabledForm?: boolean
 ) => {
-  const store = useContext(StoreContext);
   return (
     <Form name="form" form={form} layout="vertical" labelWrap style={{ width: 800 }} onFinish={onFinish}>
-      <Form.Item label="ID" name="id" rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}>
+      <Form.Item
+        label="ID"
+        name="id"
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
+      >
         <Input />
       </Form.Item>
-      <Form.Item label="Name" name="name" rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}>
+      <Form.Item
+        label="Name"
+        name="name"
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
+      >
         <Input />
       </Form.Item>
       <Form.Item
@@ -127,30 +137,6 @@ const Page = () => {
       width: 120,
     },
     { title: "", key: "none" },
-    {
-      title: "Timestamp",
-      width: 100,
-      align: "center",
-      render: (value: any, record: any, index: number) => {
-        return <Checkbox checked={record.timestamp} />;
-      },
-    },
-    {
-      title: "Version Key",
-      width: 100,
-      align: "center",
-      render: (value: any, record: any, index: number) => {
-        return <Checkbox checked={record.versionKey} />;
-      },
-    },
-    {
-      title: "Install",
-      width: 100,
-      align: "center",
-      render: (value: any, record: any, index: number) => {
-        return <Checkbox checked={record.install} />;
-      },
-    },
   ];
 
   return (
@@ -158,7 +144,7 @@ const Page = () => {
       model="schema"
       columnsTable={columns}
       tableBoder={true}
-      formLayout={(form, onFinish, viewType, disableForm) => ViewForm(form, onFinish, viewType, disableForm)}
+      formLayout={({ store,form, onFinish, viewType, disabled}) => ViewForm(store, form, onFinish, viewType, disabled)}
       hideActionUpdate
       hideActionCreate
       titleHeader="Schema"

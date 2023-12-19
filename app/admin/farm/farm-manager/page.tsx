@@ -84,7 +84,6 @@ const ViewForm = (
 };
 
 const Page = () => {
-  const store = useContext(StoreContext);
   const [openModalChangePassword, setOpenModalChangePassword] = useState(false);
   const [idUser, setIdUser] = useState<string>();
   const [dataIds, setDataIds] = useState<any>();
@@ -123,7 +122,7 @@ const Page = () => {
         titleHeader="Farm"
         columnsTable={columns}
         tableBoder={true}
-        formLayout={(form, onFinish, viewType) => ViewForm(store, form, onFinish, viewType, dataIds)}
+        formLayout={({store, form, onFinish, viewType}) => ViewForm(store, form, onFinish, viewType, dataIds)}
         ids={[
           {
             org: {

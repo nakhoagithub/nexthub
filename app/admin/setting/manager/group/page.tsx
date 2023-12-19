@@ -3,20 +3,21 @@ import { StoreContext } from "@/app/components/context-provider";
 import DataView from "@/app/components/data-view/data-view";
 import One2ManyView from "@/app/components/data-view/o2m-view/o2m-view";
 import { AccessRightModel } from "@/interfaces/access-right-model";
+import { StoreApp } from "@/store/store";
 import { translate } from "@/utils/translate";
 import { Checkbox, Form, FormInstance, Input, Tabs } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { ColumnsType } from "antd/es/table";
 import React, { useContext } from "react";
+import { StoreApi } from "zustand";
 
 const ViewForm = (
+  store: StoreApi<StoreApp>,
   form: FormInstance<any>,
   onFinish: (value: any) => void,
   viewType: string,
   disabledForm?: boolean
 ) => {
-  const store = useContext(StoreContext);
-
   const columnsUser: ColumnsType<any> = [
     {
       title: "Username",
@@ -318,7 +319,7 @@ const Page = () => {
       titleHeader="Group"
       columnsTable={columns}
       tableBoder={true}
-      formLayout={(form, onFinish, viewType, disabledForm) => ViewForm(form, onFinish, viewType, disabledForm)}
+      formLayout={({ store, form, onFinish, viewType, disabled }) => ViewForm(store, form, onFinish, viewType, disabled)}
       updateField="id"
     />
   );

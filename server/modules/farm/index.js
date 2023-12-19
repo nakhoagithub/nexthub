@@ -3,18 +3,29 @@ import { Area } from "./model/area.js";
 import { BreedCategory } from "./model/breed-category.js";
 import { Breed } from "./model/breed.js";
 import { Farm } from "./model/farm.js";
+import { TemplatePlantingSchedulePeriod } from "./model/template-planting-schedule-period.js";
+import { TemplatePlantingSchedule } from "./model/template-planting-schedule.js";
 
 Farm();
 Area();
 Breed();
 BreedCategory();
+TemplatePlantingSchedule();
+TemplatePlantingSchedulePeriod();
 
 await createModule("farm", {
   id: "farm",
   name: "Farm",
   description: "Module quản lý nông trại",
   folderName: "farm",
-  models: ["farm", "area", "breed-category", "breed"],
+  models: [
+    "farm",
+    "area",
+    "breed-category",
+    "breed",
+    "template-planting-schedule",
+    "template-planting-schedule-period",
+  ],
   state: "normal",
   install: false,
   datas: [

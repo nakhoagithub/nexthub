@@ -5,3 +5,4 @@ farm.area,Quản lý nhà màng,,/admin/farm/area-manager,farm,false,2,normal,tr
 farm.breed,Quản lý giống,,,farm,true,3,normal,true
 farm.breed.breed_category,Loại giống,,/admin/farm/breed/breed-category,farm.breed,false,1,normal,true
 farm.breed.breed_manager,Giống,,/admin/farm/breed/breed,farm.breed,false,2,normal,true
+farm.template.planting.schedule,Lịch gieo trồng mẫu,,/admin/farm/template-planting-schedule,farm,false,4,normal,true
