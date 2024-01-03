@@ -11,12 +11,13 @@ import { StoreContext } from "@/app/components/context-provider";
 import TextArea from "antd/es/input/TextArea";
 import { StoreApi } from "zustand";
 import { StoreApp } from "@/store/store";
+import TableView from "@/app/components/data-view/table-view/table-view";
 
 const ViewForm = (
   store: StoreApi<StoreApp>,
   form: FormInstance<any>,
   onFinish: (value: any) => void,
-  viewType: string,
+  viewType: string | null,
   dataIds: any
 ) => {
   const columnsOrg: ColumnsType<any> = [
@@ -39,7 +40,7 @@ const ViewForm = (
   ];
 
   return (
-    <Form name="form" form={form} layout="vertical" style={{ width: 600 }} onFinish={onFinish}>
+    <Form name="form" form={form} layout="vertical" onFinish={onFinish}>
       <Form.Item
         label="ID"
         name="id"
@@ -84,6 +85,7 @@ const ViewForm = (
 };
 
 const Page = () => {
+  const store = useContext(StoreContext);
   const [openModalChangePassword, setOpenModalChangePassword] = useState(false);
   const [idUser, setIdUser] = useState<string>();
   const [dataIds, setDataIds] = useState<any>();
@@ -115,14 +117,48 @@ const Page = () => {
     },
   ];
 
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
   return (
-    <div>
-      <DataView
+    <div className="page-content">
+      <TableView
+        model={"farm"}
+        // columnsView={[
+        //   { field: "name", title: "Name" },
+        //   { field: "state", title: "State" },
+        //   { field: "idsOrg", title: "Orgs" },
+        //   { field: "active", title: "Active" },
+        // ]}
+        columnsView={[
+          { field: "id", title: translate({ store, source: "ID" }), width: 160 },
+          { field: "name", title: translate({ store, source: "Name" }), width: 200 },
+          { field: "address", title: translate({ store, source: "Address" }), width: 300 },
+          { field: "ipPublic", title: translate({ store, source: "IP Public" }), width: 200 },
+          { field: "ipPrivate", title: translate({ store, source: "IP Private" }), width: 200 },
+          { field: "port", title: translate({ store, source: "Port" }), width: 100 },
+          { field: "username", title: translate({ store, source: "Username" }), width: 200 },
+          { field: "password", title: translate({ store, source: "Password" }), width: 200 },
+          { field: "database", title: translate({ store, source: "Database" }), width: 200 },
+          {
+            field: "active",
+            title: translate({ store, source: "Active" }),
+            width: 100,
+            renderItem(item, index) {
+              return <Checkbox checked={item.active} />;
+            },
+          },
+        ]}
+        formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
+        selectedRowKeys={selectedRowKeys}
+        setSelectedRowKeys={setSelectedRowKeys}
+        updateField="id"
+      />
+      {/* <DataView
         model="farm"
         titleHeader="Farm"
         columnsTable={columns}
         tableBoder={true}
-        formLayout={({store, form, onFinish, viewType}) => ViewForm(store, form, onFinish, viewType, dataIds)}
+        formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
         ids={[
           {
             org: {
@@ -135,7 +171,7 @@ const Page = () => {
         actions={(keys?: any[]) => [
           <div>{keys?.length === 1 && <Button onClick={() => {}}>Update to Server IoT</Button>}</div>,
         ]}
-      />
+      /> */}
     </div>
   );
 };

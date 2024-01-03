@@ -2,7 +2,7 @@ import { AccessRightModel } from "@/interfaces/access-right-model";
 import { pageSizeOptions } from "@/interfaces/page-size-options";
 import app from "@/utils/axios";
 import { DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined, SettingOutlined } from "@ant-design/icons";
-import { App, Button, Checkbox, Space, Table, TablePaginationConfig, Tag } from "antd";
+import { App, Button, Checkbox, Form, FormInstance, Space, Table, TablePaginationConfig, Tag } from "antd";
 import { SizeType } from "antd/es/config-provider/SizeContext";
 import { ColumnType, ColumnsType, FilterValue, SorterResult, TableRowSelection } from "antd/es/table/interface";
 import React, { useContext, useEffect, useState } from "react";
@@ -12,6 +12,9 @@ import { translate } from "@/utils/translate";
 import { getParamFilter } from "@/utils/tool";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Column from "antd/es/table/Column";
+import ModalCustom from "./modal-custom";
+import { StoreApp } from "@/store/store";
+import { StoreApi } from "zustand";
 
 const TableView = ({
   model,
@@ -26,7 +29,10 @@ const TableView = ({
   setSelectedRowKeys,
   sort,
   filter,
+  pageSize,
   hideActionUpdate,
+  formLayout,
+  updateField,
 }: {
   model: string;
   bordered?: boolean;
@@ -40,7 +46,22 @@ const TableView = ({
   setSelectedRowKeys: (value: React.Key[]) => void;
   sort?: any;
   filter?: any;
+  pageSize?: number;
   hideActionUpdate?: boolean;
+  formLayout?: ({
+    store,
+    form,
+    viewType,
+    onFinish,
+    disabled,
+  }: {
+    store: StoreApi<StoreApp>;
+    form: FormInstance<any>;
+    viewType: string | null;
+    onFinish: (value: any) => void;
+    disabled?: boolean;
+  }) => React.ReactNode;
+  updateField?: string;
 }) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -53,14 +74,16 @@ const TableView = ({
   const [columnsModel, setColumnsModel] = useState<ColumnModel[]>([]);
   const [columns, setColumns] = useState<any[]>([]);
   const [loadingReload, setLoadingButtonReload] = useState(false);
+  const [openModalCustom, setOpenModalCustom] = useState(false);
   const [datas, setDatas] = useState<any[]>([]);
   const store = useContext(StoreContext);
   const { setLanguageData } = store.getState();
+  const [form] = Form.useForm();
 
   const [tableParams, setTableParams] = useState<any>({
     pagination: {
       current: 1,
-      pageSize: 10,
+      pageSize: pageSize ?? 10,
       pageSizeOptions: pageSizeOptions,
     },
   });
@@ -144,9 +167,9 @@ const TableView = ({
     for await (var columnData of columnsView ?? columnsModel) {
       let columnModel = columnsModel.find((e) => e.field === columnData.field);
       let newColumn: ColumnType<any> = {
-        title: translate({ store, source: columnData.title ?? columnData.field }),
+        title: translate({ store, modelName: model, source: columnData.title ?? columnData.field }),
         key: columnData.field,
-        width: columnData.width,
+        width: columnData.width ?? 200,
         align: columnData.align,
         render: !columnData?.renderItem
           ? undefined
@@ -199,7 +222,8 @@ const TableView = ({
                 size="small"
                 icon={<EditOutlined />}
                 onClick={() => {
-                  setQueryParams({ viewType: "update", viewId: record._id });
+                  setQueryParams({ drawerCustomType: "update", viewId: record._id });
+                  setOpenModalCustom(true);
                 }}
               />
             </Space>
@@ -276,7 +300,58 @@ const TableView = ({
     setLoadingButtonReload(false);
   }
 
-  async function onCreate() {}
+  async function onCreate() {
+    setQueryParams({ drawerCustomType: "create" });
+    setOpenModalCustom(true);
+  }
+
+  async function onDelete() {
+    try {
+      let newIds: string[] = [];
+      newIds = selectedRowKeys.map((e) => e.toString());
+      if (viewType === "update" && viewId) {
+        newIds = [viewId];
+      }
+
+      useApp.modal.confirm({
+        title: translate({ store: store, source: "Comfirm" }),
+        content: translate({ store: store, source: "Delete selected data" }),
+        okText: translate({ store: store, source: "Yes" }),
+        cancelText: translate({ store: store, source: "Cancel" }),
+        onOk: async () => {
+          const {
+            data: { code, message, statusError },
+          } = await app.delete(`/api/model/${model}/delete`, { data: { fieldId: "_id", datas: newIds } });
+
+          if (code === 200) {
+            useApp.message.success(translate({ store: store, source: "Deleted" }));
+            getDatas();
+            setSelectedRowKeys([]);
+          } else {
+            if (message) {
+              if (statusError === "warning") {
+                useApp.message.warning(message ?? "");
+              } else {
+                useApp.message.error(message ?? "");
+              }
+            }
+          }
+        },
+      });
+    } catch (error) {
+      useApp.notification.error({ message: "Internal Server Error" });
+    }
+  }
+
+  const getDisableForm = () => {
+    if (viewType === "update") {
+      return !accessRightModel?.update ?? false;
+    }
+    if (viewType === "create") {
+      return !accessRightModel?.create ?? false;
+    }
+    return true;
+  };
 
   useEffect(() => {
     fetchData();
@@ -302,10 +377,8 @@ const TableView = ({
               </Button>
             )}
 
-            {accessRightModel?.update && selectedRowKeys.length == 1 && <Button onClick={onCreate}>Update</Button>}
-
             {accessRightModel?.delete && selectedRowKeys.length > 0 && (
-              <Button icon={<DeleteOutlined />} onClick={onCreate} danger>
+              <Button icon={<DeleteOutlined />} onClick={onDelete} danger>
                 Delete
               </Button>
             )}
@@ -328,8 +401,22 @@ const TableView = ({
         columns={columns}
         dataSource={datas}
         loading={loadingReload || loading}
-        pagination={{ ...tableParams.pagination, position: ["topRight"] }}
+        pagination={{ ...tableParams.pagination, position: ["topLeft"] }}
         onChange={(pargination, filters, sorter) => handleTableChange(pargination, filters, sorter)}
+      />
+
+      <ModalCustom
+        open={openModalCustom}
+        setOpen={setOpenModalCustom}
+        formLayout={(onFinish) =>
+          formLayout && formLayout({ store, form, viewType, onFinish, disabled: getDisableForm() })
+        }
+        columnsModal={columnsModel}
+        store={store}
+        model={model}
+        fetchData={getDatas}
+        updateField={updateField}
+        form={form}
       />
     </div>
   );

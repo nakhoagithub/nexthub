@@ -12,7 +12,7 @@ import TextArea from "antd/es/input/TextArea";
 import { StoreApi } from "zustand";
 import { StoreApp } from "@/store/store";
 import { getItemInArray } from "@/utils/tool";
-import TableView from "@/app/components/data-view/data-view/table-view";
+import TableView from "@/app/components/data-view/table-view/table-view";
 
 const ViewFormAddPeriodInLine = () => {
   return <Form></Form>;
@@ -22,7 +22,7 @@ const ViewForm = (
   store: StoreApi<StoreApp>,
   form: FormInstance<any>,
   onFinish: (value: any) => void,
-  viewType: string,
+  viewType: string | null,
   dataIds: any
 ) => {
   const columnsPeriod: ColumnsType<any> = [
@@ -178,6 +178,7 @@ const Page = () => {
         //   { field: "idsOrg", title: "Orgs" },
         //   { field: "active", title: "Active" },
         // ]}
+        formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
         selectedRowKeys={selectedRowKeys}
         setSelectedRowKeys={setSelectedRowKeys}
       />
