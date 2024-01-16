@@ -37,11 +37,17 @@ await createModule("farm", {
       noUpdate: false,
     },
     {
+      primaryKey: "id",
       model: "menu",
       folder: "farm",
       file: "base.menu.csv",
-      primaryKey: "id",
       noUpdate: false,
+    },
+    {
+      primaryKey: "sourceTerm",
+      model: "translate-term",
+      folder: "farm",
+      file: "base.translate.term.csv",
     },
   ],
 });

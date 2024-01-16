@@ -29,7 +29,6 @@ const ViewForm = (
         rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
         <Select
-          mode="multiple"
           allowClear
           onClear={() => {
             form.setFieldValue("idOrg", null);
@@ -43,8 +42,8 @@ const ViewForm = (
         </Select>
       </Form.Item>
       <Form.Item
-        label="ID"
-        name="id"
+        label="Code"
+        name="code"
         rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
         <Input />
@@ -96,9 +95,26 @@ const Page = () => {
 
   const columns: ColumnsType<any> = [
     {
-      title: "ID",
-      dataIndex: "id",
+      title: "Code",
+      dataIndex: "code",
       width: 100,
+    },
+    {
+      key: "idOrg",
+      title: "Tổ chức",
+      width: 200,
+      render: (value, record, index) => {
+        let org = record.idOrg && getItemInArray(dataIds?.["org"] ?? [], record.idOrg);
+        return <div>{org && org.shortName}</div>;
+      },
+      filters: [
+        ...(dataIds?.["org"] ?? []).map((e: any) => {
+          return {
+            text: e.shortName,
+            value: e._id,
+          };
+        }),
+      ],
     },
     {
       title: "Name",
@@ -146,6 +162,7 @@ const Page = () => {
           formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
           selectedRowKeys={selectedRowKeys}
           setSelectedRowKeys={setSelectedRowKeys}
+          filter={{ idOrg: { $in: user?.idsCurrentOrg ?? [] } }}
           ids={[
             {
               "breed-category": {
@@ -155,7 +172,7 @@ const Page = () => {
             },
             {
               org: {
-                fields: ["_id", "name"],
+                fields: ["_id", "name", "shortName"],
                 filter: { _id: { $in: user?.idsOrg ?? [] } },
               },
             },

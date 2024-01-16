@@ -13,6 +13,7 @@ import { StoreApi } from "zustand";
 import { StoreApp } from "@/store/store";
 import { getItemInArray } from "@/utils/tool";
 import TableView from "@/app/components/data-view/table-view/table-view";
+import PageHeader from "@/app/components/body/page-header";
 
 const ViewFormAddPeriodInLine = () => {
   return <Form></Form>;
@@ -71,7 +72,7 @@ const ViewForm = (
         >
           {(dataIds?.["breed"] ?? []).map((e: any) => (
             <Option key={e._id} label={e.name}>
-              <span>{e.name}</span>
+              <span>{`${e.id} - ${e.name}`}</span>
             </Option>
           ))}
         </Select>
@@ -121,8 +122,8 @@ const ViewForm = (
 };
 
 const Page = () => {
-  const [openModalChangePassword, setOpenModalChangePassword] = useState(false);
-  const [idUser, setIdUser] = useState<string>();
+  const store = useContext(StoreContext);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [dataIds, setDataIds] = useState<any>();
 
   const columns: ColumnsType<any> = [
@@ -145,9 +146,8 @@ const Page = () => {
       title: "Breed",
       width: 300,
       render: (value, record, index) => {
-        return (
-          <div>{(record.idBreed && getItemInArray(dataIds?.["breed"] ?? [], record.idBreed, "_id")?.name) ?? ""}</div>
-        );
+        let breed = record.idBreed && getItemInArray(dataIds?.["breed"] ?? [], record.idBreed, "_id");
+        return <div>{breed && `${breed?.id} = ${breed?.name}`}</div>;
       },
     },
     {
@@ -166,38 +166,27 @@ const Page = () => {
     },
   ];
 
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-
   return (
-    <div className="page-content">
-      <TableView
-        model={"menu"}
-        // columnsView={[
-        //   { field: "name", title: "Name" },
-        //   { field: "state", title: "State" },
-        //   { field: "idsOrg", title: "Orgs" },
-        //   { field: "active", title: "Active" },
-        // ]}
-        formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
-        selectedRowKeys={selectedRowKeys}
-        setSelectedRowKeys={setSelectedRowKeys}
-      />
-      {/* <DataView
-        model="template-planting-schedule"
-        titleHeader="Template Planting Schedule"
-        columnsTable={columns}
-        tableBoder={true}
-        formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
-        ids={[
-          {
-            breed: {
-              fields: ["_id", "name"],
-              filter: { active: true },
+    <div>
+      <PageHeader title={translate({ store, source: "Template planting schedule" })} />
+      <div className="page-content">
+        <TableView
+          model={"template-planting-schedule"}
+          columnsTable={columns}
+          formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
+          selectedRowKeys={selectedRowKeys}
+          setSelectedRowKeys={setSelectedRowKeys}
+          ids={[
+            {
+              breed: {
+                fields: ["_id", "name", "id"],
+                filter: { active: true },
+              },
             },
-          },
-        ]}
-        dataIdsCallback={(value) => setDataIds(value)}
-      /> */}
+          ]}
+          dataIdsCallback={(value) => setDataIds(value)}
+        />
+      </div>
     </div>
   );
 };

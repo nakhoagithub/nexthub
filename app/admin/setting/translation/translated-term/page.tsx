@@ -57,10 +57,6 @@ const ViewForm = (
         </Select>
       </Form.Item>
 
-      <Form.Item label="Model Name" name="modelName">
-        <Input />
-      </Form.Item>
-
       <Form.Item label="Active" name="active" valuePropName="checked" initialValue={true}>
         <Checkbox defaultChecked={true}>Active</Checkbox>
       </Form.Item>
@@ -93,11 +89,6 @@ const Page = () => {
       dataIndex: "localeCode",
       width: 100,
     },
-    {
-      title: "Model Name",
-      dataIndex: "modelName",
-      width: 200,
-    },
     { title: "", key: "none" },
     {
       title: "Active",
@@ -121,6 +112,7 @@ const Page = () => {
           setSelectedRowKeys={setSelectedRowKeys}
           ids={[{ language: { fields: ["_id", "name", "localeCode"], filter: { active: true } } }]}
           dataIdsCallback={(value: any) => setDataIds(value)}
+          pageSize={20}
         />
       </div>
     </div>
