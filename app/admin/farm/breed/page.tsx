@@ -10,35 +10,18 @@ import TextArea from "antd/es/input/TextArea";
 import { StoreApi } from "zustand";
 import { StoreApp } from "@/store/store";
 import { getItemInArray } from "@/utils/tool";
+import TableView from "@/app/components/data-view/table-view/table-view";
+import PageHeader from "@/app/components/body/page-header";
 
 const ViewForm = (
   store: StoreApi<StoreApp>,
   form: FormInstance<any>,
   onFinish: (value: any) => void,
-  viewType: string,
+  viewType: string | null,
   dataIds: any
 ) => {
-  const columnsOrg: ColumnsType<any> = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      width: 200,
-      key: "name",
-    },
-    {
-      title: "Short name",
-      dataIndex: "shortName",
-      width: 160,
-      key: "name",
-    },
-    {
-      title: "",
-      key: "none",
-    },
-  ];
-
   return (
-    <Form name="form" form={form} layout="vertical" style={{ width: 600 }} onFinish={onFinish}>
+    <Form name="form" form={form} layout="vertical" onFinish={onFinish}>
       <Form.Item
         label="ID"
         name="id"
@@ -77,10 +60,6 @@ const ViewForm = (
         <TextArea />
       </Form.Item>
 
-      <Form.Item label="Sort Index" name="sortIndex" initialValue={1}>
-        <InputNumber min={1} value={1} />
-      </Form.Item>
-
       <Form.Item label="Active" name="active" valuePropName="checked" initialValue={true}>
         <Checkbox defaultChecked={true}>Active</Checkbox>
       </Form.Item>
@@ -89,6 +68,7 @@ const ViewForm = (
 };
 
 const Page = () => {
+  const store = useContext(StoreContext);
   const [openModalChangePassword, setOpenModalChangePassword] = useState(false);
   const [idUser, setIdUser] = useState<string>();
   const [dataIds, setDataIds] = useState<any>();
@@ -133,24 +113,30 @@ const Page = () => {
     },
   ];
 
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
   return (
     <div>
-      <DataView
-        model="breed"
-        titleHeader="Breed"
-        columnsTable={columns}
-        tableBoder={true}
-        formLayout={({store, form, onFinish, viewType}) => ViewForm(store, form, onFinish, viewType, dataIds)}
-        ids={[
-          {
-            "breed-category": {
-              fields: ["_id", "name"],
-              filter: { active: true },
+      <PageHeader title={translate({ store, source: "Breed" })} />
+      <div className="page-content">
+        <TableView
+          model={"breed"}
+          columnsTable={columns}
+          formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
+          selectedRowKeys={selectedRowKeys}
+          setSelectedRowKeys={setSelectedRowKeys}
+          ids={[
+            {
+              "breed-category": {
+                fields: ["_id", "name"],
+                filter: { active: true },
+              },
             },
-          },
-        ]}
-        dataIdsCallback={(value) => setDataIds(value)}
-      />
+          ]}
+          dataIdsCallback={(value) => setDataIds(value)}
+        />
+        /
+      </div>
     </div>
   );
 };

@@ -17,9 +17,12 @@ export const translate = ({
 
   let newDataTranslate = source;
 
-  let translateData = languageData.find((e) => e.sourceTerm === source);
-  if (translateData) {
-    newDataTranslate = translateData.translationValue;
+  let translatedData = languageData.find((e) => {
+    return e.sourceTerm == source;
+  });
+
+  if (translatedData) {
+    newDataTranslate = translatedData.translationValue;
   }
 
   return newDataTranslate;

@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "next-dev": "next dev",
-    "next-build": "next build",
-    "next-start": "next start",
+    "dev-next": "next dev",
     "dev": "nodemon ./server/server.js",
+    "build-next": "next build",
+    "start-next": "next start",
     "start": "cross-env NODE_ENV=production node ./server/server.js",
-    "server": "npm run next-build & npm run start"
+    "server": "npm run build-next & npm run start"
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.6",

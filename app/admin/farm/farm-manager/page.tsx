@@ -12,6 +12,7 @@ import TextArea from "antd/es/input/TextArea";
 import { StoreApi } from "zustand";
 import { StoreApp } from "@/store/store";
 import TableView from "@/app/components/data-view/table-view/table-view";
+import PageHeader from "@/app/components/body/page-header";
 
 const ViewForm = (
   store: StoreApi<StoreApp>,
@@ -86,92 +87,39 @@ const ViewForm = (
 
 const Page = () => {
   const store = useContext(StoreContext);
-  const [openModalChangePassword, setOpenModalChangePassword] = useState(false);
-  const [idUser, setIdUser] = useState<string>();
   const [dataIds, setDataIds] = useState<any>();
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
   const columns: ColumnsType<any> = [
-    {
-      title: "ID",
-      dataIndex: "id",
-      width: 100,
-    },
-    {
-      title: "Name",
-      dataIndex: "name",
-      width: 160,
-    },
-    {
-      title: "Address",
-      dataIndex: "address",
-      width: 200,
-    },
+    { title: translate({ store, source: "ID" }), width: 100, dataIndex: "id" },
+    { title: translate({ store, source: "Name" }), width: 200, dataIndex: "name" },
+    { title: translate({ store, source: "Address" }), width: 300, dataIndex: "address" },
+    { title: translate({ store, source: "IP Public" }), width: 200, dataIndex: "ipPublic" },
+    { title: translate({ store, source: "IP Private" }), width: 200, dataIndex: "ipPrivate" },
+    { title: translate({ store, source: "Port" }), width: 100, dataIndex: "port" },
     { title: "", key: "none" },
     {
-      title: "Active",
+      title: translate({ store, source: "Active" }),
       width: 100,
-      align: "center",
-      render: (value, record, index) => {
-        return <Checkbox checked={record.active} />;
+      render(item, index) {
+        return <Checkbox checked={item.active} />;
       },
     },
   ];
 
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-
   return (
-    <div className="page-content">
-      <TableView
-        model={"farm"}
-        // columnsView={[
-        //   { field: "name", title: "Name" },
-        //   { field: "state", title: "State" },
-        //   { field: "idsOrg", title: "Orgs" },
-        //   { field: "active", title: "Active" },
-        // ]}
-        columnsView={[
-          { field: "id", title: translate({ store, source: "ID" }), width: 160 },
-          { field: "name", title: translate({ store, source: "Name" }), width: 200 },
-          { field: "address", title: translate({ store, source: "Address" }), width: 300 },
-          { field: "ipPublic", title: translate({ store, source: "IP Public" }), width: 200 },
-          { field: "ipPrivate", title: translate({ store, source: "IP Private" }), width: 200 },
-          { field: "port", title: translate({ store, source: "Port" }), width: 100 },
-          { field: "username", title: translate({ store, source: "Username" }), width: 200 },
-          { field: "password", title: translate({ store, source: "Password" }), width: 200 },
-          { field: "database", title: translate({ store, source: "Database" }), width: 200 },
-          {
-            field: "active",
-            title: translate({ store, source: "Active" }),
-            width: 100,
-            renderItem(item, index) {
-              return <Checkbox checked={item.active} />;
-            },
-          },
-        ]}
-        formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
-        selectedRowKeys={selectedRowKeys}
-        setSelectedRowKeys={setSelectedRowKeys}
-        updateField="id"
-      />
-      {/* <DataView
-        model="farm"
-        titleHeader="Farm"
-        columnsTable={columns}
-        tableBoder={true}
-        formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
-        ids={[
-          {
-            org: {
-              fields: ["_id", "name"],
-              filter: { active: true },
-            },
-          },
-        ]}
-        dataIdsCallback={(value) => setDataIds(value)}
-        actions={(keys?: any[]) => [
-          <div>{keys?.length === 1 && <Button onClick={() => {}}>Update to Server IoT</Button>}</div>,
-        ]}
-      /> */}
+    <div>
+      <PageHeader title={translate({ store, source: "Farm" })} />
+      <div className="page-content">
+        <TableView
+          model={"farm"}
+          columnsTable={columns}
+          formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
+          selectedRowKeys={selectedRowKeys}
+          setSelectedRowKeys={setSelectedRowKeys}
+          updateField="id"
+        />
+      </div>
     </div>
   );
 };

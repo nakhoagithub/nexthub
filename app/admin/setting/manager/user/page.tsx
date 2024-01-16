@@ -12,35 +12,18 @@ import { translate } from "@/utils/translate";
 import { StoreContext } from "@/app/components/context-provider";
 import { StoreApi } from "zustand";
 import { StoreApp } from "@/store/store";
+import TableView from "@/app/components/data-view/table-view/table-view";
+import PageHeader from "@/app/components/body/page-header";
 
 const ViewForm = (
   store: StoreApi<StoreApp>,
   form: FormInstance<any>,
   onFinish: (value: any) => void,
-  viewType: string,
+  viewType: string | null,
   dataIds: any
 ) => {
-  const columnsOrg: ColumnsType<any> = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      width: 200,
-      key: "name",
-    },
-    {
-      title: "Short name",
-      dataIndex: "shortName",
-      width: 160,
-      key: "name",
-    },
-    {
-      title: "",
-      key: "none",
-    },
-  ];
-
   return (
-    <Form name="form" form={form} layout="vertical" style={{ width: 600 }} onFinish={onFinish}>
+    <Form name="form" form={form} layout="vertical" onFinish={onFinish}>
       <Form.Item label="Name" name="name">
         <Input />
       </Form.Item>
@@ -74,6 +57,20 @@ const ViewForm = (
         </Select>
       </Form.Item>
 
+      <Form.Item
+        label="Origanization"
+        name="idsOrg"
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
+      >
+        <Select mode="multiple">
+          {...(dataIds?.["org"] ?? []).map((e: any) => (
+            <Option key={e._id}>
+              <span>{e.name}</span>
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+
       <Form.Item label="Locale Code" name="localeCode">
         <Select>
           {...(dataIds?.["language"] ?? []).map((e: any) => (
@@ -88,7 +85,7 @@ const ViewForm = (
         <Checkbox defaultChecked={true}>Active</Checkbox>
       </Form.Item>
 
-      <Tabs
+      {/* <Tabs
         type="card"
         items={[
           {
@@ -108,16 +105,16 @@ const ViewForm = (
             ),
           },
         ]}
-      />
+      /> */}
     </Form>
   );
 };
 
 const Page = () => {
+  const store = useContext(StoreContext);
   const [openModalChangePassword, setOpenModalChangePassword] = useState(false);
   const [idUser, setIdUser] = useState<string>();
   const [dataIds, setDataIds] = useState<any>();
-  const store = useContext(StoreContext);
 
   const columns: ColumnsType<any> = [
     {
@@ -155,40 +152,51 @@ const Page = () => {
     },
   ];
 
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
   return (
     <div>
-      <ModalChangePassword open={openModalChangePassword} setOpen={setOpenModalChangePassword} id={idUser} />
-      <DataView
-        model="user"
-        titleHeader="User"
-        columnsTable={columns}
-        tableBoder={true}
-        formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
-        updateField="username"
-        ids={[
-          {
-            language: {
-              fields: ["localeCode", "name"],
-              filter: { active: true },
+      <PageHeader title={translate({ store, source: "User" })} />
+      <div className="page-content">
+        <ModalChangePassword open={openModalChangePassword} setOpen={setOpenModalChangePassword} id={idUser} />
+        <TableView
+          model={"user"}
+          columnsTable={columns}
+          formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
+          selectedRowKeys={selectedRowKeys}
+          setSelectedRowKeys={setSelectedRowKeys}
+          updateField="username"
+          ids={[
+            {
+              language: {
+                fields: ["localeCode", "name"],
+                filter: { active: true },
+              },
             },
-          },
-        ]}
-        dataIdsCallback={(value) => setDataIds(value)}
-        actions={(keys?: any[]) => [
-          <div>
-            {keys?.length === 1 && (
-              <Button
-                onClick={() => {
-                  setOpenModalChangePassword(true);
-                  setIdUser(keys[0]);
-                }}
-              >
-                Change Password
-              </Button>
-            )}
-          </div>,
-        ]}
-      />
+            {
+              org: {
+                fields: ["_id", "name"],
+                filter: { active: true },
+              },
+            },
+          ]}
+          dataIdsCallback={(value) => setDataIds(value)}
+          actions={(keys?: any[]) => [
+            <div>
+              {keys?.length === 1 && (
+                <Button
+                  onClick={() => {
+                    setOpenModalChangePassword(true);
+                    setIdUser(keys[0]);
+                  }}
+                >
+                  Change Password
+                </Button>
+              )}
+            </div>,
+          ]}
+        />
+      </div>
     </div>
   );
 };

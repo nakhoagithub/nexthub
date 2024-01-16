@@ -18,7 +18,7 @@ const ViewForm = (
 ) => {
   const store = useContext(StoreContext);
   return (
-    <Form name="form" form={form} layout="vertical" labelWrap style={{ width: 800 }} onFinish={onFinish}>
+    <Form name="form" form={form} layout="vertical" labelWrap onFinish={onFinish}>
       {/* <Form.Item label="ID" name="id">
         <Input />
       </Form.Item> */}
@@ -154,8 +154,6 @@ const Page = () => {
         sort={{ name: 1 }}
         renderItemKanban={(value: any, index: number, fetchData?: () => Promise<void>) => (
           <Card
-            
-
             actions={[
               <Button
                 type="primary"

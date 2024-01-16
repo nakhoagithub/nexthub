@@ -13,7 +13,6 @@ const ModalCustom = ({
   open,
   setOpen,
   formLayout,
-  columnsModal,
   store,
   model,
   fetchData,
@@ -23,7 +22,6 @@ const ModalCustom = ({
   open: boolean;
   setOpen: (value: boolean) => void;
   formLayout?: (onFinish: (value: any) => Promise<void>) => React.ReactNode;
-  columnsModal: ColumnModel[];
   store: StoreApi<StoreApp>;
   model: string;
   fetchData?: () => Promise<void>;
@@ -33,16 +31,16 @@ const ModalCustom = ({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const drawerCustomType = searchParams.get("drawerCustomType");
+  const viewType = searchParams.get("viewType");
   const viewId = searchParams.get("viewId");
   const useApp = App.useApp();
 
   async function onFinish(values: any) {
     values = replaceUndefinedWithNull(values);
-    if (drawerCustomType === "create") {
+    if (viewType === "create") {
       try {
         const {
-          data: { code, data, message, errors },
+          data: { code, message, errors },
         } = await app.post(`/api/model/${model}/create`, { data: { ...values } });
         if (code === 200) {
           useApp.message.success("Success");
@@ -63,7 +61,7 @@ const ModalCustom = ({
       }
     }
 
-    if (drawerCustomType === "update") {
+    if (viewType === "update") {
       if (!updateField && !viewId) {
         useApp.message.error("Error: Can't found _id");
         return;
@@ -97,10 +95,11 @@ const ModalCustom = ({
     }
   }
 
-  function removeQueryParam(paramKey?: string) {
+  function removeQueryParams(paramKeys: string[] = []) {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
-    current.delete(paramKey ?? "");
-
+    paramKeys.forEach((paramKey) => {
+      current.delete(paramKey);
+    });
     const search = current.toString();
     const query = search ? `?${search}` : "";
     router.push(`${pathname}${query}`);
@@ -126,14 +125,17 @@ const ModalCustom = ({
 
   useEffect(() => {
     fetchDataFormUpdate();
-  }, [drawerCustomType]);
+  }, [viewType, viewId]);
 
   return (
     <Drawer
       open={open}
       onClose={() => {
-        drawerCustomType && removeQueryParam("drawerCustomType");
-        viewId && removeQueryParam("viewId");
+        if (viewType == "create") {
+          viewType && removeQueryParams(["viewType"]);
+        } else if (viewType == "update") {
+          viewType && viewId && removeQueryParams(["viewType", "viewId"]);
+        }
         setOpen(false);
         form.resetFields();
       }}

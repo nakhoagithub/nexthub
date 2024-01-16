@@ -1,22 +1,23 @@
 "use client";
+import PageHeader from "@/app/components/body/page-header";
 import { StoreContext } from "@/app/components/context-provider";
-import DataView from "@/app/components/data-view/data-view";
 import One2ManyView from "@/app/components/data-view/o2m-view/o2m-view";
-import { AccessRightModel } from "@/interfaces/access-right-model";
+import TableView from "@/app/components/data-view/table-view/table-view";
 import { StoreApp } from "@/store/store";
 import { translate } from "@/utils/translate";
-import { Checkbox, Form, FormInstance, Input, Tabs } from "antd";
+import { Checkbox, Form, FormInstance, Input, Tabs, Select } from "antd";
+const { Option } = Select;
 import TextArea from "antd/es/input/TextArea";
 import { ColumnsType } from "antd/es/table";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { StoreApi } from "zustand";
 
 const ViewForm = (
   store: StoreApi<StoreApp>,
   form: FormInstance<any>,
   onFinish: (value: any) => void,
-  viewType: string,
-  disabledForm?: boolean
+  viewType: string | null,
+  dataIds: any
 ) => {
   const columnsUser: ColumnsType<any> = [
     {
@@ -24,42 +25,6 @@ const ViewForm = (
       dataIndex: "username",
       width: 200,
       key: "username",
-    },
-    {
-      title: "",
-      key: "none",
-    },
-  ];
-
-  const columnsMenu: ColumnsType<any> = [
-    {
-      title: "ID",
-      dataIndex: "id",
-      width: 120,
-      key: "id",
-      sorter: {
-        compare: (a, b) => (a.id ?? ("" as String)).localeCompare(b.id ?? ("" as String)),
-        multiple: 1,
-      },
-    },
-    {
-      title: "Name",
-      dataIndex: "name",
-      width: 160,
-      key: "name",
-      sorter: {
-        compare: (a, b) => (a.name ?? ("" as String)).localeCompare(b.name ?? ("" as String)),
-        multiple: 2,
-      },
-    },
-    {
-      title: "Url",
-      dataIndex: "url",
-      key: "url",
-      sorter: {
-        compare: (a, b) => (a.url ?? ("" as String)).localeCompare(b.url ?? ("" as String)),
-        multiple: 3,
-      },
     },
     {
       title: "",
@@ -190,7 +155,7 @@ const ViewForm = (
   ];
 
   return (
-    <Form name="form" form={form} layout="vertical" labelWrap style={{ width: 800 }} onFinish={onFinish}>
+    <Form name="form" form={form} layout="vertical" labelWrap onFinish={onFinish}>
       <Form.Item
         label="ID"
         name="id"
@@ -205,86 +170,91 @@ const ViewForm = (
       >
         <Input />
       </Form.Item>
-      <Form.Item label="Description" name="description">
+      <Form.Item label={translate({ store: store, source: "Desciption" })} name="description">
         <TextArea />
       </Form.Item>
-      <Form.Item label="Active" name="active" valuePropName="checked" initialValue={true}>
+
+      <Form.Item label={translate({ store: store, source: "User" })} name="idsUser">
+        <Select
+          mode="multiple"
+          allowClear
+          onClear={() => {
+            form.setFieldValue("idsUser", []);
+          }}
+        >
+          {(dataIds?.["user"] ?? [])?.map((e: any) => (
+            <Option key={e._id} label={`${e.username}-${e.name}`}>
+              <span>{`${e.username}-${e.name}`}</span>
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+
+      <Form.Item label={translate({ store: store, source: "Menu" })} name="idsMenu">
+        <Select
+          mode="multiple"
+          allowClear
+          onClear={() => {
+            form.setFieldValue("idsMenu", []);
+          }}
+        >
+          {(dataIds?.["menu"] ?? [])?.map((e: any) => (
+            <Option key={e._id} label={e.name}>
+              <span>{e.name}</span>
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+
+      <Form.Item label={translate({ store: store, source: "Access" })} name="idsAccess">
+        <Select
+          mode="multiple"
+          allowClear
+          onClear={() => {
+            form.setFieldValue("idsAccess", []);
+          }}
+        >
+          {(dataIds?.["access"] ?? [])?.map((e: any) => (
+            <Option key={e._id} label={e.name}>
+              <span>{e.name}</span>
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+
+      <Form.Item label={translate({ store: store, source: "Document Access" })} name="idsDocumentAccess">
+        <Select
+          mode="multiple"
+          allowClear
+          onClear={() => {
+            form.setFieldValue("idsDocumentAccess", []);
+          }}
+        >
+          {(dataIds?.["document-access"] ?? [])?.map((e: any) => (
+            <Option key={e._id} label={e.name}>
+              <span>{e.name}</span>
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+
+      <Form.Item
+        label={translate({ store: store, source: "Active" })}
+        name="active"
+        valuePropName="checked"
+        initialValue={true}
+      >
         <Checkbox defaultChecked={true}>Active</Checkbox>
       </Form.Item>
-      <Tabs
-        type="card"
-        items={[
-          {
-            forceRender: true,
-            label: "User",
-            key: "user",
-            children: (
-              <One2ManyView
-                showAdd
-                idsField="idsUser"
-                titleModel="User"
-                model="group"
-                toModel="user"
-                columnsTable={columnsUser}
-                form={form}
-              />
-            ),
-          },
-          {
-            forceRender: true,
-            label: "Menu",
-            key: "menu",
-            children: (
-              <One2ManyView
-                showAdd
-                idsField="idsMenu"
-                titleModel="Menu"
-                model="group"
-                toModel="menu"
-                columnsTable={columnsMenu}
-                form={form}
-              />
-            ),
-          },
-          {
-            forceRender: true,
-            label: "Access",
-            key: "access",
-            children: (
-              <One2ManyView
-                showAdd
-                idsField="idsAccess"
-                titleModel="Access"
-                model="group"
-                toModel="access"
-                columnsTable={columnsAccess}
-                form={form}
-              />
-            ),
-          },
-          {
-            forceRender: true,
-            label: "Document Access",
-            key: "document-access",
-            children: (
-              <One2ManyView
-                showAdd
-                idsField="idsDocumentAccess"
-                titleModel="Document Access"
-                model="group"
-                toModel="document-access"
-                columnsTable={columnsAccessDocument}
-                form={form}
-              />
-            ),
-          },
-        ]}
-      />
     </Form>
   );
 };
 
 const Page = () => {
+  const store = useContext(StoreContext);
+  const [dataIds, setDataIds] = useState<any>();
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
   const columns: ColumnsType<any> = [
     {
       title: "ID",
@@ -314,14 +284,46 @@ const Page = () => {
   ];
 
   return (
-    <DataView
-      model="group"
-      titleHeader="Group"
-      columnsTable={columns}
-      tableBoder={true}
-      formLayout={({ store, form, onFinish, viewType, disabled }) => ViewForm(store, form, onFinish, viewType, disabled)}
-      updateField="id"
-    />
+    <div>
+      <PageHeader title={translate({ store, source: "Group" })} />
+      <div className="page-content">
+        <TableView
+          model={"group"}
+          columnsTable={columns}
+          formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
+          selectedRowKeys={selectedRowKeys}
+          setSelectedRowKeys={setSelectedRowKeys}
+          updateField="id"
+          ids={[
+            {
+              user: {
+                fields: ["_id", "name", "username"],
+                filter: { active: true },
+              },
+            },
+            {
+              menu: {
+                fields: ["_id", "name"],
+                filter: { active: true },
+              },
+            },
+            {
+              access: {
+                fields: ["_id", "name"],
+                filter: { active: true },
+              },
+            },
+            {
+              "document-access": {
+                fields: ["_id", "name"],
+                filter: { active: true },
+              },
+            },
+          ]}
+          dataIdsCallback={(value) => setDataIds(value)}
+        />
+      </div>
+    </div>
   );
 };
 

@@ -12,32 +12,34 @@ import TextArea from "antd/es/input/TextArea";
 import { StoreApi } from "zustand";
 import { StoreApp } from "@/store/store";
 import { getItemInArray } from "@/utils/tool";
+import TableView from "@/app/components/data-view/table-view/table-view";
+import PageHeader from "@/app/components/body/page-header";
 
 const ViewForm = (
   store: StoreApi<StoreApp>,
   form: FormInstance<any>,
   onFinish: (value: any) => void,
-  viewType: string,
+  viewType: string | null,
   dataIds: any
 ) => {
   return (
-    <Form name="form" form={form} layout="vertical" style={{ width: 600 }} onFinish={onFinish}>
+    <Form name="form" form={form} layout="vertical" onFinish={onFinish}>
       <Form.Item
         label="ID"
         name="id"
-        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
+        rules={[{ required: true, message: translate({ store, source: "This field cannot be left blank" }) }]}
       >
         <Input />
       </Form.Item>
       <Form.Item
         label="Name"
         name="name"
-        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
+        rules={[{ required: true, message: translate({ store, source: "This field cannot be left blank" }) }]}
       >
         <Input />
       </Form.Item>
 
-      <Form.Item label="ID Parent" name="idParent">
+      <Form.Item label="Parent" name="idParent">
         <Select
           allowClear
           onClear={() => {
@@ -83,8 +85,7 @@ const ViewForm = (
 };
 
 const Page = () => {
-  const [openModalChangePassword, setOpenModalChangePassword] = useState(false);
-  const [idUser, setIdUser] = useState<string>();
+  const store = useContext(StoreContext);
   const [dataIds, setDataIds] = useState<any>();
 
   const columns: ColumnsType<any> = [
@@ -94,30 +95,30 @@ const Page = () => {
       width: 100,
     },
     {
-      title: "Name",
-      dataIndex: "name",
-      width: 160,
-    },
-    {
-      title: "Farm",
+      title: translate({ store, source: "Farm" }),
       width: 200,
       render: (value, record, index) => {
         return <div>{record.idFarm && getItemInArray(dataIds?.["farm"] ?? [], record.idFarm, "_id")?.name}</div>;
       },
     },
     {
-      title: "Description",
+      title: translate({ store, source: "Name" }),
+      dataIndex: "name",
+      width: 200,
+    },
+    {
+      title: translate({ store, source: "Description" }),
       dataIndex: "description",
       width: 300,
     },
     { title: "", key: "none" },
     {
-      title: "Sort Index",
+      title: translate({ store, source: "Sort" }),
       dataIndex: "sortIndex",
       width: 100,
     },
     {
-      title: "Active",
+      title: translate({ store, source: "Active" }),
       width: 100,
       align: "center",
       render: (value, record, index) => {
@@ -126,30 +127,36 @@ const Page = () => {
     },
   ];
 
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
   return (
     <div>
-      <DataView
-        model="area"
-        titleHeader="Area"
-        columnsTable={columns}
-        tableBoder={true}
-        formLayout={({store, form, onFinish, viewType}) => ViewForm(store, form, onFinish, viewType, dataIds)}
-        ids={[
-          {
-            farm: {
-              fields: ["_id", "name"],
-              filter: { active: true },
+      <PageHeader title={translate({ store, source: "Area" })} />
+      <div className="page-content">
+        <TableView
+          model={"area"}
+          columnsTable={columns}
+          formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
+          selectedRowKeys={selectedRowKeys}
+          setSelectedRowKeys={setSelectedRowKeys}
+          updateField="id"
+          ids={[
+            {
+              farm: {
+                fields: ["_id", "name"],
+                filter: { active: true },
+              },
             },
-          },
-          {
-            area: {
-              fields: ["_id", "name"],
-              filter: { active: true },
+            {
+              area: {
+                fields: ["_id", "name"],
+                filter: { active: true },
+              },
             },
-          },
-        ]}
-        dataIdsCallback={(value) => setDataIds(value)}
-      />
+          ]}
+          dataIdsCallback={(value) => setDataIds(value)}
+        />
+      </div>
     </div>
   );
 };

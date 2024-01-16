@@ -1,23 +1,25 @@
 "use client";
+import PageHeader from "@/app/components/body/page-header";
 import { StoreContext } from "@/app/components/context-provider";
 import DataView from "@/app/components/data-view/data-view";
+import TableView from "@/app/components/data-view/table-view/table-view";
 import { StoreApp } from "@/store/store";
 import { translate } from "@/utils/translate";
 import { Checkbox, Form, FormInstance, Input, Select } from "antd";
 const { Option } = Select;
 import { ColumnsType } from "antd/es/table";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { StoreApi } from "zustand";
 
 const ViewForm = (
   store: StoreApi<StoreApp>,
   form: FormInstance<any>,
   onFinish: (value: any) => void,
-  viewType: string,
-  disabledForm?: boolean
+  viewType: string | null,
+  dataIds: any
 ) => {
   return (
-    <Form name="form" form={form} layout="vertical" labelWrap style={{ width: 800 }} onFinish={onFinish}>
+    <Form name="form" form={form} layout="vertical" labelWrap onFinish={onFinish}>
       <Form.Item
         label="ID"
         name="id"
@@ -68,6 +70,9 @@ const ViewForm = (
 };
 
 const Page = () => {
+  const store = useContext(StoreContext);
+  const [dataIds, setDataIds] = useState<any>();
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const columns: ColumnsType<any> = [
     {
       title: "ID",
@@ -119,14 +124,18 @@ const Page = () => {
   ];
 
   return (
-    <DataView
-      model="language"
-      titleHeader="Language"
-      columnsTable={columns}
-      tableBoder={true}
-      formLayout={({ store,form, onFinish, viewType, disabled}) => ViewForm(store, form, onFinish, viewType, disabled)}
-      updateField="id"
-    />
+    <div>
+      <PageHeader title={translate({ store, source: "Language" })} />
+      <div className="page-content">
+        <TableView
+          model={"language"}
+          columnsTable={columns}
+          formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
+          selectedRowKeys={selectedRowKeys}
+          setSelectedRowKeys={setSelectedRowKeys}
+        />
+      </div>
+    </div>
   );
 };
 

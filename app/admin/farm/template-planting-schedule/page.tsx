@@ -49,7 +49,7 @@ const ViewForm = (
   ];
 
   return (
-    <Form name="form" form={form} layout="vertical" style={{ width: 600 }} onFinish={onFinish}>
+    <Form name="form" form={form} layout="vertical" onFinish={onFinish}>
       <Form.Item
         label="Name"
         name="name"

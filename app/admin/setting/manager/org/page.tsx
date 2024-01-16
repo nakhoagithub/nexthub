@@ -1,6 +1,8 @@
 "use client";
+import PageHeader from "@/app/components/body/page-header";
 import { StoreContext } from "@/app/components/context-provider";
 import DataView from "@/app/components/data-view/data-view";
+import TableView from "@/app/components/data-view/table-view/table-view";
 import { StoreApp } from "@/store/store";
 import { getItemInArray } from "@/utils/tool";
 import { translate } from "@/utils/translate";
@@ -15,11 +17,11 @@ const ViewForm = (
   store: StoreApi<StoreApp>,
   form: FormInstance<any>,
   onFinish: (value: any) => void,
-  viewType: string,
+  viewType: string | null,
   dataIds: any
 ) => {
   return (
-    <Form name="form" form={form} layout="vertical" style={{ width: 600 }} onFinish={onFinish}>
+    <Form name="form" form={form} layout="vertical" onFinish={onFinish}>
       <Form.Item
         label="Name"
         name="name"
@@ -129,20 +131,25 @@ const Page = () => {
     },
   ];
 
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
   return (
     <div>
-      <DataView
-        model="org"
-        titleHeader="Organization"
-        columnsTable={columns}
-        tableBoder={true}
-        formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
-        ids={[
-          { org: { fields: ["_id", "name"], filter: { active: true } } },
-          { user: { fields: ["_id", "name"], filter: { active: true } } },
-        ]}
-        dataIdsCallback={(value: any) => setDataIds(value)}
-      />
+      <PageHeader title={translate({ store, source: "Organization" })} />
+      <div className="page-content">
+        <TableView
+          model={"org"}
+          columnsTable={columns}
+          formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
+          selectedRowKeys={selectedRowKeys}
+          setSelectedRowKeys={setSelectedRowKeys}
+          ids={[
+            { org: { fields: ["_id", "name"], filter: { active: true } } },
+            { user: { fields: ["_id", "name"], filter: { active: true } } },
+          ]}
+          dataIdsCallback={(value) => setDataIds(value)}
+        />
+      </div>
     </div>
   );
 };

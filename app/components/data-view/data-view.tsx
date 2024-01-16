@@ -379,10 +379,11 @@ const DataView = ({
     router.push(`${pathname}${query}`);
   }
 
-  function removeQueryParam(paramKey: string) {
+  function removeQueryParams(paramKeys: string[] = []) {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
-    current.delete(paramKey);
-
+    paramKeys.forEach((paramKey) => {
+      current.delete(paramKey);
+    });
     const search = current.toString();
     const query = search ? `?${search}` : "";
     router.push(`${pathname}${query}`);
@@ -424,7 +425,7 @@ const DataView = ({
     await getAccess();
     await getDatas();
     await fetchViewType();
-    await fetchLanguageModel();
+    // await fetchLanguageModel();
     setInitData(false);
     setLoading(false);
   }

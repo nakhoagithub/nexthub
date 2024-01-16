@@ -198,7 +198,6 @@ const One2ManyView = ({
               size="small"
               onClick={() => {
                 if (addInline) {
-                  console.log("add in line");
                 } else {
                   setOpenModelAdd(true);
                 }

@@ -1,24 +1,27 @@
 "use client";
+import PageHeader from "@/app/components/body/page-header";
 import { StoreContext } from "@/app/components/context-provider";
 import DataView from "@/app/components/data-view/data-view";
+import TableView from "@/app/components/data-view/table-view/table-view";
 import { StoreApp } from "@/store/store";
 import { translate } from "@/utils/translate";
 import { EditOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Form, FormInstance, Input, Space } from "antd";
+import { Button, Checkbox, Form, FormInstance, Input, Select, Space } from "antd";
+const { Option } = Select;
 import TextArea from "antd/es/input/TextArea";
 import { ColumnsType } from "antd/es/table";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { StoreApi } from "zustand";
 
 const ViewForm = (
   store: StoreApi<StoreApp>,
   form: FormInstance<any>,
   onFinish: (value: any) => void,
-  viewType: string,
-  disabledForm?: boolean
+  viewType: string | null,
+  dataIds: any
 ) => {
   return (
-    <Form name="form" form={form} layout="vertical" labelWrap style={{ width: 800 }} onFinish={onFinish}>
+    <Form name="form" form={form} layout="vertical" labelWrap onFinish={onFinish}>
       <Form.Item
         label="ID"
         name="id"
@@ -33,13 +36,26 @@ const ViewForm = (
       >
         <Input />
       </Form.Item>
+
       <Form.Item
         label="Model name"
         name="modelName"
         rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
-        <Input />
+        <Select
+          allowClear
+          onClear={() => {
+            form.setFieldValue("modelName", "");
+          }}
+        >
+          {(dataIds?.["model"] ?? [])?.map((e: any) => (
+            <Option key={e.id} label={e.name}>
+              <span>{e.name}</span>
+            </Option>
+          ))}
+        </Select>
       </Form.Item>
+
       <Form.Item
         label="Filter"
         name="filter"
@@ -72,6 +88,9 @@ const ViewForm = (
 };
 
 const Page = () => {
+  const store = useContext(StoreContext);
+  const [dataIds, setDataIds] = useState<any>();
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const columns: ColumnsType<any> = [
     {
       title: "ID",
@@ -145,14 +164,27 @@ const Page = () => {
   ];
 
   return (
-    <DataView
-      model="document-access"
-      titleHeader="Document Access"
-      columnsTable={columns}
-      tableBoder={true}
-      formLayout={({ store,form, onFinish, viewType, disabled}) => ViewForm(store, form, onFinish, viewType, disabled)}
-      updateField="id"
-    />
+    <div>
+      <PageHeader title={translate({ store, source: "Document Access" })} />
+      <div className="page-content">
+        <TableView
+          model={"document-access"}
+          columnsTable={columns}
+          formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
+          selectedRowKeys={selectedRowKeys}
+          setSelectedRowKeys={setSelectedRowKeys}
+          ids={[
+            {
+              model: {
+                fields: ["id", "name"],
+                filter: { install: true },
+              },
+            },
+          ]}
+          dataIdsCallback={(value) => setDataIds(value)}
+        />
+      </div>
+    </div>
   );
 };
 

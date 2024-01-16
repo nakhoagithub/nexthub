@@ -10,7 +10,6 @@ const schema = new mongoose.Schema(
     name: { type: String, required: true },
     description: { type: String },
     idBreedCategory: { type: mongoose.Types.ObjectId, ref: "breed-category" },
-    sortIndex: { type: Number },
     active: { type: Boolean, default: true },
   },
   { timestamps: true, versionKey: false, collection: collectionName }
