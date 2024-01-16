@@ -21,27 +21,28 @@ const ViewForm = (
   viewType: string | null,
   dataIds: any
 ) => {
-  const columnsOrg: ColumnsType<any> = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      width: 200,
-      key: "name",
-    },
-    {
-      title: "Short name",
-      dataIndex: "shortName",
-      width: 160,
-      key: "name",
-    },
-    {
-      title: "",
-      key: "none",
-    },
-  ];
-
   return (
     <Form name="form" form={form} layout="vertical" onFinish={onFinish}>
+      <Form.Item
+        initialValue={dataIds?.["org"]?.[0]._id}
+        label={translate({ store, source: "Org" })}
+        name="idOrg"
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
+      >
+        <Select
+          allowClear
+          onClear={() => {
+            form.setFieldValue("idOrg", []);
+          }}
+        >
+          {(dataIds?.["org"] ?? []).map((e: any) => (
+            <Option key={e._id} label={e.name}>
+              <span>{e.name}</span>
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+
       <Form.Item
         label="ID"
         name="id"
@@ -49,6 +50,7 @@ const ViewForm = (
       >
         <Input />
       </Form.Item>
+
       <Form.Item
         label="Name"
         name="name"
@@ -56,6 +58,7 @@ const ViewForm = (
       >
         <Input />
       </Form.Item>
+
       <Form.Item label="Address" name="address">
         <TextArea />
       </Form.Item>
@@ -65,8 +68,8 @@ const ViewForm = (
       <Form.Item label="IP Private" name="ipPrivate">
         <Input />
       </Form.Item>
-      <Form.Item label="Port" name="port" initialValue={27017}>
-        <InputNumber min={1} max={65536} value={27017} />
+      <Form.Item label="Port" name="port">
+        <InputNumber min={1} max={65536} />
       </Form.Item>
       <Form.Item label="Username" name="username">
         <Input />
@@ -87,6 +90,7 @@ const ViewForm = (
 
 const Page = () => {
   const store = useContext(StoreContext);
+  const { user } = store.getState();
   const [dataIds, setDataIds] = useState<any>();
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
@@ -118,6 +122,15 @@ const Page = () => {
           selectedRowKeys={selectedRowKeys}
           setSelectedRowKeys={setSelectedRowKeys}
           updateField="id"
+          ids={[
+            {
+              org: {
+                fields: ["_id", "name"],
+                filter: { _id: { $in: user?.idsOrg ?? [] } },
+              },
+            },
+          ]}
+          dataIdsCallback={(value) => setDataIds(value)}
         />
       </div>
     </div>

@@ -57,11 +57,7 @@ const ViewForm = (
         </Select>
       </Form.Item>
 
-      <Form.Item
-        label="Origanization"
-        name="idsOrg"
-        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
-      >
+      <Form.Item label="Origanization" name="idsOrg">
         <Select mode="multiple">
           {...(dataIds?.["org"] ?? []).map((e: any) => (
             <Option key={e._id}>

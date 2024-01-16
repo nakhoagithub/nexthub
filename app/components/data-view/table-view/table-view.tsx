@@ -36,6 +36,7 @@ const TableView = ({
   ids,
   dataIdsCallback,
   actions,
+  dataFormDefault,
 }: {
   model: string;
   bordered?: boolean;
@@ -74,6 +75,7 @@ const TableView = ({
   }[];
   dataIdsCallback?: (value: any) => void;
   actions?: (keys?: any[]) => React.ReactNode[];
+  dataFormDefault?: any;
 }) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -194,7 +196,7 @@ const TableView = ({
       useApp.notification.error({ message: "Internal Server Error" });
     }
   }
-  
+
   /**
    * Lấy dữ liệu model
    */
@@ -427,6 +429,7 @@ const TableView = ({
         fetchData={getDatas}
         updateField={updateField}
         form={form}
+        dataFormDefault={dataFormDefault}
       />
     </div>
   );

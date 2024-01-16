@@ -20,7 +20,7 @@ const store = createStore<StoreApp, []>((set) => ({
   setLanguageData: ({ datas }: { datas: TranslatedTerm[] }) => {
     set((state: StoreApp) => {
       return {
-        languageData: [...state.languageData, ...datas],
+        languageData: datas,
       };
     });
   },

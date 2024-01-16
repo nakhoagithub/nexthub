@@ -1,9 +1,10 @@
 "use client";
 import app from "@/utils/axios";
-import { App, Button, Popover, Tree } from "antd";
+import { App, Button, Checkbox, Col, Popover, Tree } from "antd";
 import React, { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../context-provider";
-import { DataNode, TreeProps } from "antd/es/tree";
+import { CheckboxOptionType, CheckboxValueType } from "antd/es/checkbox/Group";
+import { CheckboxChangeEvent } from "antd/es/checkbox/Checkbox";
 
 const SelecteOrg = () => {
   const [loading, setLoading] = useState(false);
@@ -11,7 +12,7 @@ const SelecteOrg = () => {
   const store = useContext(StoreContext);
   const { user } = store.getState();
   const [orgs, setOrgs] = useState<any[]>([]);
-  const [datas, setDatas] = useState<DataNode[]>([]);
+  const [datas, setDatas] = useState<any[]>([]);
 
   async function fetchOrg() {
     try {
@@ -24,11 +25,11 @@ const SelecteOrg = () => {
       if (code === 200) {
         setOrgs(datas);
         if (Array.isArray(datas)) {
-          let newDatas: DataNode[] = [];
+          let newDatas = [];
           for (var data of datas) {
             let name =
               data.shortName && data.shortName !== "" ? data.shortName : data.name && data.name !== "" ? data.name : "";
-            newDatas.push({ key: data._id, title: name });
+            newDatas.push({ value: data._id, label: name });
           }
           setDatas(newDatas);
         }
@@ -52,8 +53,8 @@ const SelecteOrg = () => {
     }
   }
 
-  const onCheck: TreeProps["onCheck"] = async (checkedKeys, info) => {
-    await updateIdsOrgForUser(checkedKeys as React.Key[]);
+  const onChange = (list: CheckboxValueType[]) => {
+    updateIdsOrgForUser(list);
   };
 
   async function fetchData() {
@@ -66,20 +67,20 @@ const SelecteOrg = () => {
     fetchData();
   }, []);
 
-  const content = (
-    <Tree
-      treeData={datas}
-      checkable
-      onCheck={onCheck}
-      blockNode
-      defaultCheckedKeys={(user?.idsCurrentOrg ?? []).filter((e) => orgs.find((org) => org._id === e))}
-    />
-  );
-
   return (
     <div>
-      {user && (
-        <Popover content={content} title="Select Organization" trigger="click">
+      {user && datas.length > 0 && (
+        <Popover
+          content={
+            <Checkbox.Group
+              options={datas}
+              onChange={onChange}
+              defaultValue={(user?.idsCurrentOrg ?? []).filter((e) => orgs.find((org) => org._id === e))}
+            />
+          }
+          title="Select Organization"
+          trigger="click"
+        >
           <Button>Org</Button>
         </Popover>
       )}

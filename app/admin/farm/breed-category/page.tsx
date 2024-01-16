@@ -21,6 +21,21 @@ const ViewForm = (
 ) => {
   return (
     <Form name="form" form={form} layout="vertical" onFinish={onFinish}>
+      <Form.Item label={translate({ store, source: "Org" })} name="idsOrg" initialValue={[]}>
+        <Select
+          mode="multiple"
+          allowClear
+          onClear={() => {
+            form.setFieldValue("idsOrg", []);
+          }}
+        >
+          {(dataIds?.["org"] ?? []).map((e: any) => (
+            <Option key={e._id} label={e.name}>
+              <span>{e.name}</span>
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
       <Form.Item
         label="Name"
         name="name"
@@ -40,6 +55,7 @@ const ViewForm = (
 
 const Page = () => {
   const store = useContext(StoreContext);
+  const { user } = store.getState();
   const [openModalChangePassword, setOpenModalChangePassword] = useState(false);
   const [idUser, setIdUser] = useState<string>();
   const [dataIds, setDataIds] = useState<any>();
@@ -78,6 +94,18 @@ const Page = () => {
           formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
           selectedRowKeys={selectedRowKeys}
           setSelectedRowKeys={setSelectedRowKeys}
+          filter={{
+            $or: [{ idsOrg: { $in: user?.idsCurrentOrg ?? [] } }, { idsOrg: [] }],
+          }}
+          ids={[
+            {
+              org: {
+                fields: ["_id", "name"],
+                filter: { _id: { $in: user?.idsOrg ?? [] } },
+              },
+            },
+          ]}
+          dataIdsCallback={(value) => setDataIds(value)}
         />
       </div>
     </div>

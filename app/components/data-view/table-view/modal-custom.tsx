@@ -18,6 +18,7 @@ const ModalCustom = ({
   fetchData,
   updateField,
   form,
+  dataFormDefault,
 }: {
   open: boolean;
   setOpen: (value: boolean) => void;
@@ -27,6 +28,7 @@ const ModalCustom = ({
   fetchData?: () => Promise<void>;
   updateField?: string;
   form: FormInstance<any>;
+  dataFormDefault?: any;
 }) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -39,12 +41,18 @@ const ModalCustom = ({
     values = replaceUndefinedWithNull(values);
     if (viewType === "create") {
       try {
+        let newDefault = {};
+        if (Object.keys(dataFormDefault ?? {}).length > 0) {
+          newDefault = dataFormDefault;
+        }
+
         const {
           data: { code, message, errors },
-        } = await app.post(`/api/model/${model}/create`, { data: { ...values } });
+        } = await app.post(`/api/model/${model}/create`, { data: { ...values, ...newDefault } });
         if (code === 200) {
           useApp.message.success("Success");
           setOpen(false);
+          form.resetFields();
           fetchData && fetchData();
         } else {
           if (Array.isArray(errors)) {

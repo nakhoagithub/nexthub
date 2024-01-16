@@ -23,6 +23,26 @@ const ViewForm = (
   return (
     <Form name="form" form={form} layout="vertical" onFinish={onFinish}>
       <Form.Item
+        label={translate({ store, source: "Org" })}
+        name="idOrg"
+        initialValue={dataIds?.["org"]?.[0]._id}
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
+      >
+        <Select
+          mode="multiple"
+          allowClear
+          onClear={() => {
+            form.setFieldValue("idOrg", null);
+          }}
+        >
+          {(dataIds?.["org"] ?? []).map((e: any) => (
+            <Option key={e._id} label={e.name}>
+              <span>{e.name}</span>
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+      <Form.Item
         label="ID"
         name="id"
         rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
@@ -69,6 +89,7 @@ const ViewForm = (
 
 const Page = () => {
   const store = useContext(StoreContext);
+  const { user } = store.getState();
   const [openModalChangePassword, setOpenModalChangePassword] = useState(false);
   const [idUser, setIdUser] = useState<string>();
   const [dataIds, setDataIds] = useState<any>();
@@ -130,6 +151,12 @@ const Page = () => {
               "breed-category": {
                 fields: ["_id", "name"],
                 filter: { active: true },
+              },
+            },
+            {
+              org: {
+                fields: ["_id", "name"],
+                filter: { _id: { $in: user?.idsOrg ?? [] } },
               },
             },
           ]}

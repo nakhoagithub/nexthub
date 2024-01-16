@@ -3,13 +3,11 @@ import { StoreApp } from "@/store/store";
 import { StoreApi } from "zustand";
 
 export const translate = ({
-  modelName,
   source,
   params,
   store,
 }: {
   store: StoreApi<StoreApp>;
-  modelName?: string;
   source: string;
   params?: { [key: string]: any };
 }) => {
