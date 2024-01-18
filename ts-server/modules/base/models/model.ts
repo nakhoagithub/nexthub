@@ -6,6 +6,7 @@ export const modelSchema = new mongoose.Schema(
   {
     id: { type: String, required: true, unique: true },
     name: { type: String, required: true },
+    modelName: { type: String, required: true },
     description: { type: String },
     collectionName: { type: String, required: true },
     idsSchema: { type: [mongoose.Types.ObjectId], ref: "schema" },

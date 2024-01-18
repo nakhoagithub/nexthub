@@ -2,9 +2,6 @@ import * as fs from "fs";
 import * as path from "path";
 
 const modelsPath = path.join(__dirname, "modules", "models");
-
-console.log(modelsPath);
-
 // // Hàm để tìm các tệp index.ts trong thư mục và chạy hàm từ đó
 // function findAndRunIndexFiles(directory: string) {
 //   const files = fs.readdirSync(directory);

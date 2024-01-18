@@ -35,9 +35,13 @@ const ViewForm = (
         rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
         <Select
+          showSearch
           allowClear
           onClear={() => {
             form.setFieldValue("idBreed", "");
+          }}
+          filterOption={(input: string, option: any) => {
+            return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
           }}
         >
           {(dataIds?.["breed"] ?? []).map((e: any) => (
@@ -142,7 +146,7 @@ const Page = () => {
 
   return (
     <div>
-      <PageHeader title={translate({ store, source: "Template planting schedule" })} />
+      <PageHeader title="Template planting schedule" />
       <div className="page-content">
         <TableView
           model={"template-planting-schedule"}

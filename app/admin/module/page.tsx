@@ -48,9 +48,13 @@ const ViewForm = (
         rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
         <Select
+          showSearch
           allowClear
           onClear={() => {
             form.setFieldValue("localeCode", "");
+          }}
+          filterOption={(input: string, option: any) => {
+            return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
           }}
         >
           {(dataIds?.["language"] ?? []).map((e: any) => (
@@ -61,8 +65,27 @@ const ViewForm = (
         </Select>
       </Form.Item>
 
-      <Form.Item label="Model Name" name="modelName">
-        <Input />
+      <Form.Item
+        label="Model name"
+        name="modelName"
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
+      >
+        <Select
+          showSearch
+          allowClear
+          onClear={() => {
+            form.setFieldValue("modelName", "");
+          }}
+          filterOption={(input: string, option: any) => {
+            return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
+          }}
+        >
+          {(dataIds?.["model"] ?? [])?.map((e: any) => (
+            <Option key={e.id} label={e.name}>
+              <span>{e.name}</span>
+            </Option>
+          ))}
+        </Select>
       </Form.Item>
 
       <Form.Item label="Active" name="active" valuePropName="checked" initialValue={true}>
@@ -159,7 +182,7 @@ const Page = () => {
                 type="primary"
                 disabled={value.state === "base"}
                 onClick={async () => {
-                  if (value.install) {
+                  if (value.installable) {
                     useApp.modal.confirm({
                       title: "Comfirm",
                       content: "Uninstall module",
@@ -176,7 +199,7 @@ const Page = () => {
                   }
                 }}
               >
-                {value.install
+                {value.installable
                   ? translate({ store: store, source: "Uninstall" })
                   : translate({ store: store, source: "Install" })}
               </Button>,

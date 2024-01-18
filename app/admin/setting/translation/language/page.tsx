@@ -125,7 +125,7 @@ const Page = () => {
 
   return (
     <div>
-      <PageHeader title={translate({ store, source: "Language" })} />
+      <PageHeader title="Language" />
       <div className="page-content">
         <TableView
           model={"language"}

@@ -6,6 +6,10 @@ import { modelSchema } from "./models/model";
 import { moduleSchema } from "./models/module";
 import { schemaSchema } from "./models/schema";
 import { userSchema } from "./models/user";
+import { menuSchema } from "./models/menu";
+import { languageSchema } from "./models/language";
+import { translateTermSchema } from "./models/translate-term";
+import { orgSchema } from "./models/org";
 
 createModule({
   module: {
@@ -15,7 +19,41 @@ createModule({
     description: "Base",
     author: "Anh Khoa",
     depends: [],
-    datas: [],
+    state: "base",
+    datas: [
+      {
+        model: "access",
+        folder: "base",
+        file: "base.access.csv",
+        primaryKey: "id",
+      },
+      {
+        model: "group",
+        folder: "base",
+        file: "base.group.csv",
+        primaryKey: "id",
+      },
+      {
+        model: "menu",
+        folder: "base",
+        file: "base.menu.csv",
+        primaryKey: "id",
+      },
+      {
+        model: "language",
+        folder: "base",
+        file: "base.language.csv",
+        primaryKey: "id",
+        noUpdate: true,
+      },
+      {
+        model: "translate-term",
+        folder: "base",
+        file: "base.translate.term.csv",
+        primaryKey: "sourceTerm",
+        noUpdate: true,
+      },
+    ],
     installable: true,
     application: true,
   },
@@ -36,6 +74,11 @@ createModule({
       schema: schemaSchema,
     },
     {
+      name: "User",
+      modelName: "user",
+      schema: userSchema,
+    },
+    {
       name: "Access",
       modelName: "access",
       schema: accessSchema,
@@ -51,9 +94,24 @@ createModule({
       schema: documentAccessSchema,
     },
     {
-      name: "User",
-      modelName: "user",
-      schema: userSchema,
+      name: "Menu",
+      modelName: "menu",
+      schema: menuSchema,
+    },
+    {
+      name: "Language",
+      modelName: "language",
+      schema: languageSchema,
+    },
+    {
+      name: "Translate Term",
+      modelName: "translate-term",
+      schema: translateTermSchema,
+    },
+    {
+      name: "Organization",
+      modelName: "org",
+      schema: orgSchema,
     },
   ],
 });

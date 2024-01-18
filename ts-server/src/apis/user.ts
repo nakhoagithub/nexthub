@@ -87,10 +87,10 @@ plugin.router.post("/login", async (req, res) => {
   }
 });
 
-plugin.router.post("/logout", async (req, res) => {
+plugin.router.post("/logout", checkAuth, async (req, res) => {
   try {
-    const user: any = (req as any).user;
     const User = mongoose.model("user");
+    const user: any = (req as any).user;
     res.clearCookie("session");
     await User.updateOne({ _id: user._id }, { session: "" });
     return res.status(200).json({ code: 200 });

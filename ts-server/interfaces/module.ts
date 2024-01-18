@@ -6,6 +6,15 @@ export interface Model {
   schema: mongoose.Schema;
 }
 
+export interface Data {
+  model: string;
+  folder: string;
+  file: string;
+  primaryKey: string;
+  modelDescription?: String;
+  noUpdate?: boolean;
+}
+
 export interface ModuleInterface {
   id: string;
   name: string;
@@ -13,7 +22,8 @@ export interface ModuleInterface {
   description: string;
   author: string;
   depends: [];
-  datas: string[];
+  datas: Data[];
   installable: boolean;
   application: boolean;
+  state?: "base" | "normal";
 }

@@ -4,6 +4,7 @@ import { StoreContext } from "@/app/components/context-provider";
 import DataView from "@/app/components/data-view/data-view";
 import TableView from "@/app/components/data-view/table-view/table-view";
 import { StoreApp } from "@/store/store";
+import { getItemInArray } from "@/utils/tool";
 import { translate } from "@/utils/translate";
 import { Checkbox, Form, FormInstance, Input, Select } from "antd";
 const { Option } = Select;
@@ -80,13 +81,17 @@ const Page = () => {
       width: 200,
     },
     {
+      key: "idModel",
       title: "Model Name",
-      dataIndex: "modelName",
+      dataIndex: "idModel",
       width: 200,
+      render: (value, record, index) => {
+        return <div>{record.idModel && getItemInArray(dataIds?.["model"] ?? [], record.idModel, "id")?.name}</div>;
+      },
       filters: [
         ...(dataIds?.["model"] ?? []).map((e: any) => {
           return {
-            text: e.id,
+            text: e.name,
             value: e.id,
           };
         }),
@@ -155,7 +160,7 @@ const Page = () => {
 
   return (
     <div>
-      <PageHeader title={translate({ store, source: "Schema" })} />
+      <PageHeader title="Schema" />
       <div className="page-content">
         <TableView
           model={"schema"}

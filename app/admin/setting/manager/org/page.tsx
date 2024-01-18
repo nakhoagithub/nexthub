@@ -34,9 +34,13 @@ const ViewForm = (
       </Form.Item>
       <Form.Item label="Parent" name="idParent">
         <Select
+          showSearch
           allowClear
           onClear={() => {
             form.setFieldValue("idParent", "");
+          }}
+          filterOption={(input: string, option: any) => {
+            return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
           }}
         >
           {(dataIds?.["org"] ?? [])?.map((e: any) => (
@@ -135,7 +139,7 @@ const Page = () => {
 
   return (
     <div>
-      <PageHeader title={translate({ store, source: "Organization" })} />
+      <PageHeader title="Organization" />
       <div className="page-content">
         <TableView
           model={"org"}

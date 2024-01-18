@@ -4,6 +4,7 @@ import { StoreContext } from "@/app/components/context-provider";
 import DataView from "@/app/components/data-view/data-view";
 import TableView from "@/app/components/data-view/table-view/table-view";
 import { StoreApp } from "@/store/store";
+import { getItemInArray } from "@/utils/tool";
 import { translate } from "@/utils/translate";
 import { EditOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, FormInstance, Input, Select, Space } from "antd";
@@ -22,11 +23,7 @@ const ViewForm = (
 ) => {
   return (
     <Form name="form" form={form} layout="vertical" labelWrap onFinish={onFinish}>
-      <Form.Item
-        label="ID"
-        name="id"
-        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
-      >
+      <Form.Item label="ID" name="id">
         <Input />
       </Form.Item>
       <Form.Item
@@ -39,13 +36,17 @@ const ViewForm = (
 
       <Form.Item
         label="Model name"
-        name="modelName"
+        name="idModel"
         rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
         <Select
+          showSearch
           allowClear
           onClear={() => {
-            form.setFieldValue("modelName", "");
+            form.setFieldValue("idModel", "");
+          }}
+          filterOption={(input: string, option: any) => {
+            return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
           }}
         >
           {(dataIds?.["model"] ?? [])?.map((e: any) => (
@@ -67,21 +68,31 @@ const ViewForm = (
         <TextArea />
       </Form.Item>
       <Space>
-        <Form.Item name="apply_for_read" valuePropName="checked">
-          <Checkbox defaultChecked={true}>Read</Checkbox>
+        <Form.Item name="apply_for_read" valuePropName="checked" initialValue={true}>
+          <Checkbox defaultChecked={true} checked={true}>
+            Read
+          </Checkbox>
         </Form.Item>
-        <Form.Item name="apply_for_create" valuePropName="checked">
-          <Checkbox defaultChecked={true}>Create</Checkbox>
+        <Form.Item name="apply_for_create" valuePropName="checked" initialValue={true}>
+          <Checkbox defaultChecked={true} checked={true}>
+            Create
+          </Checkbox>
         </Form.Item>
-        <Form.Item name="apply_for_update" valuePropName="checked">
-          <Checkbox defaultChecked={true}>Update</Checkbox>
+        <Form.Item name="apply_for_update" valuePropName="checked" initialValue={true}>
+          <Checkbox defaultChecked={true} checked={true}>
+            Update
+          </Checkbox>
         </Form.Item>
-        <Form.Item name="apply_for_delete" valuePropName="checked">
-          <Checkbox defaultChecked={true}>Delete</Checkbox>
+        <Form.Item name="apply_for_delete" valuePropName="checked" initialValue={true}>
+          <Checkbox defaultChecked={true} checked={true}>
+            Delete
+          </Checkbox>
         </Form.Item>
       </Space>
       <Form.Item label="Active" name="active" valuePropName="checked" initialValue={true}>
-        <Checkbox defaultChecked={true}>Active</Checkbox>
+        <Checkbox defaultChecked={true} checked={true}>
+          Active
+        </Checkbox>
       </Form.Item>
     </Form>
   );
@@ -95,17 +106,21 @@ const Page = () => {
     {
       title: "ID",
       dataIndex: "id",
-      width: 160,
+      width: 200,
     },
     {
       title: "Name",
       dataIndex: "name",
-      width: 160,
+      width: 300,
     },
     {
+      key: "idModel",
       title: "Model name",
-      dataIndex: "modelName",
-      width: 160,
+      dataIndex: "idModel",
+      width: 200,
+      render: (value, record, index) => {
+        return <div>{record.idModel && getItemInArray(dataIds?.["model"] ?? [], record.idModel, "id")?.name}</div>;
+      },
     },
     {
       title: "Filter",
@@ -165,7 +180,7 @@ const Page = () => {
 
   return (
     <div>
-      <PageHeader title={translate({ store, source: "Document Access" })} />
+      <PageHeader title="Document Access" />
       <div className="page-content">
         <TableView
           model={"document-access"}
@@ -176,7 +191,7 @@ const Page = () => {
           ids={[
             {
               model: {
-                fields: ["id", "name"],
+                fields: ["_id", "id", "name"],
                 filter: { install: true },
               },
             },

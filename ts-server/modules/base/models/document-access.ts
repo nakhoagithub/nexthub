@@ -4,10 +4,10 @@ const collectionName = "base.document.access";
 
 export const documentAccessSchema = new mongoose.Schema(
   {
-    id: { type: String, required: true, unique: true },
+    id: { type: String },
     name: { type: String, required: true },
     description: { type: String },
-    modelName: { type: String },
+    idModel: { type: String },
     filter: { type: String },
     apply_for_read: { type: Boolean, default: true },
     apply_for_create: { type: Boolean, default: true },

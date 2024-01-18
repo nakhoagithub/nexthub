@@ -7,8 +7,8 @@ const checkAccessRight = async (req: Request, res: Response, next: NextFunction)
     const Access = mongoose.model("access");
     const Group = mongoose.model("group");
     const DocumentAccess = mongoose.model("document-access");
+    const Model = mongoose.model("model");
     let user = (req as any).user;
-    let allowFilter = (req as any).allowFilter;
     let params = req.params;
 
     if (!user) {
@@ -19,8 +19,10 @@ const checkAccessRight = async (req: Request, res: Response, next: NextFunction)
       return res.status(400).json({ code: 400, message: "Model not found" });
     }
 
+    const modelData = await Model.findOne({ modelName: params.name });
+
     // handler document access
-    let queryDocumentAccess: any = { modelName: params.name, active: true };
+    let queryDocumentAccess: any = { idModel: modelData.id, active: true };
 
     if (req.method === "GET") {
       queryDocumentAccess = { ...queryDocumentAccess, apply_for_read: true };
@@ -40,6 +42,9 @@ const checkAccessRight = async (req: Request, res: Response, next: NextFunction)
     const documentAccess = await DocumentAccess.find(queryDocumentAccess);
 
     let filter: any = { $or: [] };
+
+    console.log(documentAccess);
+
     for (const documentAccessData of documentAccess) {
       if (documentAccessData.filter) {
         filter.$or.push({ ...JSON.parse(documentAccessData.filter) });
@@ -47,13 +52,15 @@ const checkAccessRight = async (req: Request, res: Response, next: NextFunction)
     }
 
     if (filter.$or.length === 0) {
-      allowFilter = {};
+      (req as any).allowFilter = {};
     } else {
-      allowFilter = filter;
+      (req as any).allowFilter = filter;
     }
 
+    console.log((req as any).allowFilter);
+
     // handler access
-    let queryAccess: any = { modelName: params.name, active: true };
+    let queryAccess: any = { idModel: modelData.id, active: true };
     if (req.method === "GET") {
       queryAccess = { ...queryAccess, read: true };
     }

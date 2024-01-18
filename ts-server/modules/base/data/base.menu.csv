@@ -1,0 +1,19 @@
+id,name,description,url,idParent,isGroup,sequence,state,active
+module,Modules,,/admin/module,null,false,999,normal,true
+setting,Setting,,,null,false,1000,normal,true
+setting.manager,Manager,,,setting,false,1,normal,true
+setting.manager.user,User,,/admin/setting/manager/user,setting.manager,false,1,normal,true
+setting.manager.org,Org,,/admin/setting/manager/org,setting.manager,false,2,normal,true
+setting.manager.group,Group,,/admin/setting/manager/group,setting.manager,false,2,normal,true
+setting.technical,Technical,,,setting,false,2,normal,true
+setting.technical.security,Security,,,setting.technical,true,1,normal,true
+setting.technical.security.access_right,Access Rights,,/admin/setting/technical/security/access-right,setting.technical.security,false,1,normal,true
+setting.technical.security.document_access,Document Access,,/admin/setting/technical/security/document-access,setting.technical.security,false,2,normal,true
+setting.technical.user_interface,User interface,,,setting.technical,true,2,normal,true
+setting.technical.user_interface.menu,Menu,,/admin/setting/technical/user-interface/menu,setting.technical.user_interface,false,1,normal,true
+setting.technical.database-structure,Database Structure,,,setting.technical,true,3,normal,true
+setting.technical.database-structure.model,Model,,/admin/setting/technical/database-structure/model,setting.technical.database-structure,false,1,normal,true
+setting.technical.database-structure.schema,Schema,,/admin/setting/technical/database-structure/schema,setting.technical.database-structure,false,2,normal,true
+setting.translation,Translations,,,setting,false,3,normal,true
+setting.translation.language,Languages,,/admin/setting/translation/language,setting.translation,false,1,normal,true
+setting.translation.translate-term,Translated Terms,,/admin/setting/translation/translated-term,setting.translation,false,2,normal,true

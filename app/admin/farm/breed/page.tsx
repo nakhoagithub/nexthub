@@ -29,9 +29,13 @@ const ViewForm = (
         rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
         <Select
+          showSearch
           allowClear
           onClear={() => {
             form.setFieldValue("idOrg", null);
+          }}
+          filterOption={(input: string, option: any) => {
+            return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
           }}
         >
           {(dataIds?.["org"] ?? []).map((e: any) => (
@@ -62,9 +66,13 @@ const ViewForm = (
         rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
         <Select
+          showSearch
           allowClear
           onClear={() => {
             form.setFieldValue("idBreedCategory", "");
+          }}
+          filterOption={(input: string, option: any) => {
+            return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
           }}
         >
           {(dataIds?.["breed-category"] ?? []).map((e: any) => (
@@ -154,7 +162,7 @@ const Page = () => {
 
   return (
     <div>
-      <PageHeader title={translate({ store, source: "Breed" })} />
+      <PageHeader title="Breed" />
       <div className="page-content">
         <TableView
           model={"breed"}

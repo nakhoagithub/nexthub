@@ -50,7 +50,6 @@
 //       const manifest: Manifest = readManifest(filePath);
 
 //       if (manifest.installable) {
-//         console.log(module);
 //       }
 //     });
 //   } catch (error) {

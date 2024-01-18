@@ -58,9 +58,15 @@ const ViewForm = (
       </Form.Item>
 
       <Form.Item label="Origanization" name="idsOrg">
-        <Select mode="multiple">
+        <Select
+          showSearch
+          mode="multiple"
+          filterOption={(input: string, option: any) => {
+            return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
+          }}
+        >
           {...(dataIds?.["org"] ?? []).map((e: any) => (
-            <Option key={e._id}>
+            <Option key={e._id} label={e.name}>
               <span>{e.name}</span>
             </Option>
           ))}
@@ -68,9 +74,14 @@ const ViewForm = (
       </Form.Item>
 
       <Form.Item label="Locale Code" name="localeCode">
-        <Select>
+        <Select
+          showSearch
+          filterOption={(input: string, option: any) => {
+            return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
+          }}
+        >
           {...(dataIds?.["language"] ?? []).map((e: any) => (
-            <Option key={e.localeCode}>
+            <Option key={e.localeCode} label={e.name}>
               <span>{e.name}</span>
             </Option>
           ))}
@@ -152,7 +163,7 @@ const Page = () => {
 
   return (
     <div>
-      <PageHeader title={translate({ store, source: "User" })} />
+      <PageHeader title="User" />
       <div className="page-content">
         <ModalChangePassword open={openModalChangePassword} setOpen={setOpenModalChangePassword} id={idUser} />
         <TableView

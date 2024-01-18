@@ -53,7 +53,7 @@ const ModalTableSelection = ({
       const {
         data: { code, datas, total },
       } = await app.get(
-        `/api/model/${model}/get?sort=${JSON.stringify(newQuery.sort)}&limit=${newQuery.limit}&skip=${newQuery.skip}`
+        `/api/db/${model}?sort=${JSON.stringify(newQuery.sort)}&limit=${newQuery.limit}&skip=${newQuery.skip}`
       );
 
       if (code === 200) {

@@ -20,7 +20,7 @@ const SelecteOrg = () => {
       let filter = { _id: { $in: user.idsOrg ?? [] }, active: true };
       const {
         data: { code, message, datas },
-      } = await app.get(`/api/model/org/get?filter=${JSON.stringify(filter)}`);
+      } = await app.get(`/api/db/org?filter=${JSON.stringify(filter)}`);
 
       if (code === 200) {
         setOrgs(datas);

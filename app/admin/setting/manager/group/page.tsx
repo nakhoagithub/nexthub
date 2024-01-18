@@ -174,12 +174,16 @@ const ViewForm = (
         <TextArea />
       </Form.Item>
 
-      <Form.Item label={translate({ store: store, source: "User" })} name="idsUser">
+      <Form.Item label={translate({ store: store, source: "User" })} name="idsUser" initialValue={[]}>
         <Select
+          showSearch
           mode="multiple"
           allowClear
           onClear={() => {
             form.setFieldValue("idsUser", []);
+          }}
+          filterOption={(input: string, option: any) => {
+            return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
           }}
         >
           {(dataIds?.["user"] ?? [])?.map((e: any) => (
@@ -190,12 +194,16 @@ const ViewForm = (
         </Select>
       </Form.Item>
 
-      <Form.Item label={translate({ store: store, source: "Menu" })} name="idsMenu">
+      <Form.Item label={translate({ store: store, source: "Menu" })} name="idsMenu" initialValue={[]}>
         <Select
+          showSearch
           mode="multiple"
           allowClear
           onClear={() => {
             form.setFieldValue("idsMenu", []);
+          }}
+          filterOption={(input: string, option: any) => {
+            return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
           }}
         >
           {(dataIds?.["menu"] ?? [])?.map((e: any) => (
@@ -206,12 +214,16 @@ const ViewForm = (
         </Select>
       </Form.Item>
 
-      <Form.Item label={translate({ store: store, source: "Access" })} name="idsAccess">
+      <Form.Item label={translate({ store: store, source: "Access" })} name="idsAccess" initialValue={[]}>
         <Select
+          showSearch
           mode="multiple"
           allowClear
           onClear={() => {
             form.setFieldValue("idsAccess", []);
+          }}
+          filterOption={(input: string, option: any) => {
+            return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
           }}
         >
           {(dataIds?.["access"] ?? [])?.map((e: any) => (
@@ -222,12 +234,20 @@ const ViewForm = (
         </Select>
       </Form.Item>
 
-      <Form.Item label={translate({ store: store, source: "Document Access" })} name="idsDocumentAccess">
+      <Form.Item
+        label={translate({ store: store, source: "Document Access" })}
+        name="idsDocumentAccess"
+        initialValue={[]}
+      >
         <Select
+          showSearch
           mode="multiple"
           allowClear
           onClear={() => {
             form.setFieldValue("idsDocumentAccess", []);
+          }}
+          filterOption={(input: string, option: any) => {
+            return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
           }}
         >
           {(dataIds?.["document-access"] ?? [])?.map((e: any) => (
@@ -285,7 +305,7 @@ const Page = () => {
 
   return (
     <div>
-      <PageHeader title={translate({ store, source: "Group" })} />
+      <PageHeader title="Group" />
       <div className="page-content">
         <TableView
           model={"group"}

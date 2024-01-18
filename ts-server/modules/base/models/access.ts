@@ -4,10 +4,10 @@ const collectionName = "base.access";
 
 export const accessSchema = new mongoose.Schema(
   {
-    id: { type: String, required: true, unique: true },
+    id: { type: String },
     name: { type: String, required: true },
     description: { type: String },
-    modelName: { type: String },
+    idModel: { type: String },
     read: { type: Boolean, default: true },
     create: { type: Boolean, default: true },
     update: { type: Boolean, default: true },

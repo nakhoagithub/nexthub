@@ -123,7 +123,7 @@ const Page = () => {
 
   return (
     <div>
-      <PageHeader title={translate({ store, source: "Model" })} />
+      <PageHeader title="Model" />
       <div className="page-content">
         <TableView
           model={"model"}

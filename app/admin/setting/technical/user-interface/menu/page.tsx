@@ -101,7 +101,7 @@ const Page = () => {
 
   return (
     <div>
-      <PageHeader title={translate({ store, source: "Menu" })} />
+      <PageHeader title="Menu" />
       <div className="page-content">
         <TableView
           model={"menu"}

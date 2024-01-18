@@ -44,9 +44,13 @@ const ViewForm = (
         rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
         <Select
+          showSearch
           allowClear
           onClear={() => {
             form.setFieldValue("localeCode", "");
+          }}
+          filterOption={(input: string, option: any) => {
+            return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
           }}
         >
           {(dataIds?.["language"] ?? []).map((e: any) => (
@@ -102,7 +106,7 @@ const Page = () => {
 
   return (
     <div>
-      <PageHeader title={translate({ store, source: "Translated Term" })} />
+      <PageHeader title="Translated Term" />
       <div className="page-content">
         <TableView
           model={"translate-term"}

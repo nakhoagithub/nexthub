@@ -48,7 +48,7 @@ const ModalCustom = ({
 
         const {
           data: { code, message, errors },
-        } = await app.post(`/api/model/${model}/create`, { data: { ...values, ...newDefault } });
+        } = await app.post(`/api/db/${model}`, { data: { ...values, ...newDefault } });
         if (code === 200) {
           useApp.message.success("Success");
           setOpen(false);
@@ -78,7 +78,7 @@ const ModalCustom = ({
       try {
         const {
           data: { code, errors, message },
-        } = await app.patch(`/api/model/${model}/update`, {
+        } = await app.patch(`/api/db/${model}`, {
           fieldId: updateField ?? "_id",
           datas: [{ ...values, _id: viewId }],
         });
@@ -120,7 +120,7 @@ const ModalCustom = ({
       let newFilter: any = { _id: viewId };
       const {
         data: { datas, code },
-      } = await app.get(`/api/model/${model}/get?filter=${JSON.stringify(newFilter)}`);
+      } = await app.get(`/api/db/${model}?filter=${JSON.stringify(newFilter)}`);
 
       if (code === 200) {
         form.resetFields();

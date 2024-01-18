@@ -7,10 +7,10 @@ export async function readCSV(folderModule: string, fileName: string) {
     if (!folderModule || !fileName) {
       throw Error("filepath is undefined");
     }
-    let filepath = `./server/modules/${folderModule}/data/${fileName}`;
+    let filepath = `./modules/${folderModule}/data/${fileName}`;
     let results = await fs.createReadStream(filepath).pipe(csv()).toArray();
 
-    let newResults = [];
+    let newResults: any[] = [];
     for (var result of results) {
       let newObject = {};
       for (var value of Object.entries(result)) {

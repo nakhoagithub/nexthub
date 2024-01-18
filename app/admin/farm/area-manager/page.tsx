@@ -41,9 +41,13 @@ const ViewForm = (
 
       <Form.Item label="Parent" name="idParent">
         <Select
+          showSearch
           allowClear
           onClear={() => {
             form.setFieldValue("idParent", "");
+          }}
+          filterOption={(input: string, option: any) => {
+            return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
           }}
         >
           {(dataIds?.["area"] ?? [])?.map((e: any) => (
@@ -56,9 +60,13 @@ const ViewForm = (
 
       <Form.Item label="Farm" name="idFarm">
         <Select
+          showSearch
           allowClear
           onClear={() => {
             form.setFieldValue("idFarm", "");
+          }}
+          filterOption={(input: string, option: any) => {
+            return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
           }}
         >
           {(dataIds?.["farm"] ?? [])?.map((e: any) => (
@@ -131,7 +139,7 @@ const Page = () => {
 
   return (
     <div>
-      <PageHeader title={translate({ store, source: "Area" })} />
+      <PageHeader title="Area" />
       <div className="page-content">
         <TableView
           model={"area"}

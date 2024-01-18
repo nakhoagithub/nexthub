@@ -169,7 +169,7 @@ const DataView = ({
       try {
         const {
           data: { code, data, message, errors },
-        } = await app.post(`/api/model/${model}/create`, { data: { ...values } });
+        } = await app.post(`/api/db/${model}`, { data: { ...values } });
         if (code === 200) {
           useApp.message.success("Success");
           router.back();
@@ -198,7 +198,7 @@ const DataView = ({
       try {
         const {
           data: { code, errors, message },
-        } = await app.patch(`/api/model/${model}/update`, {
+        } = await app.patch(`/api/db/${model}`, {
           fieldId: updateField ?? "_id",
           datas: [{ ...values, _id: viewId }],
         });
@@ -239,7 +239,7 @@ const DataView = ({
         onOk: async () => {
           const {
             data: { code, message, statusError },
-          } = await app.delete(`/api/model/${model}/delete`, { data: { fieldId: "_id", datas: newIds } });
+          } = await app.delete(`/api/db/${model}`, { data: { fieldId: "_id", datas: newIds } });
 
           if (code === 200) {
             useApp.message.success("Deleted");
@@ -268,7 +268,7 @@ const DataView = ({
     try {
       const {
         data: { access, code },
-      } = await app.get(`/api/model/${model}/access`);
+      } = await app.get(`/api/db/${model}/access`);
 
       if (code === 200) {
         setAccessRightModel(access);
@@ -295,7 +295,7 @@ const DataView = ({
       const {
         data: { datas, code, total },
       } = await app.get(
-        `/api/model/${model}/get?filter=${JSON.stringify(newFilter)}&sort=${JSON.stringify(newSort)}&limit=${
+        `/api/db/${model}?filter=${JSON.stringify(newFilter)}&sort=${JSON.stringify(newSort)}&limit=${
           newQuery.limit
         }&skip=${newQuery.skip}`
       );
@@ -337,7 +337,7 @@ const DataView = ({
             const {
               data: { datas, code, total },
             } = await app.get(
-              api! ?? `/api/model/${model}/get?fields=${idsKey[model].fields}&filter=${JSON.stringify(filter)}`
+              api! ?? `/api/db/${model}?fields=${idsKey[model].fields}&filter=${JSON.stringify(filter)}`
             );
 
             if (code === 200) {
@@ -461,7 +461,7 @@ const DataView = ({
       let newFilter: any = { _id: viewId };
       const {
         data: { datas, code },
-      } = await app.get(`/api/model/${model}/get?filter=${JSON.stringify(newFilter)}`);
+      } = await app.get(`/api/db/${model}?filter=${JSON.stringify(newFilter)}`);
 
       if (code === 200) {
         form.resetFields();
@@ -481,7 +481,7 @@ const DataView = ({
   return (
     <div>
       <PageHeader
-        title={translate({ store: store, modelName: model, source: titleHeader ?? "(No title)" })}
+        title={translate({ store: store, source: titleHeader ?? "(No title)" })}
         action={
           <Space wrap>
             {(viewType === "create" || viewType === "update") && <Button onClick={() => router.back()}>Back</Button>}

@@ -4,6 +4,7 @@ import { logger } from "./logger";
 import { Model, ModuleInterface } from "interfaces/module";
 import mongoose from "mongoose";
 import { moduleSchema } from "../modules/base/models/module";
+import { readCSV } from "./csv";
 
 const modulesPath = path.join("./", "modules");
 
@@ -54,7 +55,7 @@ export async function createModule({ module, models }: { module: ModuleInterface
   // tạo module
   await Module.updateOne(
     { id: module.id },
-    { ...module, installable: moduleData?.installable ?? module.installable },
+    { ...module, installable: moduleData?.installable ?? module.installable, state: module.state },
     { upsert: true }
   );
 
@@ -100,8 +101,9 @@ export async function createModule({ module, models }: { module: ModuleInterface
     const idsSchema = idsSchemaData.map((e) => e._id.toHexString());
 
     let newModelData = {
-      id: idModel,
+      id: `${module.id}.${model.modelName}`,
       name: model.name,
+      modelName: model.modelName,
       collectionName: idModel,
       idsSchema: idsSchema,
       timestamp: (ModelMongoose.schema as any).options.timestamps,
@@ -110,5 +112,44 @@ export async function createModule({ module, models }: { module: ModuleInterface
     };
 
     await Model.updateOne({ id: newModelData.id }, { ...newModelData }, { upsert: true });
+  }
+
+  // create data default
+  for (var dataIndex of module.datas) {
+    const datasDefault = await readCSV(dataIndex.folder, dataIndex.file);
+    try {
+      const ModelMongoose = mongoose.model(dataIndex.model);
+
+      // data default of model
+      for await (var dataDefault of datasDefault ?? []) {
+        const findData = await ModelMongoose.findOne({
+          [dataIndex.primaryKey]: dataDefault[dataIndex.primaryKey],
+        });
+
+        if (!findData) {
+          await ModelMongoose.updateOne(
+            { [dataIndex.primaryKey]: dataDefault[dataIndex.primaryKey] },
+            { ...dataDefault },
+            { upsert: true }
+          );
+        }
+
+        if (dataIndex.noUpdate === false) {
+          await ModelMongoose.updateOne(
+            { [dataIndex.primaryKey]: dataDefault[dataIndex.primaryKey] },
+            { ...dataDefault },
+            { upsert: true }
+          );
+        }
+      }
+
+      await Model.updateOne(
+        { id: `${module.id}.${dataIndex.model}` },
+        { description: dataIndex.modelDescription },
+        { upsert: true }
+      );
+    } catch (error) {
+      logger({ message: error, name: `CREATE MODEL: ${dataIndex.model}` });
+    }
   }
 }

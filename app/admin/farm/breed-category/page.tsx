@@ -23,10 +23,14 @@ const ViewForm = (
     <Form name="form" form={form} layout="vertical" onFinish={onFinish}>
       <Form.Item label={translate({ store, source: "Org" })} name="idsOrg" initialValue={[]}>
         <Select
+          showSearch
           mode="multiple"
           allowClear
           onClear={() => {
             form.setFieldValue("idsOrg", []);
+          }}
+          filterOption={(input: string, option: any) => {
+            return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
           }}
         >
           {(dataIds?.["org"] ?? []).map((e: any) => (
@@ -86,7 +90,7 @@ const Page = () => {
 
   return (
     <div>
-      <PageHeader title={translate({ store, source: "Breed Category" })} />
+      <PageHeader title="Breed Category" />
       <div className="page-content">
         <TableView
           model={"breed-category"}

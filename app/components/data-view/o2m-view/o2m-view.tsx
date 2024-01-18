@@ -107,7 +107,7 @@ const One2ManyView = ({
       const {
         data: { code, datas, total },
       } = await app.get(
-        `/api/model/${toModel}/get?sort=${JSON.stringify(newQuery.sort)}&limit=${newQuery.limit}&skip=${
+        `/api/db/${toModel}?sort=${JSON.stringify(newQuery.sort)}&limit=${newQuery.limit}&skip=${
           newQuery.skip
         }&filter=${JSON.stringify({ _id: { $in: ids } })}`
       );
@@ -133,7 +133,7 @@ const One2ManyView = ({
       let newFilter: any = { _id: viewId };
       const {
         data: { datas, code },
-      } = await app.get(`/api/model/${model}/get?filter=${JSON.stringify(newFilter)}`);
+      } = await app.get(`/api/db/${model}?filter=${JSON.stringify(newFilter)}`);
 
       if (code === 200) {
         if (datas[0][idsField].length > 0) setIds(datas[0][idsField]);
