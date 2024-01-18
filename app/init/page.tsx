@@ -14,9 +14,8 @@ const Page = () => {
     try {
       const {
         data: { data, code },
-      } = await app.post(`/api/user/create-admin`, { ...values });
+      } = await app.post(`/api/user/create-master`, { ...values });
       if (code === 200) {
-        login(data);
         router.push("/login");
       }
     } catch (error) {
