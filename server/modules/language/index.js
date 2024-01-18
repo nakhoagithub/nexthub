@@ -8,10 +8,12 @@ TranslateTerm();
 
 await createModule("language", {
   id: "language",
+  name: "Language",
+  description: "Module ngôn ngữ, dùng để dịch ngôn ngữ.",
   folderName: "language",
   models: ["language", "translate-term"],
-  name: "Language",
   state: "base",
+  install: true,
   datas: [
     {
       primaryKey: "id",

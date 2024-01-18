@@ -1,0 +1,18 @@
+.table-view {
+  .table-view-header {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    .table-view-header-left {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .table-view-header-right {
+      display: flex;
+      flex-wrap: wrap;
+    }
+  }
+}

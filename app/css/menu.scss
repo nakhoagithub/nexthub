@@ -1,0 +1,14 @@
+.menu {
+  display: block;
+  min-width: 200px;
+  width: 200px;
+  height: calc(100vh - 51px);
+  transition: min-width 0.2s ease-in-out;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  @media screen and (max-width: 600px) {
+    min-width: 0px;
+    width: 0px;
+  }
+}

@@ -23,6 +23,7 @@ const ModalTableSelection = ({
   columnsTable?: ColumnsType<any>;
   onOk?: (values: any[]) => void;
 }) => {
+  const useApp = App.useApp();
   const [loading, setLoading] = useState(false);
   const [datas, setDatas] = useState<any[]>([]);
   const [datasSelected, setDatasSelected] = useState<any[]>([]);
@@ -52,7 +53,7 @@ const ModalTableSelection = ({
       const {
         data: { code, datas, total },
       } = await app.get(
-        `/api/model/${model}/get?sort=${JSON.stringify(newQuery.sort)}&limit=${newQuery.limit}&skip=${newQuery.skip}`
+        `/api/db/${model}?sort=${JSON.stringify(newQuery.sort)}&limit=${newQuery.limit}&skip=${newQuery.skip}`
       );
 
       if (code === 200) {
@@ -65,7 +66,9 @@ const ModalTableSelection = ({
           },
         });
       }
-    } catch (error) {}
+    } catch (error) {
+      useApp.notification.error({ message: "Internal Server Error" });
+    }
   }
 
   async function fetchData() {

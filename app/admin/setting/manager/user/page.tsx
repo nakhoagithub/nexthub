@@ -3,49 +3,41 @@ import DataView from "@/app/components/data-view/data-view";
 import { Button, Checkbox, Form, FormInstance, Input, Select, Tabs } from "antd";
 const { Option } = Select;
 import { ColumnsType } from "antd/es/table";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import ModalChangePassword from "./components/modal-change-password";
 import One2ManyView from "@/app/components/data-view/o2m-view/o2m-view";
 import { userStates } from "@/utils/config";
 import { getItemInArray } from "@/utils/tool";
 import { translate } from "@/utils/translate";
+import { StoreContext } from "@/app/components/context-provider";
+import { StoreApi } from "zustand";
+import { StoreApp } from "@/store/store";
+import TableView from "@/app/components/data-view/table-view/table-view";
+import PageHeader from "@/app/components/body/page-header";
 
-const ViewForm = (form: FormInstance<any>, onFinish: (value: any) => void, viewType: string, dataIds: any) => {
-  const columnsOrg: ColumnsType<any> = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      width: 200,
-      key: "name",
-    },
-    {
-      title: "Short name",
-      dataIndex: "shortName",
-      width: 160,
-      key: "name",
-    },
-    {
-      title: "",
-      key: "none",
-    },
-  ];
-
+const ViewForm = (
+  store: StoreApi<StoreApp>,
+  form: FormInstance<any>,
+  onFinish: (value: any) => void,
+  viewType: string | null,
+  dataIds: any
+) => {
   return (
-    <Form name="form" form={form} layout="vertical" style={{ width: 600 }} onFinish={onFinish}>
+    <Form name="form" form={form} layout="vertical" onFinish={onFinish}>
       <Form.Item label="Name" name="name">
         <Input />
       </Form.Item>
       <Form.Item
         label="Username"
         name="username"
-        rules={[{ required: true, message: translate({ source: "This field cannot be left blank" }) }]}
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
         <Input disabled={viewType === "update"} />
       </Form.Item>
       <Form.Item
         label="Password"
         name="password"
-        rules={[{ required: true, message: translate({ source: "This field cannot be left blank" }) }]}
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
         <Input.Password disabled={viewType === "update"} />
       </Form.Item>
@@ -53,7 +45,7 @@ const ViewForm = (form: FormInstance<any>, onFinish: (value: any) => void, viewT
       <Form.Item
         label="State"
         name="state"
-        rules={[{ required: true, message: translate({ source: "This field cannot be left blank" }) }]}
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
         initialValue={"user"}
       >
         <Select>
@@ -65,10 +57,31 @@ const ViewForm = (form: FormInstance<any>, onFinish: (value: any) => void, viewT
         </Select>
       </Form.Item>
 
+      <Form.Item label="Origanization" name="idsOrg">
+        <Select
+          showSearch
+          mode="multiple"
+          filterOption={(input: string, option: any) => {
+            return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
+          }}
+        >
+          {...(dataIds?.["org"] ?? []).map((e: any) => (
+            <Option key={e._id} label={e.name}>
+              <span>{e.name}</span>
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+
       <Form.Item label="Locale Code" name="localeCode">
-        <Select>
+        <Select
+          showSearch
+          filterOption={(input: string, option: any) => {
+            return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
+          }}
+        >
           {...(dataIds?.["language"] ?? []).map((e: any) => (
-            <Option key={e.localeCode}>
+            <Option key={e.localeCode} label={e.name}>
               <span>{e.name}</span>
             </Option>
           ))}
@@ -79,7 +92,7 @@ const ViewForm = (form: FormInstance<any>, onFinish: (value: any) => void, viewT
         <Checkbox defaultChecked={true}>Active</Checkbox>
       </Form.Item>
 
-      <Tabs
+      {/* <Tabs
         type="card"
         items={[
           {
@@ -99,12 +112,13 @@ const ViewForm = (form: FormInstance<any>, onFinish: (value: any) => void, viewT
             ),
           },
         ]}
-      />
+      /> */}
     </Form>
   );
 };
 
 const Page = () => {
+  const store = useContext(StoreContext);
   const [openModalChangePassword, setOpenModalChangePassword] = useState(false);
   const [idUser, setIdUser] = useState<string>();
   const [dataIds, setDataIds] = useState<any>();
@@ -125,7 +139,7 @@ const Page = () => {
       title: "Locale Code",
       width: 200,
       render: (value, record, index) => {
-        return <div>{getItemInArray(dataIds?.["language"] ?? [], record.localeCode, "localeCode").name}</div>;
+        return <div>{getItemInArray(dataIds?.["language"] ?? [], record.localeCode, "localeCode")?.name ?? ""}</div>;
       },
     },
     {
@@ -145,40 +159,51 @@ const Page = () => {
     },
   ];
 
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
   return (
     <div>
-      <ModalChangePassword open={openModalChangePassword} setOpen={setOpenModalChangePassword} id={idUser} />
-      <DataView
-        model="user"
-        titleHeader="User"
-        columnsTable={columns}
-        tableBoder={true}
-        formLayout={(form, onFinish, viewType) => ViewForm(form, onFinish, viewType, dataIds)}
-        updateField="username"
-        ids={[
-          {
-            language: {
-              fields: ["localeCode", "name"],
-              filter: { active: true },
+      <PageHeader title="User" />
+      <div className="page-content">
+        <ModalChangePassword open={openModalChangePassword} setOpen={setOpenModalChangePassword} id={idUser} />
+        <TableView
+          model={"user"}
+          columnsTable={columns}
+          formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
+          selectedRowKeys={selectedRowKeys}
+          setSelectedRowKeys={setSelectedRowKeys}
+          updateField="username"
+          ids={[
+            {
+              language: {
+                fields: ["localeCode", "name"],
+                filter: { active: true },
+              },
             },
-          },
-        ]}
-        dataIdsCallback={(value) => setDataIds(value)}
-        actions={(keys?: any[]) => [
-          <div>
-            {keys?.length === 1 && (
-              <Button
-                onClick={() => {
-                  setOpenModalChangePassword(true);
-                  setIdUser(keys[0]);
-                }}
-              >
-                Change Password
-              </Button>
-            )}
-          </div>,
-        ]}
-      />
+            {
+              org: {
+                fields: ["_id", "name"],
+                filter: { active: true },
+              },
+            },
+          ]}
+          dataIdsCallback={(value) => setDataIds(value)}
+          actions={(keys?: any[]) => [
+            <div>
+              {keys?.length === 1 && (
+                <Button
+                  onClick={() => {
+                    setOpenModalChangePassword(true);
+                    setIdUser(keys[0]);
+                  }}
+                >
+                  Change Password
+                </Button>
+              )}
+            </div>,
+          ]}
+        />
+      </div>
     </div>
   );
 };

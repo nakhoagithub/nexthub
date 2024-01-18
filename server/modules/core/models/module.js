@@ -10,6 +10,9 @@ const schema = new mongoose.Schema(
     name: { type: String, required: true },
     description: { type: String },
     models: [{ type: String }],
+    datas: [{ type: Object }],
+    noUpdate: { type: Boolean },
+    install: { type: Boolean, default: false },
     state: { type: String, default: "nomal" },
   },
   { timestamps: true, versionKey: false, collection: collectionName }

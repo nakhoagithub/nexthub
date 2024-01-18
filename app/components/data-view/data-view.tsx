@@ -13,13 +13,18 @@ import { FilterValue, SorterResult } from "antd/es/table/interface";
 import { pageSizeOptions } from "@/interfaces/page-size-options";
 import { translate } from "@/utils/translate";
 import { StoreContext } from "../context-provider";
+import KanbanView from "./kanban/kanban";
+import { StoreApi } from "zustand";
+import { StoreApp } from "@/store/store";
 
 const DataView = ({
   titleHeader,
   model,
   columnsTable,
+  renderItemKanban,
   tableBoder,
   filter,
+  sort,
   formLayout,
   updateField,
   hideActionCreate,
@@ -31,14 +36,23 @@ const DataView = ({
   titleHeader?: string;
   model: string;
   columnsTable?: any[];
+  renderItemKanban?: (value: any, index: number, fetchData?: () => Promise<void>) => React.ReactNode;
   tableBoder?: boolean;
   filter?: Object;
-  formLayout?: (
-    form: FormInstance<any>,
-    onFinish: (value: any) => void,
-    viewType: string,
-    disabled?: boolean
-  ) => React.ReactNode;
+  sort?: Object;
+  formLayout?: ({
+    store,
+    form,
+    onFinish,
+    viewType,
+    disabled,
+  }: {
+    store: StoreApi<StoreApp>;
+    form: FormInstance<any>;
+    onFinish: (value: any) => void;
+    viewType: string;
+    disabled?: boolean;
+  }) => React.ReactNode;
   updateField?: string;
   hideActionCreate?: boolean;
   hideActionUpdate?: boolean;
@@ -103,16 +117,27 @@ const DataView = ({
     }
   };
 
+  /// Kiểu xem
   let viewTypes: string[] = [];
 
+  /// Kiểu xem bảng
   if (columnsTable && !viewTypes.includes("table")) {
     viewTypes.push("table");
   }
+
+  /// Kiểu xem form tạo
   if (formLayout && !viewTypes.includes("create")) {
     viewTypes.push("create");
   }
+
+  /// Kiểu xem form cập nhật
   if (formLayout && !viewTypes.includes("update")) {
     viewTypes.push("update");
+  }
+
+  /// Kiểu xem kanban
+  if (renderItemKanban && !viewTypes.includes("kanban")) {
+    viewTypes.push("kanban");
   }
 
   let newColumnsTable = [...(columnsTable ?? [])];
@@ -144,7 +169,7 @@ const DataView = ({
       try {
         const {
           data: { code, data, message, errors },
-        } = await app.post(`/api/model/${model}/create`, { data: { ...values } });
+        } = await app.post(`/api/db/${model}`, { data: { ...values } });
         if (code === 200) {
           useApp.message.success("Success");
           router.back();
@@ -159,7 +184,9 @@ const DataView = ({
             useApp.message.error(message ?? "");
           }
         }
-      } catch (error) {}
+      } catch (error) {
+        useApp.notification.error({ message: "Internal Server Error" });
+      }
     }
 
     if (viewType === "update") {
@@ -171,7 +198,7 @@ const DataView = ({
       try {
         const {
           data: { code, errors, message },
-        } = await app.patch(`/api/model/${model}/update`, {
+        } = await app.patch(`/api/db/${model}`, {
           fieldId: updateField ?? "_id",
           datas: [{ ...values, _id: viewId }],
         });
@@ -190,7 +217,9 @@ const DataView = ({
             useApp.message.error(message ?? "");
           }
         }
-      } catch (error) {}
+      } catch (error) {
+        useApp.notification.error({ message: "Internal Server Error" });
+      }
     }
   }
 
@@ -210,7 +239,7 @@ const DataView = ({
         onOk: async () => {
           const {
             data: { code, message, statusError },
-          } = await app.delete(`/api/model/${model}/delete`, { data: { fieldId: "_id", datas: newIds } });
+          } = await app.delete(`/api/db/${model}`, { data: { fieldId: "_id", datas: newIds } });
 
           if (code === 200) {
             useApp.message.success("Deleted");
@@ -230,24 +259,33 @@ const DataView = ({
           }
         },
       });
-    } catch (error) {}
+    } catch (error) {
+      useApp.notification.error({ message: "Internal Server Error" });
+    }
   }
 
   async function getAccess() {
     try {
       const {
         data: { access, code },
-      } = await app.get(`/api/model/${model}/access`);
+      } = await app.get(`/api/db/${model}/access`);
 
       if (code === 200) {
         setAccessRightModel(access);
       }
-    } catch (error) {}
+    } catch (error) {
+      useApp.notification.error({ message: "Internal Server Error" });
+    }
   }
 
   async function getDatas() {
     try {
       let newQuery = getParamFilter(tableParams);
+      let newSort = newQuery.sort;
+      if (sort) {
+        newSort = sort;
+      }
+
       let newFilter: any = {};
 
       if (filter) {
@@ -257,7 +295,7 @@ const DataView = ({
       const {
         data: { datas, code, total },
       } = await app.get(
-        `/api/model/${model}/get?filter=${JSON.stringify(newFilter)}&sort=${JSON.stringify(newQuery.sort)}&limit=${
+        `/api/db/${model}?filter=${JSON.stringify(newFilter)}&sort=${JSON.stringify(newSort)}&limit=${
           newQuery.limit
         }&skip=${newQuery.skip}`
       );
@@ -272,7 +310,9 @@ const DataView = ({
           },
         });
       }
-    } catch (error) {}
+    } catch (error) {
+      useApp.notification.error({ message: "Internal Server Error" });
+    }
   }
 
   async function getDataIds() {
@@ -297,7 +337,7 @@ const DataView = ({
             const {
               data: { datas, code, total },
             } = await app.get(
-              api! ?? `/api/model/${model}/get?fields=${idsKey[model].fields}&filter=${JSON.stringify(filter)}`
+              api! ?? `/api/db/${model}?fields=${idsKey[model].fields}&filter=${JSON.stringify(filter)}`
             );
 
             if (code === 200) {
@@ -311,7 +351,9 @@ const DataView = ({
       if (dataIdsCallback) {
         dataIdsCallback(newDataIds);
       }
-    } catch (error) {}
+    } catch (error) {
+      useApp.notification.error({ message: "Internal Server Error" });
+    }
   }
 
   // function setQueryParam(paramKey: string, value: string) {
@@ -337,10 +379,11 @@ const DataView = ({
     router.push(`${pathname}${query}`);
   }
 
-  function removeQueryParam(paramKey: string) {
+  function removeQueryParams(paramKeys: string[] = []) {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
-    current.delete(paramKey);
-
+    paramKeys.forEach((paramKey) => {
+      current.delete(paramKey);
+    });
     const search = current.toString();
     const query = search ? `?${search}` : "";
     router.push(`${pathname}${query}`);
@@ -357,7 +400,9 @@ const DataView = ({
         const query = search ? `?${search}` : "";
         router.push(`${pathname}${query}`);
       }
-    } catch (error) {}
+    } catch (error) {
+      useApp.notification.error({ message: "Internal Server Error" });
+    }
   };
 
   async function fetchLanguageModel() {
@@ -369,7 +414,9 @@ const DataView = ({
       if (code === 200) {
         setLanguageData({ datas: datas });
       }
-    } catch (error) {}
+    } catch (error) {
+      useApp.notification.error({ message: "Internal Server Error" });
+    }
   }
 
   async function fetchData() {
@@ -378,7 +425,7 @@ const DataView = ({
     await getAccess();
     await getDatas();
     await fetchViewType();
-    await fetchLanguageModel();
+    // await fetchLanguageModel();
     setInitData(false);
     setLoading(false);
   }
@@ -414,13 +461,15 @@ const DataView = ({
       let newFilter: any = { _id: viewId };
       const {
         data: { datas, code },
-      } = await app.get(`/api/model/${model}/get?filter=${JSON.stringify(newFilter)}`);
+      } = await app.get(`/api/db/${model}?filter=${JSON.stringify(newFilter)}`);
 
       if (code === 200) {
         form.resetFields();
         form?.setFieldsValue({ ...datas[0] });
       }
-    } catch (error) {}
+    } catch (error) {
+      useApp.notification.error({ message: "Internal Server Error" });
+    }
   }
 
   useEffect(() => {
@@ -432,7 +481,7 @@ const DataView = ({
   return (
     <div>
       <PageHeader
-        title={translate({ modelName: model, source: titleHeader ?? "(No title)" })}
+        title={translate({ store: store, source: titleHeader ?? "(No title)" })}
         action={
           <Space wrap>
             {(viewType === "create" || viewType === "update") && <Button onClick={() => router.back()}>Back</Button>}
@@ -468,8 +517,9 @@ const DataView = ({
           </Space>
         }
       />
-      <div className="page-content">
-        {viewType === "table" && (
+
+      {viewType === "table" && (
+        <div className="page-content">
           <TableView
             model={model}
             columnsTable={newColumnsTable}
@@ -481,12 +531,26 @@ const DataView = ({
             tableParams={tableParams}
             handleTableChange={handleTableChange}
           />
-        )}
-        {(viewType === "create" || viewType === "update") && formLayout !== undefined && (
-          <FormView formLayout={formLayout(form, onFinishForm, viewType, getDisableForm())} />
-        )}
-        <div style={{ height: 100 }}></div>
-      </div>
+          <div style={{ height: 100 }}></div>
+        </div>
+      )}
+
+      {(viewType === "create" || viewType === "update") && formLayout !== undefined && (
+        <div className="page-content">
+          <FormView
+            formLayout={formLayout({ store, form, onFinish: onFinishForm, viewType, disabled: getDisableForm() })}
+          />
+        </div>
+      )}
+
+      {viewType === "kanban" && (
+        <div>
+          <KanbanView
+            datas={datas}
+            renderItemKanban={(value, index) => renderItemKanban && renderItemKanban(value, index, getDatas)}
+          />
+        </div>
+      )}
     </div>
   );
 };

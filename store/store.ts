@@ -19,15 +19,9 @@ const store = createStore<StoreApp, []>((set) => ({
   setLocaleCode: ({ localeCode }: { localeCode: string }) => set({ localeCode: localeCode }),
   setLanguageData: ({ datas }: { datas: TranslatedTerm[] }) => {
     set((state: StoreApp) => {
-      for (var data of datas) {
-        if (!state.languageData.find((e) => e.sourceTerm == data.sourceTerm)) {
-          return {
-            languageData: [...state.languageData, data],
-          };
-        }
-      }
-
-      return state;
+      return {
+        languageData: datas,
+      };
     });
   },
 

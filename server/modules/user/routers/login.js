@@ -46,7 +46,7 @@ plugin.router.post("/login", async (req, res) => {
     delete newData.updatedAt;
     return res.status(200).json({ code: 200, message: "Success", data: newData });
   } catch (error) {
-    logger(error);
+    logger(error, "API /login");
     return res.status(500).json({ code: 500, error: error });
   }
 });

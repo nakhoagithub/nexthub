@@ -1,4 +1,4 @@
-import { Button, Form, FormInstance, Space, Table } from "antd";
+import { App, Button, Form, FormInstance, Space, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import React, { useEffect, useState } from "react";
 import ModalTableSelection from "./modal-table-selection";
@@ -17,6 +17,8 @@ const One2ManyView = ({
   columnsTable,
   showAdd,
   form,
+  addInline,
+  modelAddInline,
 }: {
   title?: string;
   titleModel?: string;
@@ -26,7 +28,10 @@ const One2ManyView = ({
   columnsTable?: ColumnsType<any> | undefined;
   showAdd?: boolean;
   form?: FormInstance<any>;
+  addInline?: boolean;
+  modelAddInline?: React.ReactNode;
 }) => {
+  const useApp = App.useApp();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -102,7 +107,7 @@ const One2ManyView = ({
       const {
         data: { code, datas, total },
       } = await app.get(
-        `/api/model/${toModel}/get?sort=${JSON.stringify(newQuery.sort)}&limit=${newQuery.limit}&skip=${
+        `/api/db/${toModel}?sort=${JSON.stringify(newQuery.sort)}&limit=${newQuery.limit}&skip=${
           newQuery.skip
         }&filter=${JSON.stringify({ _id: { $in: ids } })}`
       );
@@ -116,7 +121,9 @@ const One2ManyView = ({
           },
         });
       }
-    } catch (error) {}
+    } catch (error) {
+      useApp.notification.error({ message: "Internal Server Error" });
+    }
   }
 
   async function fetchDataFormUpdate() {
@@ -126,12 +133,14 @@ const One2ManyView = ({
       let newFilter: any = { _id: viewId };
       const {
         data: { datas, code },
-      } = await app.get(`/api/model/${model}/get?filter=${JSON.stringify(newFilter)}`);
+      } = await app.get(`/api/db/${model}?filter=${JSON.stringify(newFilter)}`);
 
       if (code === 200) {
         if (datas[0][idsField].length > 0) setIds(datas[0][idsField]);
       }
-    } catch (error) {}
+    } catch (error) {
+      useApp.notification.error({ message: "Internal Server Error" });
+    }
   }
 
   async function fetchData() {
@@ -180,11 +189,20 @@ const One2ManyView = ({
           setDatas([...datas, ...newDatas]);
         }}
       />
+      {modelAddInline && modelAddInline}
       {title && <div style={{ fontSize: 20, fontWeight: "bold" }}>{title}</div>}
       <div style={{ margin: "12px 0" }}>
         <Space>
           {showAdd && (
-            <Button size="small" onClick={() => setOpenModelAdd(true)}>
+            <Button
+              size="small"
+              onClick={() => {
+                if (addInline) {
+                } else {
+                  setOpenModelAdd(true);
+                }
+              }}
+            >
               Add
             </Button>
           )}

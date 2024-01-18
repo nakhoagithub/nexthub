@@ -8,7 +8,7 @@ plugin.router.get("/core/get", checkAuth, async (req, res) => {
     let models = mongoose.modelNames();
     return res.status(200).json({ code: 200, datas: models });
   } catch (error) {
-    logger(error);
+    logger(error, "API /core/get");
     return res.status(500).json({ code: 500, error: error });
   }
 });
@@ -27,7 +27,7 @@ plugin.router.get("/core/get/:name", checkAuth, async (req, res) => {
     let obj = model?.schema?.obj;
     return res.status(200).json({ code: 200, paths: paths, obj: obj });
   } catch (error) {
-    logger(error);
+    logger(error, "API /core/get/:name");
     return res.status(500).json({ code: 500, error: error });
   }
 });

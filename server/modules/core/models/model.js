@@ -10,7 +10,7 @@ const schema = new mongoose.Schema(
     name: { type: String, required: true },
     description: { type: String },
     collectionName: { type: String, required: true },
-    idsSchema: [{ type: mongoose.Types.ObjectId, ref: "schema" }],
+    idsSchema: { type: [mongoose.Types.ObjectId], ref: "schema" },
     timestamp: { type: Boolean, default: true },
     versionKey: { type: Boolean, default: false },
     install: { type: Boolean, default: false },

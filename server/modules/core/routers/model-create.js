@@ -42,6 +42,12 @@ plugin.router.post("/model/:name/create", checkAuth, checkAccessRight, async (re
     let errors = [];
 
     const createData = Model({ ...data });
+
+    // nếu không có _id thì tạo _id cho nó
+    if (!Object.keys({ ...createData }._doc).includes("_id")) {
+      createData._id = new mongoose.Types.ObjectId();
+    }
+
     await createData
       .save()
       .then(async (savedRecord) => {

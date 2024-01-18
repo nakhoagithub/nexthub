@@ -9,6 +9,7 @@ const types = ["String", "Boolean", "Object", "ObjectId", "Array", "ArrayObjectI
 const schema = new mongoose.Schema(
   {
     id: { type: String },
+    title: { type: String },
     modelName: { type: String },
     comment: { type: String },
     field: { type: String, required: true },
@@ -19,6 +20,7 @@ const schema = new mongoose.Schema(
     default: { type: Object },
     select: { type: Boolean }, // select: `false` thì trường này sẽ không đọc hay cập nhật
     ref: { type: String },
+    sortColumn: { type: Number, default: 1 },
   },
   { timestamps: true, versionKey: false, collection: collectionName }
 );

@@ -5,6 +5,7 @@ import app from "@/utils/axios";
 import { MenuData } from "@/interfaces/menu-data";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { StoreContext } from "../context-provider";
+import { translate } from "@/utils/translate";
 
 // type MenuItem = Required<MenuProps>["items"][number];
 
@@ -79,7 +80,7 @@ const Menu = ({ onClickMenu }: { onClickMenu?: () => void }) => {
         let children = dataToMenuItem({ parent: menu.id, menus: menus });
         menusData.push(
           getItem({
-            label: menu.name,
+            label: translate({ store, source: menu.name }),
             key: menu.id,
             children: children.length == 0 ? undefined : children,
             type: menu.isGroup ? "group" : undefined,

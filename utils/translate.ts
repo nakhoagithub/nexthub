@@ -1,24 +1,26 @@
-// "use client";
-import { StoreContext } from "@/app/components/context-provider";
-import { useContext } from "react";
+"use client";
+import { StoreApp } from "@/store/store";
+import { StoreApi } from "zustand";
 
 export const translate = ({
-  modelName,
   source,
   params,
+  store,
 }: {
-  modelName?: string;
+  store: StoreApi<StoreApp>;
   source: string;
   params?: { [key: string]: any };
 }) => {
-  const store = useContext(StoreContext);
   const { languageData } = store.getState();
 
   let newDataTranslate = source;
 
-  let translateData = languageData.find((e) => e.sourceTerm === source);
-  if (translateData) {
-    newDataTranslate = translateData.translationValue;
+  let translatedData = languageData.find((e) => {
+    return e.sourceTerm == source;
+  });
+
+  if (translatedData) {
+    newDataTranslate = translatedData.translationValue;
   }
 
   return newDataTranslate;

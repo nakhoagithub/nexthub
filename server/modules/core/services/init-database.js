@@ -23,6 +23,10 @@ function getType(value) {
 export async function installModel(id) {
   let result = false;
   try {
+    const modelData = await Model.findOne({ id: id });
+    if (!modelData) {
+      return result;
+    }
     const model = await Model.findOne({ id: id }).populate("idsSchema");
     let fields = {};
     for (const schemaData of model.idsSchema) {
@@ -72,7 +76,6 @@ export async function uninstallModel(id) {
   let result = false;
   try {
     const model = await Model.findOne({ id: id });
-    // mongoose.deleteModel(model.id);
     delete mongoose.connection.models[model.id];
     await Model.updateOne({ id: model.id }, { install: false });
     await mongoose.connection.dropCollection(model.collectionName);
@@ -96,6 +99,6 @@ export async function initDb() {
       await installModel(model.id);
     }
   } catch (error) {
-    logger(error);
+    logger(error, "initDb");
   }
 }

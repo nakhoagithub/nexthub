@@ -5,8 +5,10 @@ import "./routers/model-create.js";
 import "./routers/model-update.js";
 import "./routers/model-update-array.js";
 import "./routers/model-delete.js";
-import "./routers/model-install.js";
+import "./routers/model.js";
 import "./routers/model-access.js";
+import "./routers/model-columns.js";
+import "./routers/module.js";
 import { Group } from "./models/group.js";
 import { Access } from "./models/access.js";
 import { Model } from "./models/model.js";
@@ -26,9 +28,11 @@ Menu();
 await createModule("core", {
   id: "core",
   name: "Core",
+  description: "Module mặc định",
   models: ["group", "access", "document-access", "model", "schema", "menu"],
   state: "base",
   folderName: "core",
+  install: true,
   datas: [
     {
       model: "access",

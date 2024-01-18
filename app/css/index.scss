@@ -1,7 +1,10 @@
 @import "./_color";
 @import "./login";
 @import "./page";
-@import "./page-result";
+@import "./table-view";
+@import "./menu";
+@import "./kanban";
+@import "./kanbanview-module";
 
 ::-webkit-scrollbar {
   width: 6px;
@@ -113,77 +116,6 @@ body {
   height: calc(100vh - 51px);
   display: flex;
   flex-direction: row;
-}
-
-.menu {
-  display: block;
-  min-width: 200px;
-  width: 200px;
-  height: calc(100vh - 51px);
-  transition: min-width 0.2s ease-in-out;
-  overflow-y: auto;
-  overflow-x: hidden;
-
-  @media screen and (max-width: 600px) {
-    min-width: 0px;
-    width: 0px;
-  }
-}
-
-.page {
-  width: 100%;
-  overflow-y: auto;
-  background-color: $background-color;
-
-  .page-header {
-    padding: 8px 12px;
-    background-color: white;
-
-    .page-header-title {
-      font-size: 20px;
-      font-weight: bold;
-      margin: 4px 0;
-    }
-
-    .page-header-sub-title {
-      margin: 2px 0;
-    }
-
-    .page-header-action {
-      height: 40px;
-      display: flex;
-      align-items: center;
-    }
-  }
-
-  .page-content {
-    margin: 12px;
-    background-color: white;
-    padding: 12px;
-  }
-
-  .page-footer {
-    padding: 8px 12px;
-  }
-}
-
-.table-view {
-  .table-view-header {
-    margin-bottom: 10px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-
-    .table-view-header-left {
-      display: flex;
-      flex-wrap: wrap;
-    }
-
-    .table-view-header-right {
-      display: flex;
-      flex-wrap: wrap;
-    }
-  }
 }
 
 .wrap {

@@ -30,7 +30,7 @@ const checkAuth = async (req, res, next) => {
 
     return next();
   } catch (error) {
-    logger(error);
+    logger(error, "checkAuth");
     return res.status(500).json({ code: 500, message: "Internal Server Error" });
   }
 };

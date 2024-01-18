@@ -50,10 +50,10 @@ const handle = web.getRequestHandler();
 
 async function main() {
   try {
-    await mongoose.connect(mongoUrl).then(() => {
+    await mongoose.connect(mongoUrl).then(async () => {
       console.log("> DB: connected");
-      import("./index.js");
-      import("./plugin.js");
+      await import("./index.js");
+      await import("./plugin.js");
     });
 
     plugin.databaseAttachment = await mongoose
@@ -82,7 +82,7 @@ async function main() {
 
     await initDb();
   } catch (error) {
-    logger(error);
+    logger(error, "server.js");
   }
 }
 

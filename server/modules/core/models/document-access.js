@@ -21,13 +21,4 @@ const schema = new mongoose.Schema(
   { timestamps: true, versionKey: false, collection: collectionName }
 );
 
-// schema.pre("save", async function (next) {
-//   try {
-//     this.filter = JSON.parse(this.filter);
-//     next();
-//   } catch (error) {
-//     next(error);
-//   }
-// });
-
 export const DocumentAccess = mongoose.model(name, schema);

@@ -1,11 +1,12 @@
 "use client";
 import React, { useContext } from "react";
 import { StoreContext } from "../components/context-provider";
-import { Button, Form, Input } from "antd";
+import { App, Button, Form, Input } from "antd";
 import app from "@/utils/axios";
 import { useRouter } from "next/navigation";
 
 const Page = () => {
+  const useApp = App.useApp();
   const router = useRouter();
   const store = useContext(StoreContext);
   const { login } = store.getState();
@@ -13,16 +14,16 @@ const Page = () => {
     try {
       const {
         data: { data, code },
-      } = await app.post(`/api/user/create-admin`, { ...values });
+      } = await app.post(`/api/user/create-master`, { ...values });
       if (code === 200) {
-        login(data);
         router.push("/login");
       }
-    } catch (error) {}
+    } catch (error) {
+      useApp.notification.error({ message: "Internal Server Error" });
+    }
   };
 
-  const onFinishFailed = (errorInfo: any) => {
-  };
+  const onFinishFailed = (errorInfo: any) => {};
 
   return (
     <div className="login-page">

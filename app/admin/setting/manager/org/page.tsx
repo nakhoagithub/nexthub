@@ -1,17 +1,32 @@
 "use client";
+import PageHeader from "@/app/components/body/page-header";
+import { StoreContext } from "@/app/components/context-provider";
 import DataView from "@/app/components/data-view/data-view";
+import TableView from "@/app/components/data-view/table-view/table-view";
+import { StoreApp } from "@/store/store";
 import { getItemInArray } from "@/utils/tool";
 import { translate } from "@/utils/translate";
 import { Button, Checkbox, Form, FormInstance, Input, InputNumber, Select } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { ColumnsType } from "antd/es/table";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { StoreApi } from "zustand";
 const { Option } = Select;
 
-const ViewForm = (form: FormInstance<any>, onFinish: (value: any) => void, viewType: string, dataIds: any) => {
+const ViewForm = (
+  store: StoreApi<StoreApp>,
+  form: FormInstance<any>,
+  onFinish: (value: any) => void,
+  viewType: string | null,
+  dataIds: any
+) => {
   return (
-    <Form name="form" form={form} layout="vertical" style={{ width: 600 }} onFinish={onFinish}>
-      <Form.Item label="Name" name="name" rules={[{ required: true, message: translate({ source: "This field cannot be left blank" }) }]}>
+    <Form name="form" form={form} layout="vertical" onFinish={onFinish}>
+      <Form.Item
+        label="Name"
+        name="name"
+        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
+      >
         <Input />
       </Form.Item>
       <Form.Item label="Short name" name="shortName">
@@ -19,12 +34,16 @@ const ViewForm = (form: FormInstance<any>, onFinish: (value: any) => void, viewT
       </Form.Item>
       <Form.Item label="Parent" name="idParent">
         <Select
+          showSearch
           allowClear
           onClear={() => {
             form.setFieldValue("idParent", "");
           }}
+          filterOption={(input: string, option: any) => {
+            return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
+          }}
         >
-          {dataIds["org"]?.map((e: any) => (
+          {(dataIds?.["org"] ?? [])?.map((e: any) => (
             <Option key={e._id} label={e.name}>
               <span>{e.name}</span>
             </Option>
@@ -55,6 +74,7 @@ const ViewForm = (form: FormInstance<any>, onFinish: (value: any) => void, viewT
 
 const Page = () => {
   const [dataIds, setDataIds] = useState<any>();
+  const store = useContext(StoreContext);
 
   const columns: ColumnsType<any> = [
     {
@@ -115,20 +135,25 @@ const Page = () => {
     },
   ];
 
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
   return (
     <div>
-      <DataView
-        model="org"
-        titleHeader="Organization"
-        columnsTable={columns}
-        tableBoder={true}
-        formLayout={(form, onFinish, viewType) => ViewForm(form, onFinish, viewType, dataIds)}
-        ids={[
-          { org: { fields: ["_id", "name"], filter: { active: true } } },
-          { user: { fields: ["_id", "name"], filter: { active: true } } },
-        ]}
-        dataIdsCallback={(value: any) => setDataIds(value)}
-      />
+      <PageHeader title="Organization" />
+      <div className="page-content">
+        <TableView
+          model={"org"}
+          columnsTable={columns}
+          formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
+          selectedRowKeys={selectedRowKeys}
+          setSelectedRowKeys={setSelectedRowKeys}
+          ids={[
+            { org: { fields: ["_id", "name"], filter: { active: true } } },
+            { user: { fields: ["_id", "name"], filter: { active: true } } },
+          ]}
+          dataIdsCallback={(value) => setDataIds(value)}
+        />
+      </div>
     </div>
   );
 };
