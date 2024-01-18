@@ -4,4 +4,6 @@ Farm,Nông trại,vi_VN,normal,true
 Area,Nhà màng,vi_VN,normal,true
 Breed category,Loại giống,vi_VN,normal,true
 Breed,Giống,vi_VN,normal,true
-Template planting schedule,Lịch gieo trồng mẫu,vi_VN,normal,true
+Production schedule,Lịch sản xuất,vi_VN,normal,true
+Sample planting schedule,Lịch gieo trồng mẫu,vi_VN,normal,true
+Sample period of planting schedule,Giai đoạn lịch gieo trồng mẫu,vi_VN,normal,true

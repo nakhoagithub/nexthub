@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
-const name = "template-planting-schedule";
+const name = "sample-planting-schedule";
 
-const collectionName = "farm.template.planting.schedule";
+const collectionName = "farm.sample.planting.schedule";
 
 const schema = new mongoose.Schema(
   {
@@ -17,4 +17,4 @@ const schema = new mongoose.Schema(
   { timestamps: true, versionKey: false, collection: collectionName }
 );
 
-export const TemplatePlantingSchedule = mongoose.model(name, schema);
+export const SamplePlantingSchedule = mongoose.model(name, schema);

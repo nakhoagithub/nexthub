@@ -1,10 +1,8 @@
 import mongoose from "mongoose";
 
-const name = "document-access";
-
 const collectionName = "base.document.access";
 
-const schema = new mongoose.Schema(
+export const documentAccessSchema = new mongoose.Schema(
   {
     id: { type: String, required: true, unique: true },
     name: { type: String, required: true },
@@ -20,5 +18,3 @@ const schema = new mongoose.Schema(
   },
   { timestamps: true, versionKey: false, collection: collectionName }
 );
-
-export const DocumentAccess = mongoose.model(name, schema);

@@ -2,16 +2,14 @@ import { AccessRightModel } from "@/interfaces/access-right-model";
 import { pageSizeOptions } from "@/interfaces/page-size-options";
 import app from "@/utils/axios";
 import { DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined, SettingOutlined } from "@ant-design/icons";
-import { App, Button, Checkbox, Form, FormInstance, Space, Table, TablePaginationConfig, Tag } from "antd";
+import { App, Button, Form, FormInstance, Space, Table, TableColumnsType, TablePaginationConfig } from "antd";
 import { SizeType } from "antd/es/config-provider/SizeContext";
-import { ColumnType, ColumnsType, FilterValue, SorterResult, TableRowSelection } from "antd/es/table/interface";
+import { FilterValue, SorterResult, TableRowSelection } from "antd/es/table/interface";
 import React, { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../context-provider";
-import { ColumnModel, ColumnViewModel } from "@/interfaces/model";
 import { translate } from "@/utils/translate";
 import { getParamFilter } from "@/utils/tool";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import Column from "antd/es/table/Column";
 import ModalCustom from "./modal-custom";
 import { StoreApp } from "@/store/store";
 import { StoreApi } from "zustand";
@@ -37,6 +35,9 @@ const TableView = ({
   dataIdsCallback,
   actions,
   dataFormDefault,
+  modelExpandable,
+  fieldExpandable,
+  columnsExpandable,
 }: {
   model: string;
   bordered?: boolean;
@@ -76,6 +77,9 @@ const TableView = ({
   dataIdsCallback?: (value: any) => void;
   actions?: (keys?: any[]) => React.ReactNode[];
   dataFormDefault?: any;
+  modelExpandable?: string;
+  fieldExpandable?: string;
+  columnsExpandable?: TableColumnsType<any>;
 }) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -85,13 +89,11 @@ const TableView = ({
   const useApp = App.useApp();
   const [loading, setLoading] = useState(false);
   const [accessRightModel, setAccessRightModel] = useState<AccessRightModel>();
-  const [columnsModel, setColumnsModel] = useState<ColumnModel[]>([]);
   const [loadingReload, setLoadingButtonReload] = useState(false);
   const [openModalCustom, setOpenModalCustom] = useState(false);
   const [datas, setDatas] = useState<any[]>([]);
   const [dataIds, setDataIds] = useState<any>();
   const store = useContext(StoreContext);
-  const { setLanguageData } = store.getState();
   const [form] = Form.useForm();
 
   const [tableParams, setTableParams] = useState<any>({
@@ -366,6 +368,13 @@ const TableView = ({
     return true;
   };
 
+  /**
+   * Expandedable
+   */
+  const expandedRowRender = () => {
+    return <Table columns={columnsExpandable} dataSource={[]} pagination={false} size="small" />;
+  };
+
   useEffect(() => {
     fetchData();
     getDataIds();
@@ -416,6 +425,7 @@ const TableView = ({
         loading={loadingReload || loading}
         pagination={{ ...tableParams.pagination, position: ["topLeft"] }}
         onChange={(pargination, filters, sorter) => handleTableChange(pargination, filters, sorter)}
+        expandable={columnsExpandable && { expandedRowRender }}
       />
 
       <ModalCustom

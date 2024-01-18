@@ -1,11 +1,8 @@
 "use client";
-import DataView from "@/app/components/data-view/data-view";
-import { Button, Checkbox, Form, FormInstance, Input, InputNumber, Select, Space, Tabs } from "antd";
+import { Checkbox, Form, FormInstance, Input, InputNumber, Select, Space, Tabs } from "antd";
 const { Option } = Select;
 import { ColumnsType } from "antd/es/table";
 import React, { useContext, useState } from "react";
-import One2ManyView from "@/app/components/data-view/o2m-view/o2m-view";
-import { userStates } from "@/utils/config";
 import { translate } from "@/utils/translate";
 import { StoreContext } from "@/app/components/context-provider";
 import TextArea from "antd/es/input/TextArea";
@@ -15,10 +12,6 @@ import { getItemInArray } from "@/utils/tool";
 import TableView from "@/app/components/data-view/table-view/table-view";
 import PageHeader from "@/app/components/body/page-header";
 
-const ViewFormAddPeriodInLine = () => {
-  return <Form></Form>;
-};
-
 const ViewForm = (
   store: StoreApi<StoreApp>,
   form: FormInstance<any>,
@@ -26,29 +19,6 @@ const ViewForm = (
   viewType: string | null,
   dataIds: any
 ) => {
-  const columnsPeriod: ColumnsType<any> = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      width: 200,
-      key: "name",
-    },
-    {
-      title: "Number of days",
-      dataIndex: "numOfDays",
-      width: 100,
-    },
-    {
-      title: "Sort Index",
-      dataIndex: "sortIndex",
-      width: 100,
-    },
-    {
-      title: "",
-      key: "none",
-    },
-  ];
-
   return (
     <Form name="form" form={form} layout="vertical" onFinish={onFinish}>
       <Form.Item
@@ -72,7 +42,7 @@ const ViewForm = (
         >
           {(dataIds?.["breed"] ?? []).map((e: any) => (
             <Option key={e._id} label={e.name}>
-              <span>{`${e.id} - ${e.name}`}</span>
+              <span>{`${e.code} - ${e.name}`}</span>
             </Option>
           ))}
         </Select>
@@ -95,28 +65,6 @@ const ViewForm = (
       <Form.Item label="Active" name="active" valuePropName="checked" initialValue={true}>
         <Checkbox defaultChecked={true}>Active</Checkbox>
       </Form.Item>
-
-      <Tabs
-        type="card"
-        items={[
-          {
-            forceRender: true,
-            label: "Period",
-            key: "period",
-            children: (
-              <One2ManyView
-                showAdd
-                idsField="idsPeriod"
-                titleModel="Period"
-                model="template-planting-schedule"
-                toModel="template-planting-schedule-period"
-                columnsTable={columnsPeriod}
-                form={form}
-              />
-            ),
-          },
-        ]}
-      />
     </Form>
   );
 };
@@ -128,41 +76,67 @@ const Page = () => {
 
   const columns: ColumnsType<any> = [
     {
-      title: "Name",
+      title: translate({ store, source: "Name" }),
       dataIndex: "name",
       width: 200,
     },
     {
-      title: "Number of day incurred",
+      title: translate({ store, source: "Number of day incurred" }),
       dataIndex: "numOfDaysIncurred",
       width: 100,
+      align: "center",
     },
     {
-      title: "Average Yield",
+      title: translate({ store, source: "Average Yield" }),
       dataIndex: "averageYield",
       width: 100,
+      align: "center",
     },
     {
-      title: "Breed",
+      title: translate({ store, source: "Breed" }),
       width: 300,
       render: (value, record, index) => {
         let breed = record.idBreed && getItemInArray(dataIds?.["breed"] ?? [], record.idBreed, "_id");
-        return <div>{breed && `${breed?.id} = ${breed?.name}`}</div>;
+        return <div>{breed && `${breed?.code} - ${breed?.name}`}</div>;
       },
     },
     {
-      title: "Description",
+      title: translate({ store, source: "Description" }),
       dataIndex: "description",
       width: 500,
     },
     { title: "", key: "none" },
     {
-      title: "Active",
+      title: translate({ store, source: "Active" }),
       width: 100,
       align: "center",
       render: (value, record, index) => {
         return <Checkbox checked={record.active} />;
       },
+    },
+  ];
+
+  const columnsPeriod: ColumnsType<any> = [
+    {
+      title: translate({ store, source: "Period Name" }),
+      dataIndex: "name",
+      width: 200,
+      key: "name",
+    },
+    {
+      title: translate({ store, source: "Number of days" }),
+      dataIndex: "numOfDays",
+      width: 200,
+    },
+    {
+      title: translate({ store, source: "Sort Index" }),
+      dataIndex: "sortIndex",
+      width: 100,
+      align: "center",
+    },
+    {
+      title: "",
+      key: "none",
     },
   ];
 
@@ -179,12 +153,20 @@ const Page = () => {
           ids={[
             {
               breed: {
-                fields: ["_id", "name", "id"],
+                fields: ["_id", "name", "code"],
                 filter: { active: true },
               },
             },
           ]}
           dataIdsCallback={(value) => setDataIds(value)}
+          // actions={(keys?: any[]) => [
+          //   <div>
+          //     {keys?.length === 1 && <Button onClick={() => {}}>{translate({ store, source: "Add Period" })}</Button>}
+          //   </div>,
+          // ]}
+          // modelExpandable="template-planting-schedule-period"
+          // fieldExpandable="idsPeriod"
+          // columnsExpandable={columnsPeriod}
         />
       </div>
     </div>

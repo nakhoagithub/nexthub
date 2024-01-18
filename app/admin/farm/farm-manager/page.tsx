@@ -24,7 +24,7 @@ const ViewForm = (
   return (
     <Form name="form" form={form} layout="vertical" onFinish={onFinish}>
       <Form.Item
-        initialValue={dataIds?.["org"]?.[0]._id}
+        initialValue={dataIds?.["org"]?.[0]?._id}
         label={translate({ store, source: "Org" })}
         name="idOrg"
         rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}

@@ -20,7 +20,7 @@ const ViewForm = (
 ) => {
   return (
     <Form name="form" form={form} layout="vertical" labelWrap onFinish={onFinish}>
-      <Form.Item
+      {/* <Form.Item
         label="ID"
         name="id"
         rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
@@ -64,7 +64,7 @@ const ViewForm = (
       </Form.Item>
       <Form.Item label="Active" name="active" valuePropName="checked" initialValue={true}>
         <Checkbox defaultChecked={true}>Active</Checkbox>
-      </Form.Item>
+      </Form.Item> */}
     </Form>
   );
 };

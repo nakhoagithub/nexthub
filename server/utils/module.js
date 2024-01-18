@@ -49,6 +49,7 @@ export async function createModule(id, data) {
           ref: schemaData[keySchemaData]?.options?.ref,
           sortColumn: sortTemp,
         };
+        
         await Schema.updateOne({ id: newSchemaData.id }, { ...newSchemaData }, { upsert: true });
       }
 
