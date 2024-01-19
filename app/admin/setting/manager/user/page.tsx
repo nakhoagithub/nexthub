@@ -34,13 +34,6 @@ const ViewForm = (
       >
         <Input disabled={viewType === "update"} />
       </Form.Item>
-      <Form.Item
-        label="Password"
-        name="password"
-        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
-      >
-        <Input.Password disabled={viewType === "update"} />
-      </Form.Item>
 
       <Form.Item
         label="State"
@@ -173,6 +166,7 @@ const Page = () => {
           selectedRowKeys={selectedRowKeys}
           setSelectedRowKeys={setSelectedRowKeys}
           updateField="username"
+          dataFormDefault={{ password: "1" }}
           ids={[
             {
               language: {

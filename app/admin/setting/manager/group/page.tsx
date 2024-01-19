@@ -125,7 +125,7 @@ const ViewForm = (
       width: 100,
       align: "center",
       render: (value, record, index) => {
-        return <Checkbox checked={record.apply_for_read} />;
+        return <Checkbox checked={record.applyForRead} />;
       },
     },
     {
@@ -133,7 +133,7 @@ const ViewForm = (
       width: 100,
       align: "center",
       render: (value, record, index) => {
-        return <Checkbox checked={record.apply_for_create} />;
+        return <Checkbox checked={record.applyForCreate} />;
       },
     },
     {
@@ -141,7 +141,7 @@ const ViewForm = (
       width: 100,
       align: "center",
       render: (value, record, index) => {
-        return <Checkbox checked={record.apply_for_update} />;
+        return <Checkbox checked={record.applyForUpdate} />;
       },
     },
     {
@@ -149,7 +149,7 @@ const ViewForm = (
       width: 100,
       align: "center",
       render: (value, record, index) => {
-        return <Checkbox checked={record.apply_for_delete} />;
+        return <Checkbox checked={record.applyForDelete} />;
       },
     },
   ];

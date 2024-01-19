@@ -1,19 +1,24 @@
 import * as fs from "fs";
 import * as path from "path";
 import { logger } from "./logger";
-import { Model, ModuleInterface } from "interfaces/module";
+import { Model, ModuleInterface } from "../interfaces/module";
 import mongoose from "mongoose";
 import { moduleSchema } from "../modules/base/models/module";
 import { readCSV } from "./csv";
 
-const modulesPath = path.join("./", "modules");
+// let modulesPath = path.join("./", "modules");
+
+// if (process.env.NODE_ENV === "production") {
+// }
 
 export function autoImportModule() {
   try {
+    let modulesPath = "./server/modules";
+
     const modules = fs.readdirSync(`${modulesPath}`);
     modules.forEach((module) => {
-      const filePath = path.join(`${modulesPath}/${module}`, "index.ts");
-      require(`../${filePath}`.substring(0, filePath.indexOf(".ts") + 3));
+      const filePath = `../modules/${module}/index.ts`;
+      require(filePath.replace(".ts", ""));
     });
   } catch (error) {
     logger({ message: error, name: "autoImportModule" });
@@ -101,7 +106,7 @@ export async function createModule({ module, models }: { module: ModuleInterface
     const idsSchema = idsSchemaData.map((e) => e._id.toHexString());
 
     let newModelData = {
-      id: `${module.id}.${model.modelName}`,
+      id: idModel,
       name: model.name,
       modelName: model.modelName,
       collectionName: idModel,

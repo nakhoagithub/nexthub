@@ -1,0 +1,9 @@
+{
+  "name": "nexthub",
+  "version": "1.0.0",
+  "description": "Server NextHub",
+  "main": "server.js",
+  "type": "module",
+  "author": "Anh Khoa",
+  "license": "MIT"
+}

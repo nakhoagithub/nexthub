@@ -1,8 +1,0 @@
-{
-  "scripts": {
-    "dev": "nodemon ./server.ts",
-    "build": "tsc",
-    "start": "cross-env NODE_ENV=production node ./build/server.js",
-    "server": "npm run build && npm run start"
-  }
-}

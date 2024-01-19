@@ -46,6 +46,8 @@ const ModalCustom = ({
           newDefault = dataFormDefault;
         }
 
+        console.log({ ...values, ...newDefault });
+
         const {
           data: { code, message, errors },
         } = await app.post(`/api/db/${model}`, { data: { ...values, ...newDefault } });

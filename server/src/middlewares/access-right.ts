@@ -25,25 +25,23 @@ const checkAccessRight = async (req: Request, res: Response, next: NextFunction)
     let queryDocumentAccess: any = { idModel: modelData.id, active: true };
 
     if (req.method === "GET") {
-      queryDocumentAccess = { ...queryDocumentAccess, apply_for_read: true };
+      queryDocumentAccess = { ...queryDocumentAccess, applyForRead: true };
     }
     if (req.method === "POST") {
-      queryDocumentAccess = { ...queryDocumentAccess, apply_for_create: true };
+      queryDocumentAccess = { ...queryDocumentAccess, applyForCreate: true };
     }
     if (req.method === "PUT") {
-      queryDocumentAccess = { ...queryDocumentAccess, apply_for_update: true };
+      queryDocumentAccess = { ...queryDocumentAccess, applyForUpdate: true };
     }
     if (req.method === "PATCH") {
-      queryDocumentAccess = { ...queryDocumentAccess, apply_for_update: true };
+      queryDocumentAccess = { ...queryDocumentAccess, applyForUpdate: true };
     }
     if (req.method === "DELETE") {
-      queryDocumentAccess = { ...queryDocumentAccess, apply_for_delete: true };
+      queryDocumentAccess = { ...queryDocumentAccess, applyForDelete: true };
     }
     const documentAccess = await DocumentAccess.find(queryDocumentAccess);
 
     let filter: any = { $or: [] };
-
-    console.log(documentAccess);
 
     for (const documentAccessData of documentAccess) {
       if (documentAccessData.filter) {
@@ -56,8 +54,6 @@ const checkAccessRight = async (req: Request, res: Response, next: NextFunction)
     } else {
       (req as any).allowFilter = filter;
     }
-
-    console.log((req as any).allowFilter);
 
     // handler access
     let queryAccess: any = { idModel: modelData.id, active: true };

@@ -27,7 +27,7 @@ const ViewForm = (
       >
         <Input />
       </Form.Item>
-      <Form.Item label="ID Parent" name="idParent">
+      <Form.Item label="Parent" name="idParent">
         <Input />
       </Form.Item>
       <Form.Item

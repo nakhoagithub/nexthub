@@ -119,24 +119,29 @@ async function createDatabase(req: Request, res: Response) {
       createData._id = new mongoose.Types.ObjectId();
     }
 
-    await createData
-      .save()
-      .then(async (savedRecord: any) => {
-        return await ModelMongoose.find({ ...allowFilter, _id: createData._id });
-      })
-      .then(async (filteredRecords: any) => {
-        let allow = false;
-        for (var filteredRecord of filteredRecords) {
-          if (filteredRecord._id.toHexString() === createData._id.toHexString()) {
-            allow = true;
+    try {
+      await createData
+        .save()
+        .then(async (savedRecord: any) => {
+          return await ModelMongoose.find({ ...allowFilter, _id: createData._id });
+        })
+        .then(async (filteredRecords: any) => {
+          let allow = false;
+          for (var filteredRecord of filteredRecords) {
+            if (filteredRecord._id.toHexString() === createData._id.toHexString()) {
+              allow = true;
+            }
           }
-        }
 
-        if (!allow) {
-          errors.push({ data, error: "Data creation is not allowed" });
-          return await ModelMongoose.deleteOne({ _id: createData._id });
-        }
-      });
+          if (!allow) {
+            errors.push({ data, error: "Data creation is not allowed" });
+            return await ModelMongoose.deleteOne({ _id: createData._id });
+          }
+        });
+    } catch (error) {
+      errors.push({ data, error: error });
+      logger({ message: error, name: `Save CRUD POST: /db/${name}` });
+    }
 
     if (errors.length > 0) {
       return res.status(400).json({ code: 400, errors });

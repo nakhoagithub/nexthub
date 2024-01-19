@@ -1,9 +1,10 @@
 {
-  "name": "nexthub",
+  "name": "server",
   "version": "1.0.0",
-  "description": "Server NextHub",
-  "main": "server.js",
-  "type": "module",
-  "author": "Anh Khoa",
-  "license": "MIT"
+  "scripts": {
+    "dev": "nodemon ./server.ts",
+    "dev-pro": "cross-env NODE_ENV=production nodemon ./server.ts",
+    "build": "tsc",
+    "start": "cross-env NODE_ENV=production node ./build/server.js"
+  }
 }

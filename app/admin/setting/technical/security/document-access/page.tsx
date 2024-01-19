@@ -68,31 +68,21 @@ const ViewForm = (
         <TextArea />
       </Form.Item>
       <Space>
-        <Form.Item name="apply_for_read" valuePropName="checked" initialValue={true}>
-          <Checkbox defaultChecked={true} checked={true}>
-            Read
-          </Checkbox>
+        <Form.Item name="applyForRead" valuePropName="checked" initialValue={true}>
+          <Checkbox defaultChecked={true}>Read</Checkbox>
         </Form.Item>
-        <Form.Item name="apply_for_create" valuePropName="checked" initialValue={true}>
-          <Checkbox defaultChecked={true} checked={true}>
-            Create
-          </Checkbox>
+        <Form.Item name="applyForCreate" valuePropName="checked" initialValue={true}>
+          <Checkbox defaultChecked={true}>Create</Checkbox>
         </Form.Item>
-        <Form.Item name="apply_for_update" valuePropName="checked" initialValue={true}>
-          <Checkbox defaultChecked={true} checked={true}>
-            Update
-          </Checkbox>
+        <Form.Item name="applyForUpdate" valuePropName="checked" initialValue={true}>
+          <Checkbox defaultChecked={true}>Update</Checkbox>
         </Form.Item>
-        <Form.Item name="apply_for_delete" valuePropName="checked" initialValue={true}>
-          <Checkbox defaultChecked={true} checked={true}>
-            Delete
-          </Checkbox>
+        <Form.Item name="applyForDelete" valuePropName="checked" initialValue={true}>
+          <Checkbox defaultChecked={true}>Delete</Checkbox>
         </Form.Item>
       </Space>
       <Form.Item label="Active" name="active" valuePropName="checked" initialValue={true}>
-        <Checkbox defaultChecked={true} checked={true}>
-          Active
-        </Checkbox>
+        <Checkbox defaultChecked={true}>Active</Checkbox>
       </Form.Item>
     </Form>
   );
@@ -141,7 +131,7 @@ const Page = () => {
       width: 100,
       align: "center",
       render: (value, record, index) => {
-        return <Checkbox checked={record.apply_for_read} />;
+        return <Checkbox checked={record.applyForRead} />;
       },
     },
     {
@@ -149,7 +139,7 @@ const Page = () => {
       width: 100,
       align: "center",
       render: (value, record, index) => {
-        return <Checkbox checked={record.apply_for_create} />;
+        return <Checkbox checked={record.applyForCreate} />;
       },
     },
     {
@@ -157,7 +147,7 @@ const Page = () => {
       width: 100,
       align: "center",
       render: (value, record, index) => {
-        return <Checkbox checked={record.apply_for_update} />;
+        return <Checkbox checked={record.applyForUpdate} />;
       },
     },
     {
@@ -165,7 +155,7 @@ const Page = () => {
       width: 100,
       align: "center",
       render: (value, record, index) => {
-        return <Checkbox checked={record.apply_for_delete} />;
+        return <Checkbox checked={record.applyForDelete} />;
       },
     },
     {

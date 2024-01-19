@@ -5,14 +5,13 @@
   "scripts": {
     "dev-next": "next dev",
     "build-next": "next build",
-    "dev": "nodemon ./server/server.js",
     "start-next": "next start",
-    "start": "cross-env NODE_ENV=production node ./server/server.js",
-    "server": "npm run build-next & npm run start",
-    "devts": "cd ./ts-server && npm run dev",
-    "buildts": "cd ./ts-server && npm run build",
-    "startts": "cd ./ts-server && npm run start",
-    "serverts": "cd ./ts-server && npm run server"
+    "build-server": "tsc --project ./server",
+    "build": "npm run build-next && npm run build-server",
+    "start-server": "cross-env NODE_ENV=production node ./build/server.js",
+    "start": "npm run build-server && npm run start-server",
+    "dev": "nodemon ./server/server.ts",
+    "server": "npm run build-next && npm run start"
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
@@ -30,7 +29,7 @@
     "moment": "^2.29.4",
     "mongoose": "^8.0.1",
     "morgan": "^1.10.0",
-    "next": "14.0.3",
+    "next": "^14.0.3",
     "next-client-cookies": "^1.1.0",
     "nodemon": "^3.0.2",
     "react": "^18",

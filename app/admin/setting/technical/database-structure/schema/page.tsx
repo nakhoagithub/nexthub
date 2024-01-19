@@ -165,7 +165,7 @@ const Page = () => {
         <TableView
           model={"schema"}
           columnsTable={columns}
-          pageSize={20}
+          pageSize={50}
           formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
           selectedRowKeys={selectedRowKeys}
           setSelectedRowKeys={setSelectedRowKeys}

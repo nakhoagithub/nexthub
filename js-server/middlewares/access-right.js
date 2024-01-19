@@ -21,19 +21,19 @@ const checkAccessRight = async (req, res, next) => {
     let queryDocumentAccess = { modelName: params.name, active: true };
 
     if (req.method === "GET") {
-      queryDocumentAccess = { ...queryDocumentAccess, apply_for_read: true };
+      queryDocumentAccess = { ...queryDocumentAccess, applyForRead: true };
     }
     if (req.method === "POST") {
-      queryDocumentAccess = { ...queryDocumentAccess, apply_for_create: true };
+      queryDocumentAccess = { ...queryDocumentAccess, applyForCreate: true };
     }
     if (req.method === "PUT") {
-      queryDocumentAccess = { ...queryDocumentAccess, apply_for_update: true };
+      queryDocumentAccess = { ...queryDocumentAccess, applyForUpdate: true };
     }
     if (req.method === "PATCH") {
-      queryDocumentAccess = { ...queryDocumentAccess, apply_for_update: true };
+      queryDocumentAccess = { ...queryDocumentAccess, applyForUpdate: true };
     }
     if (req.method === "DELETE") {
-      queryDocumentAccess = { ...queryDocumentAccess, apply_for_delete: true };
+      queryDocumentAccess = { ...queryDocumentAccess, applyForDelete: true };
     }
     const documentAccess = await DocumentAccess.find(queryDocumentAccess);
 
