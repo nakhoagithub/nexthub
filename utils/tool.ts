@@ -1,3 +1,8 @@
+import { StoreApp } from "@/store/store";
+import { AxiosError } from "axios";
+import { StoreApi } from "zustand";
+import { translate } from "./translate";
+
 export const getParamFilter = (params: any) => {
   let newResult: any = { sort: {}, filter: {} };
   if (Array.isArray(params?.sorter)) {
@@ -49,4 +54,43 @@ export function replaceUndefinedWithNull(obj: any) {
   }
 
   return obj;
+}
+
+export function apiResultCode({ store, error }: { store?: StoreApi<StoreApp>; error: any }): {
+  message: string;
+  content: string;
+} {
+  const code = error?.response?.status;
+  const messageError = error?.response?.data?.message;
+
+  let result = {
+    message: "",
+    content: messageError,
+  };
+
+  if (code === 200) {
+    if (store) result.message = translate({ store, source: "Success" });
+    else result.message = "Success";
+  }
+  if (code === 400) {
+    if (store) result.message = translate({ store, source: "Bad Request" });
+    else result.message = "Bad Request";
+  }
+  if (code === 401) {
+    if (store) result.message = translate({ store, source: "Unauthorized" });
+    else result.message = "Unauthorized";
+  }
+  if (code === 403) {
+    if (store) result.message = translate({ store, source: "Forbidden" });
+    else result.message = "Forbidden";
+  }
+  if (code === 404) {
+    if (store) result.message = translate({ store, source: "Not Found" });
+    else result.message = "Not Found";
+  }
+  if (code === 500) {
+    if (store) result.message = translate({ store, source: "Internal Server Error" });
+    else result.message = "Internal Server Error";
+  }
+  return result;
 }

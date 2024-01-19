@@ -4,6 +4,7 @@ import { StoreContext } from "../components/context-provider";
 import { App, Button, Form, Input } from "antd";
 import app from "@/utils/axios";
 import { useRouter } from "next/navigation";
+import { apiResultCode } from "@/utils/tool";
 
 const Page = () => {
   const useApp = App.useApp();
@@ -19,7 +20,8 @@ const Page = () => {
         router.push("/login");
       }
     } catch (error) {
-      useApp.notification.error({ message: "Internal Server Error" });
+      let { message, content } = apiResultCode({ error: error, store });
+      useApp.notification.error({ message: message, description: content });
     }
   };
 

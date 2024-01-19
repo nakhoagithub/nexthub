@@ -8,7 +8,7 @@ import { FilterValue, SorterResult, TableRowSelection } from "antd/es/table/inte
 import React, { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../context-provider";
 import { translate } from "@/utils/translate";
-import { getParamFilter } from "@/utils/tool";
+import { apiResultCode, getParamFilter } from "@/utils/tool";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import ModalCustom from "./modal-custom";
 import { StoreApp } from "@/store/store";
@@ -195,7 +195,8 @@ const TableView = ({
         setAccessRightModel(access);
       }
     } catch (error) {
-      useApp.notification.error({ message: "Internal Server Error" });
+      let { message, content } = apiResultCode({ error: error, store });
+      useApp.notification.error({ message: message, description: content });
     }
   }
 
@@ -240,7 +241,8 @@ const TableView = ({
         });
       }
     } catch (error) {
-      useApp.notification.error({ message: "Internal Server Error" });
+      let { message, content } = apiResultCode({ error: error, store });
+      useApp.notification.error({ message: message, description: content });
     }
   }
 
@@ -284,7 +286,8 @@ const TableView = ({
         dataIdsCallback(newDataIds);
       }
     } catch (error) {
-      useApp.notification.error({ message: "Internal Server Error" });
+      let { message, content } = apiResultCode({ error: error, store });
+      useApp.notification.error({ message: message, description: content });
     }
   }
 
@@ -351,7 +354,8 @@ const TableView = ({
         },
       });
     } catch (error) {
-      useApp.notification.error({ message: "Internal Server Error" });
+      let { message, content } = apiResultCode({ error: error, store });
+      useApp.notification.error({ message: message, description: content });
     }
   }
 

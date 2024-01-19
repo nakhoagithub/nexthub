@@ -13,7 +13,7 @@ plugin.router.post("/module/:id/install", checkAuth, async (req, res) => {
       await Module.updateOne({ id: id }, { install: true });
       return res.status(200).json({ code: 200 });
     } else {
-      return res.status(200).json({ code: 400, message: "Install Error" });
+      return res.status(400).json({ code: 400, message: "Install Error" });
     }
   } catch (error) {
     logger({ message: error, name: `INSTALL MODULE: ${id}` });

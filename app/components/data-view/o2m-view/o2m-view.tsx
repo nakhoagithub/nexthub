@@ -1,12 +1,13 @@
 import { App, Button, Form, FormInstance, Space, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ModalTableSelection from "./modal-table-selection";
 import { FilterValue, SorterResult, TablePaginationConfig, TableRowSelection } from "antd/es/table/interface";
-import { getParamFilter } from "@/utils/tool";
+import { apiResultCode, getParamFilter } from "@/utils/tool";
 import app from "@/utils/axios";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { DeleteOutlined } from "@ant-design/icons";
+import { StoreContext } from "../../context-provider";
 
 const One2ManyView = ({
   title,
@@ -31,6 +32,7 @@ const One2ManyView = ({
   addInline?: boolean;
   modelAddInline?: React.ReactNode;
 }) => {
+  const store = useContext(StoreContext);
   const useApp = App.useApp();
   const router = useRouter();
   const pathname = usePathname();
@@ -122,7 +124,8 @@ const One2ManyView = ({
         });
       }
     } catch (error) {
-      useApp.notification.error({ message: "Internal Server Error" });
+      let { message, content } = apiResultCode({ error: error, store });
+      useApp.notification.error({ message: message, description: content });
     }
   }
 
@@ -139,7 +142,8 @@ const One2ManyView = ({
         if (datas[0][idsField].length > 0) setIds(datas[0][idsField]);
       }
     } catch (error) {
-      useApp.notification.error({ message: "Internal Server Error" });
+      let { message, content } = apiResultCode({ error: error, store });
+      useApp.notification.error({ message: message, description: content });
     }
   }
 

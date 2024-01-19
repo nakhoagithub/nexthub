@@ -8,7 +8,7 @@ import { App, Button, Form, FormInstance, Space, TablePaginationConfig } from "a
 import { EditOutlined } from "@ant-design/icons";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import FormView from "./form/form-view";
-import { getParamFilter, replaceUndefinedWithNull } from "@/utils/tool";
+import { apiResultCode, getParamFilter, replaceUndefinedWithNull } from "@/utils/tool";
 import { FilterValue, SorterResult } from "antd/es/table/interface";
 import { pageSizeOptions } from "@/interfaces/page-size-options";
 import { translate } from "@/utils/translate";
@@ -185,7 +185,8 @@ const DataView = ({
           }
         }
       } catch (error) {
-        useApp.notification.error({ message: "Internal Server Error" });
+        let { message, content } = apiResultCode({ error: error, store });
+      useApp.notification.error({ message: message, description: content });
       }
     }
 
@@ -218,7 +219,8 @@ const DataView = ({
           }
         }
       } catch (error) {
-        useApp.notification.error({ message: "Internal Server Error" });
+        let { message, content } = apiResultCode({ error: error, store });
+      useApp.notification.error({ message: message, description: content });
       }
     }
   }
@@ -260,7 +262,8 @@ const DataView = ({
         },
       });
     } catch (error) {
-      useApp.notification.error({ message: "Internal Server Error" });
+      let { message, content } = apiResultCode({ error: error, store });
+      useApp.notification.error({ message: message, description: content });
     }
   }
 
@@ -274,7 +277,8 @@ const DataView = ({
         setAccessRightModel(access);
       }
     } catch (error) {
-      useApp.notification.error({ message: "Internal Server Error" });
+      let { message, content } = apiResultCode({ error: error, store });
+      useApp.notification.error({ message: message, description: content });
     }
   }
 
@@ -311,7 +315,8 @@ const DataView = ({
         });
       }
     } catch (error) {
-      useApp.notification.error({ message: "Internal Server Error" });
+      let { message, content } = apiResultCode({ error: error, store });
+      useApp.notification.error({ message: message, description: content });
     }
   }
 
@@ -352,7 +357,8 @@ const DataView = ({
         dataIdsCallback(newDataIds);
       }
     } catch (error) {
-      useApp.notification.error({ message: "Internal Server Error" });
+      let { message, content } = apiResultCode({ error: error, store });
+      useApp.notification.error({ message: message, description: content });
     }
   }
 
@@ -401,7 +407,8 @@ const DataView = ({
         router.push(`${pathname}${query}`);
       }
     } catch (error) {
-      useApp.notification.error({ message: "Internal Server Error" });
+      let { message, content } = apiResultCode({ error: error, store });
+      useApp.notification.error({ message: message, description: content });
     }
   };
 
@@ -415,7 +422,8 @@ const DataView = ({
         setLanguageData({ datas: datas });
       }
     } catch (error) {
-      useApp.notification.error({ message: "Internal Server Error" });
+      let { message, content } = apiResultCode({ error: error, store });
+      useApp.notification.error({ message: message, description: content });
     }
   }
 
@@ -468,7 +476,8 @@ const DataView = ({
         form?.setFieldsValue({ ...datas[0] });
       }
     } catch (error) {
-      useApp.notification.error({ message: "Internal Server Error" });
+      let { message, content } = apiResultCode({ error: error, store });
+      useApp.notification.error({ message: message, description: content });
     }
   }
 

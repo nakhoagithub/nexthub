@@ -12,7 +12,7 @@ export const moduleSchema = new mongoose.Schema(
     depends: { type: [String] },
     datas: { type: [Object] },
     models: [{ type: mongoose.Types.ObjectId, ref: "model" }],
-    state: { type: String },
+    state: { type: String, default: "normal" },
     installable: { type: Boolean, default: false },
     application: { type: Boolean, default: true },
   },

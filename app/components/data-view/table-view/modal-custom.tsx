@@ -2,7 +2,7 @@
 import { ColumnModel } from "@/interfaces/model";
 import { StoreApp } from "@/store/store";
 import app from "@/utils/axios";
-import { replaceUndefinedWithNull } from "@/utils/tool";
+import { apiResultCode, replaceUndefinedWithNull } from "@/utils/tool";
 import { translate } from "@/utils/translate";
 import { App, Button, Drawer, Form, FormInstance, Modal } from "antd";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -67,7 +67,8 @@ const ModalCustom = ({
           }
         }
       } catch (error) {
-        useApp.notification.error({ message: "Internal Server Error" });
+        let { message, content } = apiResultCode({ error: error, store });
+      useApp.notification.error({ message: message, description: content });
       }
     }
 
@@ -100,7 +101,8 @@ const ModalCustom = ({
           }
         }
       } catch (error) {
-        useApp.notification.error({ message: "Internal Server Error" });
+        let { message, content } = apiResultCode({ error: error, store });
+      useApp.notification.error({ message: message, description: content });
       }
     }
   }
@@ -129,7 +131,8 @@ const ModalCustom = ({
         form?.setFieldsValue({ ...datas[0] });
       }
     } catch (error) {
-      useApp.notification.error({ message: "Internal Server Error" });
+      let { message, content } = apiResultCode({ error: error, store });
+      useApp.notification.error({ message: message, description: content });
     }
   }
 

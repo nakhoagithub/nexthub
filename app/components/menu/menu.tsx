@@ -1,11 +1,12 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import { Menu as AntMenu, MenuProps } from "antd";
+import { Menu as AntMenu, App, MenuProps } from "antd";
 import app from "@/utils/axios";
 import { MenuData } from "@/interfaces/menu-data";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { StoreContext } from "../context-provider";
 import { translate } from "@/utils/translate";
+import { apiResultCode } from "@/utils/tool";
 
 // type MenuItem = Required<MenuProps>["items"][number];
 
@@ -44,6 +45,7 @@ function getItem({
 }
 
 const Menu = ({ onClickMenu }: { onClickMenu?: () => void }) => {
+  const useApp = App.useApp();
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -113,7 +115,8 @@ const Menu = ({ onClickMenu }: { onClickMenu?: () => void }) => {
         }
       }
     } catch (error) {
-      alert(error);
+      let { message, content } = apiResultCode({ error: error, store });
+      useApp.notification.error({ message: message, description: content });
     }
   }
 

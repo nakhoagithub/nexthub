@@ -2,6 +2,7 @@
 import { StoreContext } from "@/app/components/context-provider";
 import DataView from "@/app/components/data-view/data-view";
 import app from "@/utils/axios";
+import { apiResultCode } from "@/utils/tool";
 import { translate } from "@/utils/translate";
 import { App, Avatar, Button, Card, Checkbox, Form, FormInstance, Input, Select, Space } from "antd";
 import Meta from "antd/es/card/Meta";
@@ -148,7 +149,8 @@ const Page = () => {
         useApp.message.error(translate({ store: store, source: message }));
       }
     } catch (error) {
-      useApp.notification.error({ message: "Internal Server Error" });
+      let { message, content } = apiResultCode({ error: error, store });
+      useApp.notification.error({ message: message, description: content });
     }
   }
 
@@ -164,7 +166,8 @@ const Page = () => {
         useApp.message.error(translate({ store: store, source: message }));
       }
     } catch (error) {
-      useApp.notification.error({ message: "Internal Server Error" });
+      let { message, content } = apiResultCode({ error: error, store });
+      useApp.notification.error({ message: message, description: content });
     }
   }
 
@@ -207,7 +210,7 @@ const Page = () => {
           >
             <Meta
               style={{ height: "100px" }}
-              avatar={<Avatar src="" />}
+              avatar={<Avatar src="/png/pre-built-module.png" size={80} />}
               title={translate({ store: store, source: value.name ?? "(Module name)" })}
               description={
                 <div className="description-item-module">

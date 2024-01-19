@@ -1,10 +1,11 @@
 import app from "@/utils/axios";
-import { getParamFilter } from "@/utils/tool";
+import { apiResultCode, getParamFilter } from "@/utils/tool";
 import { App, Modal, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { FilterValue, SorterResult, TablePaginationConfig, TableRowSelection } from "antd/es/table/interface";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { StoreContext } from "../../context-provider";
 
 const ModalTableSelection = ({
   model,
@@ -23,6 +24,7 @@ const ModalTableSelection = ({
   columnsTable?: ColumnsType<any>;
   onOk?: (values: any[]) => void;
 }) => {
+  const store = useContext(StoreContext);
   const useApp = App.useApp();
   const [loading, setLoading] = useState(false);
   const [datas, setDatas] = useState<any[]>([]);
@@ -67,7 +69,8 @@ const ModalTableSelection = ({
         });
       }
     } catch (error) {
-      useApp.notification.error({ message: "Internal Server Error" });
+      let { message, content } = apiResultCode({ error: error, store });
+      useApp.notification.error({ message: message, description: content });
     }
   }
 

@@ -1,5 +1,6 @@
 import { StoreContext } from "@/app/components/context-provider";
 import app from "@/utils/axios";
+import { apiResultCode } from "@/utils/tool";
 import { translate } from "@/utils/translate";
 import { App, Form, Input, Modal } from "antd";
 import { useForm } from "antd/es/form/Form";
@@ -38,7 +39,8 @@ const ModalChangePassword = ({
         }
       }
     } catch (error) {
-      useApp.notification.error({ message: "Internal Server Error" });
+      let { message, content } = apiResultCode({ error: error, store });
+      useApp.notification.error({ message: message, description: content });
     }
   }
 
