@@ -50,7 +50,7 @@ const ViewForm = (
       <Form.Item label="Description" name="description">
         <TextArea />
       </Form.Item>
-      <Form.Item label="Active" name="active" valuePropName="checked" initialValue={true}>
+      <Form.Item label={translate({ store, source: "Active" })} name="active" valuePropName="checked" initialValue={true}>
         <Checkbox defaultChecked={true}>Active</Checkbox>
       </Form.Item>
     </Form>
@@ -90,7 +90,7 @@ const Page = () => {
 
   return (
     <div>
-      <PageHeader title="Breed Category" />
+      <PageHeader title="Breed category" />
       <div className="page-content">
         <TableView
           model={"breed-category"}

@@ -7,7 +7,7 @@ export interface Model {
 }
 
 export interface Data {
-  model: string;
+  modelName: string;
   folder: string;
   file: string;
   primaryKey: string;

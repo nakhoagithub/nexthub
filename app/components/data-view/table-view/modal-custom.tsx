@@ -19,6 +19,8 @@ const ModalCustom = ({
   updateField,
   form,
   dataFormDefault,
+  customValuesFinish,
+  customValuesInit,
 }: {
   open: boolean;
   setOpen: (value: boolean) => void;
@@ -29,6 +31,8 @@ const ModalCustom = ({
   updateField?: string;
   form: FormInstance<any>;
   dataFormDefault?: any;
+  customValuesFinish?: (values: any) => any;
+  customValuesInit?: (values: any) => any;
 }) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -45,8 +49,6 @@ const ModalCustom = ({
         if (Object.keys(dataFormDefault ?? {}).length > 0) {
           newDefault = dataFormDefault;
         }
-
-        console.log({ ...values, ...newDefault });
 
         const {
           data: { code, message, errors },
@@ -68,7 +70,10 @@ const ModalCustom = ({
         }
       } catch (error) {
         let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: content });
+        useApp.notification.error({
+          message: message,
+          description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>,
+        });
       }
     }
 
@@ -102,7 +107,10 @@ const ModalCustom = ({
         }
       } catch (error) {
         let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: content });
+        useApp.notification.error({
+          message: message,
+          description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>,
+        });
       }
     }
   }
@@ -128,11 +136,18 @@ const ModalCustom = ({
 
       if (code === 200) {
         form.resetFields();
-        form?.setFieldsValue({ ...datas[0] });
+        if (customValuesInit) {
+          form?.setFieldsValue({ ...customValuesInit({ ...datas[0] }) });
+        } else {
+          form?.setFieldsValue({ ...datas[0] });
+        }
       }
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: content });
+      useApp.notification.error({
+        message: message,
+        description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>,
+      });
     }
   }
 
@@ -159,7 +174,14 @@ const ModalCustom = ({
         </Button>,
       ]}
     >
-      {formLayout && formLayout(onFinish)}
+      {formLayout &&
+        formLayout((values) => {
+          if (customValuesFinish) {
+            return onFinish(customValuesFinish(values));
+          } else {
+            return onFinish(values);
+          }
+        })}
     </Drawer>
   );
 };

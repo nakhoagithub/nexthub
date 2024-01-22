@@ -40,7 +40,7 @@ const ModalChangePassword = ({
       }
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: content });
+      useApp.notification.error({ message: message, description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>, });
     }
   }
 

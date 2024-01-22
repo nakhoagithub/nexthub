@@ -4,9 +4,10 @@ Manager,Quản lý,vi_VN,normal,true
 User,Người dùng,vi_VN,normal,true
 Group,Nhóm,vi_VN,normal,true
 Org,Tổ chức,vi_VN,normal,true
+Organization,Tổ chức,vi_VN,normal,true
 Technical,Kỹ thuật,vi_VN,normal,true
 Security,Bảo mật,vi_VN,normal,true
-Access Right,Quyền truy cập,vi_VN,normal,true
+Access Rights,Quyền truy cập,vi_VN,normal,true
 Document Access,Quyền cho Document,vi_VN,normal,true
 User interface,Giao diện người dùng,vi_VN,normal,true
 Menu,Menu,vi_VN,normal,true

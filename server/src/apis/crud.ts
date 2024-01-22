@@ -271,7 +271,12 @@ async function deleteDatabase(req: Request, res: Response) {
         .json({ code: 400, statusError: "warning", message: "There are some data fields that are not allowed" });
     }
 
-    await Model.deleteMany({ [fieldId]: { $in: datas }, ...allowFilter });
+    try {
+      await Model.deleteMany({ [fieldId]: { $in: datas }, ...allowFilter });
+    } catch (error) {
+      logger({ message: error, name: `CRUD DELETE: /db/${name}` });
+      return res.status(400).json({ code: 400, message: error?.toString() });
+    }
 
     return res.status(200).json({ code: 200 });
   } catch (error) {

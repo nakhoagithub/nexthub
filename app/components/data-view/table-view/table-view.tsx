@@ -30,6 +30,8 @@ const TableView = ({
   hideActionUpdate,
   hideActionCreate,
   formLayout,
+  customValuesFinish,
+  customValuesInit,
   updateField,
   ids,
   dataIdsCallback,
@@ -66,6 +68,8 @@ const TableView = ({
     onFinish: (value: any) => void;
     disabled?: boolean;
   }) => React.ReactNode;
+  customValuesFinish?: (values: any) => any;
+  customValuesInit?: (values: any) => any;
   updateField?: string;
   ids?: {
     [modelName: string]: {
@@ -196,7 +200,10 @@ const TableView = ({
       }
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: content });
+      useApp.notification.error({
+        message: message,
+        description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>,
+      });
     }
   }
 
@@ -242,7 +249,10 @@ const TableView = ({
       }
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: content });
+      useApp.notification.error({
+        message: message,
+        description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>,
+      });
     }
   }
 
@@ -287,7 +297,10 @@ const TableView = ({
       }
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: content });
+      useApp.notification.error({
+        message: message,
+        description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>,
+      });
     }
   }
 
@@ -334,28 +347,31 @@ const TableView = ({
         okText: translate({ store: store, source: "Yes" }),
         cancelText: translate({ store: store, source: "Cancel" }),
         onOk: async () => {
-          const {
-            data: { code, message, statusError },
-          } = await app.delete(`/api/db/${model}`, { data: { fieldId: "_id", datas: newIds } });
+          try {
+            const {
+              data: { code },
+            } = await app.delete(`/api/db/${model}`, { data: { fieldId: "_id", datas: newIds } });
 
-          if (code === 200) {
-            useApp.message.success(translate({ store: store, source: "Deleted" }));
-            getDatas();
-            setSelectedRowKeys([]);
-          } else {
-            if (message) {
-              if (statusError === "warning") {
-                useApp.message.warning(message ?? "");
-              } else {
-                useApp.message.error(message ?? "");
-              }
+            if (code === 200) {
+              useApp.message.success(translate({ store: store, source: "Deleted" }));
             }
+          } catch (error) {
+            let { message, content } = apiResultCode({ error: error, store });
+            useApp.notification.error({
+              message: message,
+              description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>,
+            });
           }
+          getDatas();
+          setSelectedRowKeys([]);
         },
       });
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: content });
+      useApp.notification.error({
+        message: message,
+        description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>,
+      });
     }
   }
 
@@ -444,6 +460,8 @@ const TableView = ({
         updateField={updateField}
         form={form}
         dataFormDefault={dataFormDefault}
+        customValuesFinish={customValuesFinish}
+        customValuesInit={customValuesInit}
       />
     </div>
   );

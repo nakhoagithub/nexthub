@@ -5,7 +5,6 @@ import { ColumnsType } from "antd/es/table";
 import React, { useContext, useState } from "react";
 import { translate } from "@/utils/translate";
 import { StoreContext } from "@/app/components/context-provider";
-import TextArea from "antd/es/input/TextArea";
 import { StoreApi } from "zustand";
 import { StoreApp } from "@/store/store";
 import { getItemInArray } from "@/utils/tool";
@@ -22,7 +21,7 @@ const ViewForm = (
   return (
     <Form name="form" form={form} layout="vertical" onFinish={onFinish}>
       <Form.Item
-        label="Name"
+        label={translate({ store, source: "Name" })}
         name="name"
         rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
@@ -30,44 +29,54 @@ const ViewForm = (
       </Form.Item>
 
       <Form.Item
-        label="Breed"
-        name="idBreed"
+        label={translate({ store, source: "Sample planting schedule" })}
+        name="idSamplePlantingSchedule"
         rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
         <Select
           showSearch
           allowClear
           onClear={() => {
-            form.setFieldValue("idBreed", "");
+            form.setFieldValue("idSamplePlantingSchedule", "");
           }}
           filterOption={(input: string, option: any) => {
             return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
           }}
         >
-          {(dataIds?.["breed"] ?? []).map((e: any) => (
+          {(dataIds?.["sample-planting-schedule"] ?? []).map((e: any) => (
             <Option key={e._id} label={e.name}>
-              <span>{`${e.code} - ${e.name}`}</span>
+              <span>{e.name}</span>
             </Option>
           ))}
         </Select>
       </Form.Item>
 
       <Space>
-        <Form.Item label={translate({ store, source: "Number of days incurred" })} name="numOfDaysIncurred">
+        <Form.Item label={translate({ store, source: "Sort index" })} name="sortIndex">
           <InputNumber min={0} />
         </Form.Item>
 
-        <Form.Item label={translate({ store, source: "Average Yield" })} name="averageYield">
+        <Form.Item label={translate({ store, source: "Number of days" })} name="numOfDays">
           <InputNumber min={0} />
         </Form.Item>
       </Space>
 
-      <Form.Item label={translate({ store, source: "Description" })} name="description">
-        <TextArea />
+      <Form.Item
+        label={translate({ store, source: "Is start" })}
+        name="isStart"
+        valuePropName="checked"
+        initialValue={false}
+      >
+        <Checkbox defaultChecked={false}>{translate({ store, source: "Is start" })}</Checkbox>
       </Form.Item>
 
-      <Form.Item label="Active" name="active" valuePropName="checked" initialValue={true}>
-        <Checkbox defaultChecked={true}>Active</Checkbox>
+      <Form.Item
+        label={translate({ store, source: "Active" })}
+        name="active"
+        valuePropName="checked"
+        initialValue={true}
+      >
+        <Checkbox defaultChecked={true}>{translate({ store, source: "Active" })}</Checkbox>
       </Form.Item>
     </Form>
   );
@@ -85,29 +94,44 @@ const Page = () => {
       width: 200,
     },
     {
-      title: translate({ store, source: "Number of day incurred" }),
-      dataIndex: "numOfDaysIncurred",
-      width: 100,
-      align: "center",
-    },
-    {
-      title: translate({ store, source: "Average Yield" }),
-      dataIndex: "averageYield",
-      width: 100,
-      align: "center",
-    },
-    {
-      title: translate({ store, source: "Breed" }),
+      key: "idSamplePlantingSchedule",
+      title: translate({ store, source: "Sample planting schedule" }),
       width: 300,
       render: (value, record, index) => {
-        let breed = record.idBreed && getItemInArray(dataIds?.["breed"] ?? [], record.idBreed, "_id");
-        return <div>{breed && `${breed?.code} - ${breed?.name}`}</div>;
+        let data =
+          record.idSamplePlantingSchedule &&
+          getItemInArray(dataIds?.["sample-planting-schedule"] ?? [], record.idSamplePlantingSchedule, "_id");
+        return <div>{data?.name ?? ""}</div>;
       },
+      filters: [
+        ...(dataIds?.["sample-planting-schedule"] ?? []).map((e: any) => {
+          return {
+            value: e._id,
+            text: e.name,
+          };
+        }),
+      ],
     },
     {
-      title: translate({ store, source: "Description" }),
-      dataIndex: "description",
-      width: 500,
+      title: translate({ store, source: "Sort index" }),
+      dataIndex: "sortIndex",
+      width: 100,
+      align: "center",
+    },
+    {
+      title: translate({ store, source: "Number of days" }),
+      dataIndex: "numOfDays",
+      width: 100,
+      align: "center",
+    },
+    {
+      title: translate({ store, source: "Is start" }),
+      width: 100,
+      dataIndex: "isStart",
+      align: "center",
+      render: (value, record, index) => {
+        return <Checkbox checked={record.active} />;
+      },
     },
     { title: "", key: "none" },
     {
@@ -146,31 +170,23 @@ const Page = () => {
 
   return (
     <div>
-      <PageHeader title="Template planting schedule" />
+      <PageHeader title="Sample period of planting schedule" />
       <div className="page-content">
         <TableView
-          model={"template-planting-schedule"}
+          model="sample-period-planting-schedule"
           columnsTable={columns}
           formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
           selectedRowKeys={selectedRowKeys}
           setSelectedRowKeys={setSelectedRowKeys}
           ids={[
             {
-              breed: {
-                fields: ["_id", "name", "code"],
+              "sample-planting-schedule": {
+                fields: ["_id", "name"],
                 filter: { active: true },
               },
             },
           ]}
           dataIdsCallback={(value) => setDataIds(value)}
-          // actions={(keys?: any[]) => [
-          //   <div>
-          //     {keys?.length === 1 && <Button onClick={() => {}}>{translate({ store, source: "Add Period" })}</Button>}
-          //   </div>,
-          // ]}
-          // modelExpandable="template-planting-schedule-period"
-          // fieldExpandable="idsPeriod"
-          // columnsExpandable={columnsPeriod}
         />
       </div>
     </div>

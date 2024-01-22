@@ -6,10 +6,12 @@ export const translate = ({
   source,
   params,
   store,
+  modelName,
 }: {
   store: StoreApi<StoreApp>;
   source: string;
   params?: { [key: string]: any };
+  modelName?: string;
 }) => {
   const { languageData } = store.getState();
 

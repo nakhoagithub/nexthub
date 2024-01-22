@@ -11,10 +11,10 @@ export const moduleSchema = new mongoose.Schema(
     author: { type: String },
     depends: { type: [String] },
     datas: { type: [Object] },
-    models: [{ type: mongoose.Types.ObjectId, ref: "model" }],
+    models: { type: [Object] },
     state: { type: String, default: "normal" },
     installable: { type: Boolean, default: false },
     application: { type: Boolean, default: true },
   },
-  { timestamps: true, versionKey: false, collection: collectionName }
+  { timestamps: false, versionKey: false, collection: collectionName }
 );

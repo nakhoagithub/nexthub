@@ -187,8 +187,8 @@ const ViewForm = (
           }}
         >
           {(dataIds?.["user"] ?? [])?.map((e: any) => (
-            <Option key={e._id} label={`${e.username}-${e.name}`}>
-              <span>{`${e.username}-${e.name}`}</span>
+            <Option key={e._id} label={`${e.username}-${e.name ?? "(No name)"}`}>
+              <span>{`${e.username}-${e.name ?? "(No name)"}`}</span>
             </Option>
           ))}
         </Select>

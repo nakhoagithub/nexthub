@@ -6,8 +6,8 @@ import { apiResultCode } from "@/utils/tool";
 import { translate } from "@/utils/translate";
 import { App, Avatar, Button, Card, Checkbox, Form, FormInstance, Input, Select, Space } from "antd";
 import Meta from "antd/es/card/Meta";
+import { usePathname, useRouter } from "next/navigation";
 const { Option } = Select;
-import { ColumnsType } from "antd/es/table";
 import React, { useContext, useState } from "react";
 
 const ViewForm = (
@@ -89,7 +89,7 @@ const ViewForm = (
         </Select>
       </Form.Item>
 
-      <Form.Item label="Active" name="active" valuePropName="checked" initialValue={true}>
+      <Form.Item label={translate({ store, source: "Active" })} name="active" valuePropName="checked" initialValue={true}>
         <Checkbox defaultChecked={true}>Active</Checkbox>
       </Form.Item>
     </Form>
@@ -97,45 +97,9 @@ const ViewForm = (
 };
 
 const Page = () => {
-  const [dataIds, setDataIds] = useState<any>();
+  const pathname = usePathname();
   const store = useContext(StoreContext);
   const useApp = App.useApp();
-  const columns: ColumnsType<any> = [
-    // {
-    //   title: "ID",
-    //   dataIndex: "id",
-    //   width: 200,
-    // },
-    {
-      title: translate({ store: store, source: "Source term" }),
-      dataIndex: "sourceTerm",
-      width: 500,
-    },
-    {
-      title: translate({ store: store, source: "Translate Value" }),
-      dataIndex: "translationValue",
-      width: 500,
-    },
-    {
-      title: translate({ store: store, source: "Locale Code" }),
-      dataIndex: "localeCode",
-      width: 100,
-    },
-    {
-      title: translate({ store: store, source: "Model Name" }),
-      dataIndex: "modelName",
-      width: 200,
-    },
-    { title: "", key: "none" },
-    {
-      title: translate({ store: store, source: "Active" }),
-      width: 100,
-      align: "center",
-      render: (value: any, record: any, index: number) => {
-        return <Checkbox checked={record.active} />;
-      },
-    },
-  ];
 
   async function uninstallModule(model: string) {
     try {
@@ -150,7 +114,7 @@ const Page = () => {
       }
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: content });
+      useApp.notification.error({ message: message, description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>, });
     }
   }
 
@@ -167,7 +131,7 @@ const Page = () => {
       }
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: content });
+      useApp.notification.error({ message: message, description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>, });
     }
   }
 
@@ -194,11 +158,13 @@ const Page = () => {
                       onOk: async () => {
                         await uninstallModule(value.id);
                         fetchData && (await fetchData());
+                        window.location.pathname = pathname;
                       },
                     });
                   } else {
                     await installModule(value.id);
                     fetchData && (await fetchData());
+                    window.location.pathname = pathname;
                   }
                 }}
               >

@@ -8,7 +8,7 @@ import mongoose from "mongoose";
 import { logger } from "./utils/logger";
 import plugin from "./plugin";
 import "./src/index";
-import { autoImportModule } from "./utils/tool";
+import { autoImportModule } from "./utils/module";
 import next from "next";
 
 var whitelist = [

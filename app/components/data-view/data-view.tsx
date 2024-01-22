@@ -186,7 +186,7 @@ const DataView = ({
         }
       } catch (error) {
         let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: content });
+        useApp.notification.error({ message: message, description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>, });
       }
     }
 
@@ -220,7 +220,7 @@ const DataView = ({
         }
       } catch (error) {
         let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: content });
+        useApp.notification.error({ message: message, description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>, });
       }
     }
   }
@@ -250,20 +250,12 @@ const DataView = ({
             if (viewType === "update") {
               router.back();
             }
-          } else {
-            if (message) {
-              if (statusError === "warning") {
-                useApp.message.warning(message ?? "");
-              } else {
-                useApp.message.error(message ?? "");
-              }
-            }
           }
         },
       });
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: content });
+      useApp.notification.error({ message: message, description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>, });
     }
   }
 
@@ -278,7 +270,7 @@ const DataView = ({
       }
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: content });
+      useApp.notification.error({ message: message, description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>, });
     }
   }
 
@@ -316,7 +308,7 @@ const DataView = ({
       }
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: content });
+      useApp.notification.error({ message: message, description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>, });
     }
   }
 
@@ -358,7 +350,7 @@ const DataView = ({
       }
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: content });
+      useApp.notification.error({ message: message, description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>, });
     }
   }
 
@@ -408,7 +400,7 @@ const DataView = ({
       }
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: content });
+      useApp.notification.error({ message: message, description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>, });
     }
   };
 
@@ -423,7 +415,7 @@ const DataView = ({
       }
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: content });
+      useApp.notification.error({ message: message, description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>, });
     }
   }
 
@@ -477,7 +469,7 @@ const DataView = ({
       }
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: content });
+      useApp.notification.error({ message: message, description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>, });
     }
   }
 

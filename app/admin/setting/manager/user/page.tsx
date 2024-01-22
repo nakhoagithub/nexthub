@@ -50,7 +50,7 @@ const ViewForm = (
         </Select>
       </Form.Item>
 
-      <Form.Item label="Origanization" name="idsOrg">
+      <Form.Item label="Origanization" name="idsOrg" initialValue={[]}>
         <Select
           showSearch
           mode="multiple"
@@ -66,7 +66,7 @@ const ViewForm = (
         </Select>
       </Form.Item>
 
-      <Form.Item label="Locale Code" name="localeCode">
+      <Form.Item label="Locale Code" name="localeCode" initialValue={(dataIds?.["language"] ?? [])?.[0]?.localeCode}>
         <Select
           showSearch
           filterOption={(input: string, option: any) => {
@@ -81,7 +81,7 @@ const ViewForm = (
         </Select>
       </Form.Item>
 
-      <Form.Item label="Active" name="active" valuePropName="checked" initialValue={true}>
+      <Form.Item label={translate({ store, source: "Active" })} name="active" valuePropName="checked" initialValue={true}>
         <Checkbox defaultChecked={true}>Active</Checkbox>
       </Form.Item>
 

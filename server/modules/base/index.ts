@@ -1,4 +1,4 @@
-import { createModule } from "../../utils/tool";
+import { createModule } from "../../utils/module";
 import { accessSchema } from "./models/access";
 import { documentAccessSchema } from "./models/document-access";
 import { groupSchema } from "./models/group";
@@ -16,38 +16,38 @@ createModule({
     id: "base",
     name: "Base",
     version: "1.0",
-    description: "Base",
+    description: "System module default",
     author: "Anh Khoa",
     depends: [],
     state: "base",
     datas: [
       {
-        model: "access",
+        modelName: "access",
         folder: "base",
         file: "base.access.csv",
         primaryKey: "id",
       },
       {
-        model: "group",
+        modelName: "group",
         folder: "base",
         file: "base.group.csv",
         primaryKey: "id",
       },
       {
-        model: "menu",
+        modelName: "menu",
         folder: "base",
         file: "base.menu.csv",
         primaryKey: "id",
       },
       {
-        model: "language",
+        modelName: "language",
         folder: "base",
         file: "base.language.csv",
         primaryKey: "id",
         noUpdate: true,
       },
       {
-        model: "translate-term",
+        modelName: "translate-term",
         folder: "base",
         file: "base.translate.term.csv",
         primaryKey: "sourceTerm",

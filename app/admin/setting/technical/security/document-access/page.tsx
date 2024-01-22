@@ -81,7 +81,7 @@ const ViewForm = (
           <Checkbox defaultChecked={true}>Delete</Checkbox>
         </Form.Item>
       </Space>
-      <Form.Item label="Active" name="active" valuePropName="checked" initialValue={true}>
+      <Form.Item label={translate({ store, source: "Active" })} name="active" valuePropName="checked" initialValue={true}>
         <Checkbox defaultChecked={true}>Active</Checkbox>
       </Form.Item>
     </Form>

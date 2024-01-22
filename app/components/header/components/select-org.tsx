@@ -5,14 +5,17 @@ import React, { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../context-provider";
 import { CheckboxOptionType, CheckboxValueType } from "antd/es/checkbox/Group";
 import { CheckboxChangeEvent } from "antd/es/checkbox/Checkbox";
+import { usePathname } from "next/navigation";
 
 const SelecteOrg = () => {
+  const pathname = usePathname();
   const [loading, setLoading] = useState(false);
   const useApp = App.useApp();
   const store = useContext(StoreContext);
   const { user } = store.getState();
   const [orgs, setOrgs] = useState<any[]>([]);
   const [datas, setDatas] = useState<any[]>([]);
+  const [openSelectOrg, setOpenSelectOrg] = useState(true);
 
   async function fetchOrg() {
     try {
@@ -71,6 +74,12 @@ const SelecteOrg = () => {
     <div>
       {user && datas.length > 0 && (
         <Popover
+          onOpenChange={() => {
+            setOpenSelectOrg(!openSelectOrg);
+            if (!openSelectOrg) {
+              window.location.pathname = pathname;
+            }
+          }}
           content={
             <Checkbox.Group
               options={datas}
