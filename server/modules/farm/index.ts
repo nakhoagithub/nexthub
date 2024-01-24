@@ -3,7 +3,9 @@ import { areaSchema } from "./models/area";
 import { breedSchema } from "./models/breed";
 import { breedCategorySchema } from "./models/breed-category";
 import { farmSchema } from "./models/farm";
+import { periodPlantingScheduleDetailSchema } from "./models/period-planting-schedule-detail";
 import { plantingScheduleSchema } from "./models/planting-schedule";
+import { plantingScheduleDetailSchema } from "./models/planting-schedule-detail";
 import { samplePeriodPlantingScheduleSchema } from "./models/sample-period-planting-schedule";
 import { samplePlantingScheduleSchema } from "./models/sample-planting-schedule";
 
@@ -75,6 +77,16 @@ createModule({
       name: "Planting Schedule",
       modelName: "planting-schedule",
       schema: plantingScheduleSchema,
+    },
+    {
+      name: "Planting Schedule Detail",
+      modelName: "planting-schedule-detail",
+      schema: plantingScheduleDetailSchema,
+    },
+    {
+      name: "Period Planting Schedule Detail",
+      modelName: "period-planting-schedule-detail",
+      schema: periodPlantingScheduleDetailSchema,
     },
   ],
 });

@@ -1,3 +1,4 @@
+"use client";
 import React, { useContext } from "react";
 import { StoreContext } from "../context-provider";
 import { translate } from "@/utils/translate";

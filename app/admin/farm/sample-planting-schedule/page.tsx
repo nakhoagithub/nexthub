@@ -53,11 +53,15 @@ const ViewForm = (
       </Form.Item>
 
       <Space>
-        <Form.Item label={translate({ store, source: "Number of days incurred" })} name="numOfDaysIncurred">
+        <Form.Item
+          label={translate({ store, source: "Number of days incurred" })}
+          name="numOfDaysIncurred"
+          initialValue={0}
+        >
           <InputNumber min={0} />
         </Form.Item>
 
-        <Form.Item label={translate({ store, source: "Average Yield" })} name="averageYield">
+        <Form.Item label={translate({ store, source: "Average Yield" })} name="averageYield" initialValue={0}>
           <InputNumber min={0} />
         </Form.Item>
       </Space>
@@ -66,7 +70,12 @@ const ViewForm = (
         <TextArea />
       </Form.Item>
 
-      <Form.Item label={translate({ store, source: "Active" })} name="active" valuePropName="checked" initialValue={true}>
+      <Form.Item
+        label={translate({ store, source: "Active" })}
+        name="active"
+        valuePropName="checked"
+        initialValue={true}
+      >
         <Checkbox defaultChecked={true}>Active</Checkbox>
       </Form.Item>
     </Form>
@@ -139,14 +148,6 @@ const Page = () => {
             },
           ]}
           dataIdsCallback={(value) => setDataIds(value)}
-          // actions={(keys?: any[]) => [
-          //   <div>
-          //     {keys?.length === 1 && <Button onClick={() => {}}>{translate({ store, source: "Add Period" })}</Button>}
-          //   </div>,
-          // ]}
-          // modelExpandable="sample-planting-schedule-period"
-          // fieldExpandable="idsPeriod"
-          // columnsExpandable={columnsPeriod}
         />
       </div>
     </div>

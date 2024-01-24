@@ -1,5 +1,5 @@
 "use client";
-import { Checkbox, DatePicker, Form, FormInstance, Input, InputNumber, Select, Space, Tabs } from "antd";
+import { Checkbox, DatePicker, Form, FormInstance, Input, InputNumber, Select, Space, Tabs, Tag } from "antd";
 const { Option } = Select;
 import { ColumnsType } from "antd/es/table";
 import React, { useContext, useEffect, useState } from "react";
@@ -13,6 +13,7 @@ import TableView from "@/app/components/data-view/table-view/table-view";
 import PageHeader from "@/app/components/body/page-header";
 import moment from "moment";
 import dayjs from "dayjs";
+import FilterDropdown from "@/app/components/data-view/table-view/filter-dropdown";
 
 const ViewForm = (
   store: StoreApi<StoreApp>,
@@ -20,7 +21,8 @@ const ViewForm = (
   onFinish: (value: any) => void,
   viewType: string | null,
   dataIds: any,
-  initSamples: any[]
+  initSamples: any[],
+  dataDistincts: any
 ) => {
   const [samples, setSamples] = useState<any[]>([]);
 
@@ -87,7 +89,7 @@ const ViewForm = (
       </Form.Item>
 
       <Form.Item
-        label="Area"
+        label={translate({ store, source: "Area" })}
         name="idArea"
         rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
@@ -115,11 +117,11 @@ const ViewForm = (
         name="numberOfSeasons"
         rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
-        <InputNumber min={0} />
+        <InputNumber min={0} onChange={() => changeCode()} />
       </Form.Item>
 
       <Form.Item
-        label="Breed"
+        label={translate({ store, source: "Breed" })}
         name="idBreed"
         rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
@@ -133,6 +135,7 @@ const ViewForm = (
             return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
           }}
           onChange={onChangeBreed}
+          disabled={viewType == "update"}
         >
           {(dataIds?.["breed"] ?? []).map((e: any) => (
             <Option key={e._id} label={e.name}>
@@ -156,6 +159,7 @@ const ViewForm = (
           filterOption={(input: string, option: any) => {
             return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
           }}
+          disabled={viewType == "update"}
         >
           {samples.map((e: any) => (
             <Option key={e._id} label={e.name}>
@@ -171,22 +175,6 @@ const ViewForm = (
         rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
         <DatePicker format="DD/MM/YYYY" onChange={() => changeCode()} />
-      </Form.Item>
-
-      <Form.Item
-        label={translate({ store, source: "Date start production document" })}
-        name="dateStartProductionDocument"
-        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
-      >
-        <DatePicker format="DD/MM/YYYY" />
-      </Form.Item>
-
-      <Form.Item
-        label={translate({ store, source: "Date end production document" })}
-        name="dateEndProductionDocument"
-        rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
-      >
-        <DatePicker format="DD/MM/YYYY" />
       </Form.Item>
 
       <Space wrap>
@@ -216,12 +204,28 @@ const ViewForm = (
           }
           initialValue={0}
         >
-          <InputNumber min={0} />
+          <InputNumber min={0} disabled />
         </Form.Item>
       </Space>
 
       <Form.Item label={translate({ store, source: "Comment" })} name="comment">
         <TextArea />
+      </Form.Item>
+
+      <Form.Item
+        label={translate({ store, source: "Date start production document" })}
+        name="dateStartProductionDocument"
+        // rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
+      >
+        <DatePicker format="DD/MM/YYYY" />
+      </Form.Item>
+
+      <Form.Item
+        label={translate({ store, source: "Date end production document" })}
+        name="dateEndProductionDocument"
+        // rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
+      >
+        <DatePicker format="DD/MM/YYYY" />
       </Form.Item>
     </Form>
   );
@@ -231,7 +235,28 @@ const Page = () => {
   const store = useContext(StoreContext);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [dataIds, setDataIds] = useState<any>();
+  const [dataDistincts, setDataDistincts] = useState<any>();
   const [initSamples, setInitSamples] = useState<any[]>([]);
+
+  function statusPlan(record: any) {
+    switch (record.status) {
+      case "create":
+        return <Tag>Kế hoạch</Tag>;
+      case "running":
+        return <Tag color="green">Đang gieo trồng</Tag>;
+      case "stop":
+        return <Tag color="red">Hủy</Tag>;
+      case "complete":
+        return <Tag color="blue">Đã thu hoạch</Tag>;
+    }
+    return <></>;
+  }
+
+  let a = [];
+
+  for (let i = 0; i < 1000; i++) {
+    a.push(i);
+  }
 
   const columns: ColumnsType<any> = [
     {
@@ -245,17 +270,62 @@ const Page = () => {
       title: translate({ store, source: "Seeding day" }),
       width: 120,
       align: "center",
+      render: (value, record, index) => {
+        return <>{record.seedingDate && dayjs.unix(record.seedingDate).format("DD/MM/YYYY")}</>;
+      },
     },
     {
       title: translate({ store, source: "Harvest date" }),
       width: 120,
       align: "center",
+      render: (value, record, index) => {
+        return <>{record.harvestDate && dayjs.unix(record.harvestDate).format("DD/MM/YYYY")}</>;
+      },
+      // filters: [
+      //   ...a.map((e, index) => {
+      //     return {
+      //       value: e,
+      //       text: `${index}`,
+      //     };
+      //   }),
+      // ],
+      // filterDropdown: (props) => FilterDropdown({ props }),
     },
     {
       title: translate({ store, source: "Year" }),
       dataIndex: "year",
       width: 100,
       align: "center",
+      filters: [
+        ...(dataDistincts?.["planting-schedule-year"] ?? []).map((e: any) => {
+          return {
+            value: e,
+            text: e,
+          };
+        }),
+      ],
+    },
+    {
+      key: "idFarm",
+      title: translate({ store, source: "Farm" }),
+      width: 200,
+      render: (value, record, index) => {
+        let farm = record.idFarm && getItemInArray(dataIds?.["farm"] ?? [], record.idFarm, "_id");
+        return <div>{farm && (farm?.name ?? "")}</div>;
+      },
+      filters: [
+        {
+          text: "Không",
+          value: null,
+        },
+        ...(dataIds?.["farm"] ?? []).map((e: any) => {
+          return {
+            text: e.name,
+            value: e._id,
+          };
+        }),
+      ],
+      filterSearch: true,
     },
     {
       key: "idArea",
@@ -273,6 +343,7 @@ const Page = () => {
           };
         }),
       ],
+      filterSearch: true,
     },
     {
       key: "idBreed",
@@ -290,6 +361,7 @@ const Page = () => {
           };
         }),
       ],
+      filterSearch: true,
     },
     {
       title: translate({ store, source: "Number of seasons" }),
@@ -327,6 +399,34 @@ const Page = () => {
       width: 500,
     },
     { title: "", key: "none" },
+    {
+      key: "status",
+      title: translate({ store, source: "Status" }),
+      width: 160,
+      align: "center",
+      fixed: "right",
+      render: (value: any, record: any, index: any) => {
+        return statusPlan(record);
+      },
+      filters: [
+        {
+          text: translate({ store, source: "Kế hoạch" }),
+          value: "create",
+        },
+        {
+          text: translate({ store, source: "Đang gieo trồng" }),
+          value: "running",
+        },
+        {
+          text: translate({ store, source: "Hủy" }),
+          value: "stop",
+        },
+        {
+          text: translate({ store, source: "Đã thu hoạch" }),
+          value: "complete",
+        },
+      ],
+    },
   ];
 
   return (
@@ -337,7 +437,7 @@ const Page = () => {
           model="planting-schedule"
           columnsTable={columns}
           formLayout={({ store, form, onFinish, viewType }) =>
-            ViewForm(store, form, onFinish, viewType, dataIds, initSamples)
+            ViewForm(store, form, onFinish, viewType, dataIds, initSamples, dataDistincts)
           }
           customValuesInit={(values) => {
             if (values.idBreed) {
@@ -349,22 +449,30 @@ const Page = () => {
             // date start
             let dateStartPlanting = dayjs.unix(values.dateStartPlanting ?? 0);
             // date start production document
-            let dateStartProductionDocument = dayjs.unix(values.dateStartProductionDocument ?? 0);
+            let dateStartProductionDocument = !values.dateStartProductionDocument
+              ? null
+              : dayjs.unix(values.dateStartProductionDocument);
             // date end production document
-            let dateEndProductionDocument = dayjs.unix(values.dateEndProductionDocument ?? 0);
+            let dateEndProductionDocument = !values.dateEndProductionDocument
+              ? null
+              : dayjs.unix(values.dateEndProductionDocument);
 
             let newValues = { ...values, dateStartPlanting, dateStartProductionDocument, dateEndProductionDocument };
             return newValues;
           }}
           customValuesFinish={(values: any) => {
             // date start
-            let dateStartPlanting = values?.dateStartPlanting && dayjs(values?.dateStartPlanting).unix();
+            let dateStartPlanting = !values?.dateStartPlanting
+              ? dayjs().startOf("day").unix()
+              : dayjs(values?.dateStartPlanting).startOf("day").unix();
             // date start production document
-            let dateStartProductionDocument =
-              values?.dateStartProductionDocument && dayjs(values?.dateStartProductionDocument).unix();
+            let dateStartProductionDocument = !values?.dateStartProductionDocument
+              ? null
+              : dayjs(values.dateStartProductionDocument).startOf("day").unix();
             // date end production document
-            let dateEndProductionDocument =
-              values?.dateEndProductionDocument && dayjs(values?.dateEndProductionDocument).unix();
+            let dateEndProductionDocument = !values?.dateEndProductionDocument
+              ? null
+              : dayjs(values.dateEndProductionDocument).startOf("day").unix();
 
             let newValues = { ...values, dateStartPlanting, dateStartProductionDocument, dateEndProductionDocument };
             return newValues;
@@ -398,14 +506,15 @@ const Page = () => {
             },
           ]}
           dataIdsCallback={(value) => setDataIds(value)}
-          // actions={(keys?: any[]) => [
-          //   <div>
-          //     {keys?.length === 1 && <Button onClick={() => {}}>{translate({ store, source: "Add Period" })}</Button>}
-          //   </div>,
-          // ]}
-          // modelExpandable="sample-planting-schedule-period"
-          // fieldExpandable="idsPeriod"
-          // columnsExpandable={columnsPeriod}
+          distincts={[
+            {
+              "planting-schedule-year": {
+                model: "planting-schedule",
+                field: "year",
+              },
+            },
+          ]}
+          dataDistinctsCallback={(value) => setDataDistincts(value)}
         />
       </div>
     </div>

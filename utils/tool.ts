@@ -62,11 +62,26 @@ export function apiResultCode({ store, error }: { store?: StoreApi<StoreApp>; er
 } {
   const code = error?.response?.status;
   const messageError = error?.response?.data?.message;
+  const errors = error?.response?.data?.errors;
 
   let result = {
     message: "",
     content: messageError,
   };
+
+  let newMessageErrors = "";
+  if (Array.isArray(errors) && errors.length > 0) {
+    for (var e of errors) {
+      let error = e.error;
+      newMessageErrors += `- ${error}\n`;
+    }
+  }
+
+  if (result.content) {
+    result.content += `\n${newMessageErrors}`;
+  } else {
+    result.content = newMessageErrors;
+  }
 
   if (code === 200) {
     if (store) result.message = translate({ store, source: "Success" });

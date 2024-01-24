@@ -1,18 +1,28 @@
-sourceTerm,translationValue,localeCode,state,active
-Farm manager,Quản lý nông trại,vi_VN,normal,true
-Farm,Nông trại,vi_VN,normal,true
-Area,Nhà màng,vi_VN,normal,true
-Breed category,Loại giống,vi_VN,normal,true
-Breed,Giống,vi_VN,normal,true
-Production schedule,Lịch sản xuất,vi_VN,normal,true
-Planting schedule,Lịch gieo trồng,vi_VN,normal,true
-Period of planting schedule,Giai đoạn lịch gieo trồng,vi_VN,normal,true
-Sample planting schedule,Lịch gieo trồng mẫu,vi_VN,normal,true
-Sample period of planting schedule,Giai đoạn lịch gieo trồng mẫu,vi_VN,normal,true
-Name,Tên,vi_VN,normal,true
-Season code,Mã mùa vụ,vi_VN,normal,true
-Actual number of plants,Số cây trồng thực tế,vi_VN,normal,true
-Total of plants,Tổng số cây trồng,vi_VN,normal,true
-Quantity,Sản lượng cây trồng,vi_VN,normal,true
-Quantity exprected,Sản lượng thực tế,vi_VN,normal,true
-Comment,Ghi chú,vi_VN,normal,true
+sourceTerm,translationValue,localeCode,modelName,state,active
+Farm manager,Quản lý nông trại,vi_VN,,normal,true
+Farm,Nông trại,vi_VN,,normal,true
+Area,Nhà màng,vi_VN,,normal,true
+Breed category,Loại giống,vi_VN,,normal,true
+Breed,Giống,vi_VN,,normal,true
+Production schedule,Lịch sản xuất,vi_VN,,normal,true
+Planting schedule,Lịch gieo trồng,vi_VN,,normal,true
+Period of planting schedule,Giai đoạn lịch gieo trồng,vi_VN,,normal,true
+Sample planting schedule,Lịch gieo trồng mẫu,vi_VN,,normal,true
+Sample period of planting schedule,Giai đoạn lịch gieo trồng mẫu,vi_VN,,normal,true
+Name,Tên,vi_VN,,normal,true
+Date start planting,Ngày bắt đầu lịch vụ,vi_VN,planting-schedule,normal,true
+Date start production document,Ngày bắt đầu ghi hồ sơ sản xuất,vi_VN,planting-schedule,normal,true
+Date end production document,Ngày kết thúc ghi hồ sơ sản xuất,vi_VN,planting-schedule,normal,true
+Season code,Mã mùa vụ,vi_VN,planting-schedule,normal,true
+Seeding day,Ngày ươm,vi_VN,planting-schedule,normal,true
+Harvest date,Ngày thu hoạch,vi_VN,planting-schedule,normal,true
+Year,Năm,vi_VN,planting-schedule,normal,true
+Area,Nhà màng,vi_VN,planting-schedule,normal,true
+Breed,Giống,vi_VN,planting-schedule,normal,true
+Number of seasons,Vụ,vi_VN,planting-schedule,normal,true
+Actual number of plants,Số cây trồng thực tế,vi_VN,planting-schedule,normal,true
+Total of plants,Tổng số cây trồng,vi_VN,planting-schedule,normal,true
+Quantity,Sản lượng thực tế,vi_VN,planting-schedule,normal,true
+Quantity exprected,Sản lượng dự kiến,vi_VN,planting-schedule,normal,true
+Comment,Ghi chú,vi_VN,planting-schedule,normal,true
+Status,Trạng thái,vi_VN,planting-schedule,normal,true

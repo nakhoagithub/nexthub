@@ -1,8 +1,6 @@
 import mongoose, { CallbackWithoutResultAndOptionalError } from "mongoose";
 import { logger } from "../../../utils/logger";
 
-const name = "sample-planting-schedule";
-
 const collectionName = "farm.sample.planting.schedule";
 
 export const samplePlantingScheduleSchema = new mongoose.Schema(
@@ -10,9 +8,8 @@ export const samplePlantingScheduleSchema = new mongoose.Schema(
     name: { type: String, required: true },
     idBreed: { type: mongoose.Types.ObjectId, ref: "breed" },
     description: { type: String },
-    numOfDaysIncurred: { type: Number },
-    averageYield: { type: Number },
-    idsPeriod: { type: [mongoose.Types.ObjectId] },
+    numOfDaysIncurred: { type: Number, default: 0 },
+    averageYield: { type: Number, default: 0 },
     active: { type: Boolean, default: true },
   },
   { timestamps: true, versionKey: false, collection: collectionName }

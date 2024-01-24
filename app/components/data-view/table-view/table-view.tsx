@@ -35,6 +35,8 @@ const TableView = ({
   updateField,
   ids,
   dataIdsCallback,
+  distincts,
+  dataDistinctsCallback,
   actions,
   dataFormDefault,
   modelExpandable,
@@ -61,12 +63,14 @@ const TableView = ({
     viewType,
     onFinish,
     disabled,
+    total,
   }: {
     store: StoreApi<StoreApp>;
     form: FormInstance<any>;
     viewType: string | null;
     onFinish: (value: any) => void;
     disabled?: boolean;
+    total?: number;
   }) => React.ReactNode;
   customValuesFinish?: (values: any) => any;
   customValuesInit?: (values: any) => any;
@@ -79,6 +83,14 @@ const TableView = ({
     };
   }[];
   dataIdsCallback?: (value: any) => void;
+  distincts?: {
+    [key: string]: {
+      model: string;
+      field: string;
+      filter?: any;
+    };
+  }[];
+  dataDistinctsCallback?: (value: any) => void;
   actions?: (keys?: any[]) => React.ReactNode[];
   dataFormDefault?: any;
   modelExpandable?: string;
@@ -96,8 +108,11 @@ const TableView = ({
   const [loadingReload, setLoadingButtonReload] = useState(false);
   const [openModalCustom, setOpenModalCustom] = useState(false);
   const [datas, setDatas] = useState<any[]>([]);
+  const [total, setTotalDatas] = useState<number>(0);
   const [dataIds, setDataIds] = useState<any>();
+  const [dataDistincts, setDataDistincts] = useState<any>();
   const store = useContext(StoreContext);
+  const { languageData, setLanguageData } = store.getState();
   const [form] = Form.useForm();
 
   const [tableParams, setTableParams] = useState<any>({
@@ -246,6 +261,7 @@ const TableView = ({
             total: total,
           },
         });
+        setTotalDatas(total);
       }
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
@@ -294,6 +310,51 @@ const TableView = ({
       setDataIds(newDataIds);
       if (dataIdsCallback) {
         dataIdsCallback(newDataIds);
+      }
+    } catch (error) {
+      let { message, content } = apiResultCode({ error: error, store });
+      useApp.notification.error({
+        message: message,
+        description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>,
+      });
+    }
+  }
+
+  /**
+   * Lấy dữ liệu cho distinct
+   */
+  async function getDataDistincts() {
+    try {
+      if (!distincts || dataDistincts) return;
+      let newDataIds: any = {};
+      for (var distinctKey of distincts) {
+        if (Object.keys(distinctKey).length > 0) {
+          for (var key of Object.keys(distinctKey)) {
+            if (newDataIds[key] !== undefined) continue;
+
+            let filter: any = {};
+            if (distinctKey[key].filter) {
+              filter = distinctKey[key].filter;
+            }
+
+            const {
+              data: { datas, code, total },
+            } = await app.get(
+              `/api/db/${distinctKey[key].model}/distinct?fieldName=${distinctKey[key].field}&filter=${JSON.stringify(
+                filter
+              )}`
+            );
+
+            if (code === 200) {
+              newDataIds = { ...newDataIds, [key]: datas };
+            }
+          }
+        }
+      }
+
+      setDataDistincts(newDataIds);
+      if (dataDistinctsCallback) {
+        dataDistinctsCallback(newDataIds);
       }
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
@@ -376,6 +437,29 @@ const TableView = ({
   }
 
   /**
+   * Get dữ liệu ngôn ngữ theo model
+   */
+  async function fetchLanguageModel() {
+    try {
+      const {
+        data: { code, datas },
+      } = await app.get(`/api/language/get?modelName=${model}`);
+
+      if (code === 200) {
+        let newLanguageData = [...languageData];
+        for (var language of datas) {
+          if (
+            !newLanguageData.find((e) => e.sourceTerm === language.sourceTerm && e.modelName === language.modelName)
+          ) {
+            newLanguageData.push(language);
+          }
+        }
+        setLanguageData({ datas: newLanguageData });
+      }
+    } catch (error) {}
+  }
+
+  /**
    * Disable Form khi không có quyền `update` hoặc quyền `create` trên model đó
    */
   const getDisableForm = () => {
@@ -398,6 +482,8 @@ const TableView = ({
   useEffect(() => {
     fetchData();
     getDataIds();
+    getDataDistincts();
+    fetchLanguageModel();
   }, []);
 
   useEffect(() => {
@@ -452,7 +538,7 @@ const TableView = ({
         open={openModalCustom}
         setOpen={setOpenModalCustom}
         formLayout={(onFinish) =>
-          formLayout && formLayout({ store, form, viewType, onFinish, disabled: getDisableForm() })
+          formLayout && formLayout({ store, form, viewType, onFinish, disabled: getDisableForm(), total: total })
         }
         store={store}
         model={model}

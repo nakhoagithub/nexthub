@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 import { logger } from "../../utils/logger";
 import plugin from "../../plugin";
 import { Request, Response } from "express";
-import checkAuth from "../../src/middlewares/auth";
-import checkAccessRight from "../../src/middlewares/access-right";
+import checkAuth from "../middlewares/auth";
+import checkAccessRight from "../middlewares/access-right";
 import { checkArrayObjectId, checkObjectId } from "../../utils/validate";
 
 async function readDatabase(req: Request, res: Response) {
@@ -23,7 +23,6 @@ async function readDatabase(req: Request, res: Response) {
     }
 
     const ModelMongoose = mongoose.model(params.name);
-    const Model = mongoose.model("model");
     let datas = [];
     let total = 0;
 
@@ -139,7 +138,7 @@ async function createDatabase(req: Request, res: Response) {
           }
         });
     } catch (error) {
-      errors.push({ data, error: error });
+      errors.push({ data, error: (error as Error)?.message });
       logger({ message: error, name: `Save CRUD POST: /db/${name}` });
     }
 
@@ -232,7 +231,7 @@ async function updateDatabase(req: Request, res: Response, method: "PUT" | "PATC
           );
         }
       } catch (error) {
-        errors.push({ data: dataUpdate, error: error });
+        errors.push({ data: dataUpdate, error: (error as Error)?.message });
       }
     }
     if (errors.length > 0) {
@@ -275,12 +274,39 @@ async function deleteDatabase(req: Request, res: Response) {
       await Model.deleteMany({ [fieldId]: { $in: datas }, ...allowFilter });
     } catch (error) {
       logger({ message: error, name: `CRUD DELETE: /db/${name}` });
-      return res.status(400).json({ code: 400, message: error?.toString() });
+      return res.status(400).json({ code: 400, message: (error as Error)?.message });
     }
 
     return res.status(200).json({ code: 200 });
   } catch (error) {
     logger({ message: error, name: `CRUD DELETE: /db/${name}` });
+    return res.status(500).json({ code: 500, error: error });
+  }
+}
+
+async function distinct(req: Request, res: Response) {
+  const { name } = req.params;
+  const { fieldName, filter } = req.query;
+  try {
+    const allowFilter = (req as any).allowFilter;
+    const ModelMongoose = mongoose.model(name);
+
+    if (!fieldName) {
+      return res.status(400).json({ code: 400, message: "'fieldName' is undefined" });
+    }
+
+    try {
+      let newFilter = JSON.parse((filter as string) ?? "{}");
+      newFilter = { ...newFilter, ...allowFilter };
+
+      const datasModel = await ModelMongoose.distinct(fieldName.toString(), newFilter);
+
+      return res.status(200).json({ code: 200, datas: datasModel, total: datasModel.length });
+    } catch (error) {
+      return res.status(400).json({ code: 400, message: "'filter' is invalid" });
+    }
+  } catch (error) {
+    logger({ message: error, name: `DISTINCT: /db/${name}` });
     return res.status(500).json({ code: 500, error: error });
   }
 }
@@ -303,4 +329,8 @@ plugin.router.put("/db/:name", checkAuth, checkAccessRight, async (req, res) => 
 
 plugin.router.delete("/db/:name", checkAuth, checkAccessRight, async (req, res) => {
   await deleteDatabase(req, res);
+});
+
+plugin.router.get("/db/:name/distinct", checkAuth, checkAccessRight, async (req, res) => {
+  await distinct(req, res);
 });

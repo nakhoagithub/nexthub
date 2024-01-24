@@ -56,10 +56,9 @@ export default function AppProvider({ children }: { children: React.ReactNode })
 
   async function fetchLanguage() {
     try {
-      let filter = { active: true };
       const {
         data: { code, datas },
-      } = await app.get(`/api/language/get?filter=${JSON.stringify(filter)}`);
+      } = await app.get(`/api/language/get`);
 
       if (code === 200) {
         setLanguageData({ datas: datas });

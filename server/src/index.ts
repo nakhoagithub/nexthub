@@ -1,5 +1,5 @@
 import "./apis/api";
-import "./apis/crud";
+import "./apis/query";
 import "./apis/user";
 import "./apis/base";
 import "./apis/module";

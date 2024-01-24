@@ -52,30 +52,29 @@ const ViewForm = (
       </Form.Item>
 
       <Space>
-        <Form.Item label={translate({ store, source: "Sort index" })} name="sortIndex">
+        <Form.Item
+          label={translate({ store, source: "Sort index" })}
+          name="sortIndex"
+          rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
+        >
           <InputNumber min={0} />
         </Form.Item>
 
-        <Form.Item label={translate({ store, source: "Number of days" })} name="numOfDays">
-          <InputNumber min={0} />
+        <Form.Item
+          label={translate({ store, source: "Number of days" })}
+          name="numOfDays"
+          initialValue={1}
+          rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
+        >
+          <InputNumber min={0} /> 
         </Form.Item>
       </Space>
 
-      <Form.Item
-        label={translate({ store, source: "Is start" })}
-        name="isStart"
-        valuePropName="checked"
-        initialValue={false}
-      >
-        <Checkbox defaultChecked={false}>{translate({ store, source: "Is start" })}</Checkbox>
+      <Form.Item name="isStart" valuePropName="checked" initialValue={false}>
+        <Checkbox>{translate({ store, modelName: "sample-period-planting-schedule", source: "Is start" })}</Checkbox>
       </Form.Item>
 
-      <Form.Item
-        label={translate({ store, source: "Active" })}
-        name="active"
-        valuePropName="checked"
-        initialValue={true}
-      >
+      <Form.Item name="active" valuePropName="checked" initialValue={true}>
         <Checkbox defaultChecked={true}>{translate({ store, source: "Active" })}</Checkbox>
       </Form.Item>
     </Form>
@@ -111,6 +110,7 @@ const Page = () => {
           };
         }),
       ],
+      filterSearch: true,
     },
     {
       title: translate({ store, source: "Sort index" }),
@@ -130,7 +130,7 @@ const Page = () => {
       dataIndex: "isStart",
       align: "center",
       render: (value, record, index) => {
-        return <Checkbox checked={record.active} />;
+        return <Checkbox checked={record.isStart} />;
       },
     },
     { title: "", key: "none" },
@@ -178,6 +178,7 @@ const Page = () => {
           formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
           selectedRowKeys={selectedRowKeys}
           setSelectedRowKeys={setSelectedRowKeys}
+          sort={{ idSamplePlantingSchedule: 1, sortIndex: 1 }}
           ids={[
             {
               "sample-planting-schedule": {

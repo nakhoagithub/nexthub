@@ -4,6 +4,7 @@ import { StoreContext } from "@/app/components/context-provider";
 import DataView from "@/app/components/data-view/data-view";
 import TableView from "@/app/components/data-view/table-view/table-view";
 import { StoreApp } from "@/store/store";
+import { getItemInArray } from "@/utils/tool";
 import { translate } from "@/utils/translate";
 import { Checkbox, Form, FormInstance, Input, Select } from "antd";
 const { Option } = Select;
@@ -61,7 +62,31 @@ const ViewForm = (
         </Select>
       </Form.Item>
 
-      <Form.Item label={translate({ store, source: "Active" })} name="active" valuePropName="checked" initialValue={true}>
+      <Form.Item label="Model name" name="modelName">
+        <Select
+          showSearch
+          allowClear
+          onClear={() => {
+            form.setFieldValue("modelName", "");
+          }}
+          filterOption={(input: string, option: any) => {
+            return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
+          }}
+        >
+          {(dataIds?.["model"] ?? []).map((e: any) => (
+            <Option key={e.modelName} label={e.name}>
+              <span>{e.name}</span>
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+
+      <Form.Item
+        label={translate({ store, source: "Active" })}
+        name="active"
+        valuePropName="checked"
+        initialValue={true}
+      >
         <Checkbox defaultChecked={true}>Active</Checkbox>
       </Form.Item>
     </Form>
@@ -93,6 +118,23 @@ const Page = () => {
       dataIndex: "localeCode",
       width: 100,
     },
+    {
+      key: "modelName",
+      title: "Model name",
+      width: 200,
+      render: (value, record, index) => {
+        let model = record.modelName && getItemInArray(dataIds?.["model"] ?? [], record.modelName, "modelName");
+        return <div>{model && (model?.name ?? "")}</div>;
+      },
+      filters: [
+        ...(dataIds?.["model"] ?? []).map((e: any) => {
+          return {
+            value: e.modelName,
+            text: e.name,
+          };
+        }),
+      ],
+    },
     { title: "", key: "none" },
     {
       title: "Active",
@@ -114,7 +156,10 @@ const Page = () => {
           formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
           selectedRowKeys={selectedRowKeys}
           setSelectedRowKeys={setSelectedRowKeys}
-          ids={[{ language: { fields: ["_id", "name", "localeCode"], filter: { active: true } } }]}
+          ids={[
+            { language: { fields: ["_id", "name", "localeCode"], filter: { active: true } } },
+            { model: { fields: ["_id", "name", "modelName"], filter: { install: true } } },
+          ]}
           dataIdsCallback={(value: any) => setDataIds(value)}
           pageSize={20}
         />
