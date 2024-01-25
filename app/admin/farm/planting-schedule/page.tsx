@@ -33,7 +33,7 @@ const ViewForm = (
     let areaCode = area?.id ?? "";
     let breedCode = getItemInArray(dataIds?.["breed"] ?? [], form.getFieldValue("idBreed") ?? "")?.code ?? "";
     let dateCode = form.getFieldValue("dateStartPlanting")?.format("YYYY") ?? "";
-    let code = `${farm?.id}-${areaCode}-${breedCode}-V${numberOfSeasons}-${dateCode}`;
+    let code = `${farm?.id ?? "NOTFARM"}-${areaCode}-${breedCode}-V${numberOfSeasons}-${dateCode}`;
     if (
       form.getFieldValue("numberOfSeasons") !== undefined &&
       form.getFieldValue("idArea") !== undefined &&
