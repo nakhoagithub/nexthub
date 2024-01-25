@@ -90,6 +90,11 @@ const Page = () => {
       width: 300,
     },
     {
+      title: "Model Name",
+      dataIndex: "modelName",
+      width: 300,
+    },
+    {
       title: "Description",
       dataIndex: "description",
       width: 300,

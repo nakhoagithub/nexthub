@@ -92,11 +92,11 @@ async function installModel({ model, install }: { model: Model; install?: boolea
       install: install,
     };
 
-    // xóa những model nếu install = false
-    if (!install) {
-      mongoose.deleteModel(model.modelName);
-      await mongoose.connection.dropCollection(idModel);
-    }
+    // // xóa những model nếu install = false
+    // if (!install) {
+    //   mongoose.deleteModel(model.modelName);
+    //   await mongoose.connection.dropCollection(idModel);
+    // }
 
     await Model.updateOne({ id: newModelData.id }, { ...newModelData }, { upsert: true });
     result = true;
@@ -155,21 +155,23 @@ async function deleteDataDefault(data: Data) {
 }
 
 export async function createModule({ module, models }: { module: ModuleInterface; models: Model[] }) {
-  const Module = mongoose.model("Module", moduleSchema);
+  const Module = mongoose.model("module", moduleSchema);
   const moduleData = await Module.findOne({ id: module.id });
+
   // khởi tạo model
   for (var model of models) {
-    if (moduleData) {
-      if (moduleData.installable) mongoose.model(model.modelName, model.schema);
-    } else {
-      if (module.installable) mongoose.model(model.modelName, model.schema);
-    }
+    mongoose.model(model.modelName, model.schema);
+    // if (moduleData) {
+    //   if (moduleData.installable) mongoose.model(model.modelName, model.schema);
+    // } else {
+    //   if (module.installable) mongoose.model(model.modelName, model.schema);
+    // }
   }
 
   // tạo module
   let newModels = models.map((e) => {
     let newData: any = { ...e };
-    delete newData.schema;
+    newData.schema = e.schema.obj;
     return newData;
   });
 
@@ -219,6 +221,13 @@ export async function installModule(id: string) {
     }
 
     await Module.updateOne({ id: id }, { installable: true });
+
+    let depends = moduleData?.depends ?? [];
+
+    for (var depend of depends) {
+      await installModule(depend);
+    }
+
     result = true;
   } catch (error) {
     logger({ message: error, name: `INSTALL MODULE: ${id}` });
@@ -231,14 +240,25 @@ export async function uninstallModule(id: string) {
   try {
     const Module = mongoose.model("module");
     const Model = mongoose.model("model");
+
     const moduleData = await Module.findOne({ id: id });
 
     if (!moduleData) {
       return result;
     }
-
+    // const colls = (await mongoose.connection.getClient().db().listCollections().toArray()).map((e) => e.name);
     for (var model of moduleData.models) {
       await Model.updateOne({ modelName: model.modelName }, { install: false });
+
+      try {
+        const ModelMongoose = mongoose.model(model.modelName);
+        await ModelMongoose.deleteMany();
+        //   let modelData = await Model.findOne({ modelName: model.modelName });
+
+        //   if (colls.includes(modelData?.collectionName ?? "")) {
+        //     mongoose.connection.collection(modelData?.collectionName ?? "").drop();
+        //   }
+      } catch (error) {}
     }
 
     // create data default

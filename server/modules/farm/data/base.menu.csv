@@ -4,8 +4,3 @@ farm.farm,Farm,,/admin/farm/farm-manager,farm,false,1,normal,true
 farm.area,Area,,/admin/farm/area-manager,farm,false,2,normal,true
 farm.breed.breed_category,Breed category,,/admin/farm/breed-category,farm,false,3,normal,true
 farm.breed.breed_manager,Breed,,/admin/farm/breed,farm,false,4,normal,true
-farm.production.schedule,Production schedule,,/admin/farm/production-schedule,null,false,4,normal,true
-farm.planting.schedule,Planting schedule,,/admin/farm/planting-schedule,farm.production.schedule,false,1,normal,true
-farm.period.planting.schedule,Period of planting schedule,,/admin/farm/period-planting-schedule,farm.production.schedule,false,2,normal,true
-farm.sample.planting.schedule,Sample planting schedule,,/admin/farm/sample-planting-schedule,farm.production.schedule,false,3,normal,true
-farm.sample.period.planting.schedule,Sample period of planting schedule,,/admin/farm/sample-period-planting-schedule,farm.production.schedule,false,4,normal,true

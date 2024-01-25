@@ -21,7 +21,7 @@ export interface ModuleInterface {
   version: string;
   description: string;
   author: string;
-  depends: [];
+  depends: string[];
   datas: Data[];
   installable: boolean;
   application: boolean;
