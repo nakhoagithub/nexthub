@@ -35,7 +35,7 @@ const ViewForm = (
       </Form.Item>
 
       <Form.Item
-        label="Model name"
+        label="Model"
         name="idModel"
         rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >

@@ -43,7 +43,12 @@ const ViewForm = (
       <Form.Item label="Description" name="description">
         <TextArea />
       </Form.Item>
-      <Form.Item label={translate({ store, source: "Active" })} name="active" valuePropName="checked" initialValue={true}>
+      <Form.Item
+        label={translate({ store, source: "Active" })}
+        name="active"
+        valuePropName="checked"
+        initialValue={true}
+      >
         <Checkbox defaultChecked={true}>Active</Checkbox>
       </Form.Item>
     </Form>
@@ -90,6 +95,12 @@ const Page = () => {
     },
     { title: "", key: "none" },
     {
+      title: "Sequence",
+      width: 100,
+      dataIndex: "sequence",
+      align: "center",
+    },
+    {
       title: "Active",
       width: 100,
       align: "center",
@@ -110,6 +121,7 @@ const Page = () => {
           selectedRowKeys={selectedRowKeys}
           setSelectedRowKeys={setSelectedRowKeys}
           updateField="id"
+          pageSize={20}
         />
       </div>
     </div>

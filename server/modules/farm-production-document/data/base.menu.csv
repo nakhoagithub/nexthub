@@ -1,0 +1,2 @@
+id,name,description,url,idParent,isGroup,sequence,state,active
+farm.production.document,Production document,,/admin/farm/production-document,null,false,4,normal,true
