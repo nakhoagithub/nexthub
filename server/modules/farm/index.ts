@@ -7,6 +7,7 @@ import { farmSchema } from "./models/farm";
 createModule({
   module: {
     id: "farm",
+    filename: __filename,
     name: "Farm",
     version: "1.0",
     description: "Module quản lý nông trại",

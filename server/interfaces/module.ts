@@ -17,6 +17,7 @@ export interface Data {
 
 export interface ModuleInterface {
   id: string;
+  filename: string; // __filename
   name: string;
   version: string;
   description: string;

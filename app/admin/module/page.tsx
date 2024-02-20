@@ -1,4 +1,5 @@
 "use client";
+import PageHeader from "@/app/components/body/page-header";
 import { StoreContext } from "@/app/components/context-provider";
 import DataView from "@/app/components/data-view/data-view";
 import app from "@/utils/axios";
@@ -89,7 +90,12 @@ const ViewForm = (
         </Select>
       </Form.Item>
 
-      <Form.Item label={translate({ store, source: "Active" })} name="active" valuePropName="checked" initialValue={true}>
+      <Form.Item
+        label={translate({ store, source: "Active" })}
+        name="active"
+        valuePropName="checked"
+        initialValue={true}
+      >
         <Checkbox defaultChecked={true}>Active</Checkbox>
       </Form.Item>
     </Form>
@@ -114,7 +120,10 @@ const Page = () => {
       }
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>, });
+      useApp.notification.error({
+        message: message,
+        description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>,
+      });
     }
   }
 
@@ -131,12 +140,19 @@ const Page = () => {
       }
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>, });
+      useApp.notification.error({
+        message: message,
+        description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>,
+      });
     }
   }
 
   return (
     <div>
+      <PageHeader title="Module" />
+      <div className="page-content">
+        <Button onClick={() => {}}>Update app list</Button>
+      </div>
       <DataView
         model="module"
         titleHeader="Module"

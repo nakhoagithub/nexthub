@@ -186,7 +186,10 @@ const DataView = ({
         }
       } catch (error) {
         let { message, content } = apiResultCode({ error: error, store });
-        useApp.notification.error({ message: message, description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>, });
+        useApp.notification.error({
+          message: message,
+          description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>,
+        });
       }
     }
 
@@ -220,7 +223,10 @@ const DataView = ({
         }
       } catch (error) {
         let { message, content } = apiResultCode({ error: error, store });
-        useApp.notification.error({ message: message, description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>, });
+        useApp.notification.error({
+          message: message,
+          description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>,
+        });
       }
     }
   }
@@ -255,7 +261,10 @@ const DataView = ({
       });
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>, });
+      useApp.notification.error({
+        message: message,
+        description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>,
+      });
     }
   }
 
@@ -270,7 +279,10 @@ const DataView = ({
       }
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>, });
+      useApp.notification.error({
+        message: message,
+        description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>,
+      });
     }
   }
 
@@ -308,7 +320,10 @@ const DataView = ({
       }
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>, });
+      useApp.notification.error({
+        message: message,
+        description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>,
+      });
     }
   }
 
@@ -350,7 +365,10 @@ const DataView = ({
       }
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>, });
+      useApp.notification.error({
+        message: message,
+        description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>,
+      });
     }
   }
 
@@ -400,7 +418,10 @@ const DataView = ({
       }
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>, });
+      useApp.notification.error({
+        message: message,
+        description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>,
+      });
     }
   };
 
@@ -415,7 +436,10 @@ const DataView = ({
       }
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>, });
+      useApp.notification.error({
+        message: message,
+        description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>,
+      });
     }
   }
 
@@ -469,7 +493,10 @@ const DataView = ({
       }
     } catch (error) {
       let { message, content } = apiResultCode({ error: error, store });
-      useApp.notification.error({ message: message, description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>, });
+      useApp.notification.error({
+        message: message,
+        description: <span style={{ whiteSpace: "pre-line" }}>{content}</span>,
+      });
     }
   }
 
@@ -547,6 +574,7 @@ const DataView = ({
       {viewType === "kanban" && (
         <div>
           <KanbanView
+            model=""
             datas={datas}
             renderItemKanban={(value, index) => renderItemKanban && renderItemKanban(value, index, getDatas)}
           />

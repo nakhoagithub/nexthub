@@ -82,7 +82,7 @@ async function main() {
       console.log(`> API: http://127.0.0.1:${port}`);
     });
 
-    autoImportModule();
+    await autoImportModule();
   } catch (error) {
     logger({ message: error, name: "server.ts" });
   }

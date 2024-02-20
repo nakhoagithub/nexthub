@@ -215,6 +215,11 @@ const ViewForm = (
       <Form.Item
         label={translate({ store, source: "Date start production document" })}
         name="dateStartProductionDocument"
+        extra={
+          <span>
+            Tự động tạo nếu ngày <b>bắt đầu</b> và <b>kết thúc</b> được bỏ trống
+          </span>
+        }
         // rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
         <DatePicker format="DD/MM/YYYY" />
@@ -223,6 +228,11 @@ const ViewForm = (
       <Form.Item
         label={translate({ store, source: "Date end production document" })}
         name="dateEndProductionDocument"
+        extra={
+          <span>
+            Tự động tạo nếu ngày <b>bắt đầu</b> và <b>kết thúc</b> được bỏ trống
+          </span>
+        }
         // rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
       >
         <DatePicker format="DD/MM/YYYY" />

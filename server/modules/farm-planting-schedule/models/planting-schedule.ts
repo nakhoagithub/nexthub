@@ -182,8 +182,29 @@ async function customPlantingSchedule(this: any, doc: any, next: any, type: "sav
       return next(Error("Ngày nhập hồ sơ sản xuất không hợp lệ!"));
     }
 
-    console.log(numOfDaysIncurred);
+    // nếu không có truyền vào ngày bắt đầu và ngày kết thúc thì set ngày tự động theo mẫu
+    // Ngày bắt đầu: ngày bắt đầu theo mẫu - số ngày phát sinh
+    // -> ví dụ: ngày bắt đầu là 20/02/2024, ngày phát sinh (mẫu lịch trình): 5 ngày
+    // => ngày bắt đầu hồ sơ sản xuất là: 16/02/2024 + 5 => 20/02/2024 (tính ngày 16 là 1 ngày)
 
+    // ngày kết thúc: là ngày kết thúc của kế hoạch
+    if (!dateStartProductionDocument && !dateEndProductionDocument) {
+      let numOfSecondsIncurred = numOfDaysIncurred * 86400;
+      const periodsPSD = await PPSD.find({ idPlantingSchedule: doc._id }).sort("sortIndex");
+
+      if (periodsPSD.length > 0) {
+        if (!periodsPSD[0].dateStart || !periodsPSD[periodsPSD.length - 1]) {
+          return next(Error("Giai đoạn không hợp lệ!"));
+        }
+        // dateStartProductionDocument
+        let dateSPD = (periodsPSD[0].dateStart ?? 0) - numOfSecondsIncurred;
+        // dateEndProductionDocument
+        let dateEPD = periodsPSD[periodsPSD.length - 1].dateEnd;
+
+        this.dateStartProductionDocument = dateSPD;
+        this.dateEndProductionDocument = dateEPD;
+      }
+    }
     next();
   } catch (error) {
     logger({ message: error, name: "customPlantingSchedule" });

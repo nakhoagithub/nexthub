@@ -4,10 +4,14 @@ import { plantingScheduleSchema } from "../farm-planting-schedule/models/plantin
 import { plantingScheduleDetailSchema } from "../farm-planting-schedule/models/planting-schedule-detail";
 import { samplePeriodPlantingScheduleSchema } from "../farm-planting-schedule/models/sample-period-planting-schedule";
 import { samplePlantingScheduleSchema } from "../farm-planting-schedule/models/sample-planting-schedule";
+import { productionDocumentSchema } from "./models/production-document";
+
+console.log(__filename);
 
 createModule({
   module: {
     id: "farm-planting-schedule",
+    filename: __filename,
     name: "Farm Planting Schedule",
     version: "1.0",
     description: "Module quản lý lịch sản xuất cho nông trại",
@@ -56,6 +60,11 @@ createModule({
       name: "Period Planting Schedule Detail",
       modelName: "period-planting-schedule-detail",
       schema: periodPlantingScheduleDetailSchema,
+    },
+    {
+      name: "Production document",
+      modelName: "production-document",
+      schema: productionDocumentSchema,
     },
   ],
 });

@@ -2,10 +2,14 @@ import { Card, List, Space } from "antd";
 import React from "react";
 
 const KanbanView = ({
+  model,
+  sort,
   loading,
   datas,
   renderItemKanban,
 }: {
+  model: string;
+  sort?: any;
   loading?: boolean;
   datas: any[];
   renderItemKanban?: (value: any, index: number) => React.ReactNode;

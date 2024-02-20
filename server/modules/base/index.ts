@@ -16,6 +16,7 @@ import { uomCateSchema } from "./models/uom-cate";
 createModule({
   module: {
     id: "base",
+    filename: __filename,
     name: "Base",
     version: "1.0",
     description: "System module default",
@@ -56,16 +57,16 @@ createModule({
         noUpdate: true,
       },
       {
-        modelName: "uom-cate",
+        modelName: "uom",
         folder: "base",
-        file: "base.uom.cate.csv",
+        file: "base.uom.csv",
         primaryKey: "id",
         noUpdate: true,
       },
       {
-        modelName: "uom",
+        modelName: "uom-cate",
         folder: "base",
-        file: "base.uom.csv",
+        file: "base.uom.cate.csv",
         primaryKey: "id",
         noUpdate: true,
       },

@@ -5,6 +5,7 @@ const collectionName = "base.module";
 export const moduleSchema = new mongoose.Schema(
   {
     id: { type: String, required: true },
+    filename: { type: String, required: true },
     name: { type: String, required: true },
     version: { type: String },
     description: { type: String },

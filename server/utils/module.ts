@@ -4,8 +4,9 @@ import { Data, Model, ModuleInterface } from "../interfaces/module";
 import mongoose, { Schema } from "mongoose";
 import { moduleSchema } from "../modules/base/models/module";
 import { readCSV } from "./csv";
+import plugin from "../plugin";
 
-export function autoImportModule() {
+export async function autoImportModule() {
   try {
     let modulesPath = "./server/modules";
 
@@ -139,8 +140,8 @@ async function createDataDefault(data: Data) {
 }
 
 async function deleteDataDefault(data: Data) {
-  const datasDefault = await readCSV(data.folder, data.file);
   try {
+    const datasDefault = await readCSV(data.folder, data.file);
     const ModelMongoose = mongoose.model(data.modelName);
 
     // data default of model
@@ -157,6 +158,10 @@ async function deleteDataDefault(data: Data) {
 export async function createModule({ module, models }: { module: ModuleInterface; models: Model[] }) {
   const Module = mongoose.model("module", moduleSchema);
   const moduleData = await Module.findOne({ id: module.id });
+
+  if (!plugin.modules.find((e) => e.id === module.id)) {
+    plugin.modules.push(module);
+  }
 
   // khởi tạo model
   for (var model of models) {
@@ -267,6 +272,8 @@ export async function uninstallModule(id: string) {
         await deleteDataDefault(data);
       }
     }
+
+    console.log(2);
 
     await Module.updateOne({ id: id }, { installable: false });
     result = true;
