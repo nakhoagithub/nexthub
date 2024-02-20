@@ -15,3 +15,4 @@ Quantity,Sản lượng thực tế,vi_VN,planting-schedule,normal,true
 Quantity exprected,Sản lượng dự kiến,vi_VN,planting-schedule,normal,true
 Comment,Ghi chú,vi_VN,planting-schedule,normal,true
 Status,Trạng thái,vi_VN,planting-schedule,normal,true
+Production document,Hồ sơ sản xuất,vi_VN,production-document,normal,true

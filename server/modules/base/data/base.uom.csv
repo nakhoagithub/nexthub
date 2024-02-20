@@ -1,0 +1,14 @@
+id,idCate,name,active
+unit,unit,Unit,true
+dozen,unit,Dozen(s),true
+kg,weight,Kilogram,true
+g,weight,Gram,true
+day,time,Day(s),true
+hour,time,Hour(s),true
+met,length,Met,true
+cm,length,Centimet,true
+km,length,Kilomet,true
+lit,volume,Liter(s),true
+inch,length,Inch(es),true
+m2,unit,Square meters,true
+pcs,pcs,PCS,true

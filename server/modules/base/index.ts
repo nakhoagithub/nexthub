@@ -10,6 +10,8 @@ import { menuSchema } from "./models/menu";
 import { languageSchema } from "./models/language";
 import { translateTermSchema } from "./models/translate-term";
 import { orgSchema } from "./models/org";
+import { uomSchema } from "./models/uom";
+import { uomCateSchema } from "./models/uom-cate";
 
 createModule({
   module: {
@@ -51,6 +53,20 @@ createModule({
         folder: "base",
         file: "base.translate.term.csv",
         primaryKey: "sourceTerm",
+        noUpdate: true,
+      },
+      {
+        modelName: "uom-cate",
+        folder: "base",
+        file: "base.uom.cate.csv",
+        primaryKey: "id",
+        noUpdate: true,
+      },
+      {
+        modelName: "uom",
+        folder: "base",
+        file: "base.uom.csv",
+        primaryKey: "id",
         noUpdate: true,
       },
     ],
@@ -112,6 +128,16 @@ createModule({
       name: "Organization",
       modelName: "org",
       schema: orgSchema,
+    },
+    {
+      name: "Unit of measure",
+      modelName: "uom",
+      schema: uomSchema,
+    },
+    {
+      name: "Unit of Measure Category",
+      modelName: "uom-cate",
+      schema: uomCateSchema,
     },
   ],
 });

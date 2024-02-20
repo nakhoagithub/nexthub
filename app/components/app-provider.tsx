@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import NotAccess from "./result/not-access";
 import { MenuData } from "@/interfaces/menu-data";
 import LoadingPage from "./layout/loading";
+import locate from "antd/locale/vi_VN";
 
 notification.config({
   placement: "topRight",
@@ -84,7 +85,7 @@ export default function AppProvider({ children }: { children: React.ReactNode })
   }, [pathname, menus]);
 
   return (
-    <ConfigProvider theme={{ token: { colorBgContainer: "white", borderRadius: 6 } }}>
+    <ConfigProvider theme={{ token: { colorBgContainer: "white", borderRadius: 6 } }} locale={locate}>
       {loading || access === undefined ? <LoadingPage /> : <App>{access === true ? children : <NotAccess />}</App>}
     </ConfigProvider>
   );

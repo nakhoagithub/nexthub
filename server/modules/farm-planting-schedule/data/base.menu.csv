@@ -1,4 +1,5 @@
 id,name,description,url,idParent,isGroup,sequence,state,active
+farm.production.document,Production document,,/admin/farm/production-document,null,false,3,normal,true
 farm.production.schedule,Production schedule,,/admin/farm/production-schedule,null,false,4,normal,true
 farm.planting.schedule,Planting schedule,,/admin/farm/planting-schedule,farm.production.schedule,false,1,normal,true
 farm.period.planting.schedule,Period of planting schedule,,/admin/farm/period-planting-schedule,farm.production.schedule,false,2,normal,true

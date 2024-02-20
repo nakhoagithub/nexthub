@@ -8,8 +8,8 @@ export const samplePlantingScheduleSchema = new mongoose.Schema(
     name: { type: String, required: true },
     idBreed: { type: mongoose.Types.ObjectId, ref: "breed" },
     description: { type: String },
-    numOfDaysIncurred: { type: Number, default: 0 },
-    averageYield: { type: Number, default: 0 },
+    numOfDaysIncurred: { type: Number, default: 0 }, // thời gian phát sinh
+    averageYield: { type: Number, default: 0 }, // sản lượng trung bình
     active: { type: Boolean, default: true },
   },
   { timestamps: true, versionKey: false, collection: collectionName }

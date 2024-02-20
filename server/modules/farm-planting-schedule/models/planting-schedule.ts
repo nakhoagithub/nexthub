@@ -68,6 +68,9 @@ async function customPlantingSchedule(this: any, doc: any, next: any, type: "sav
     // sản lượng trung bình cây/trái
     const averageYield = samplePlantingSchedule?.averageYield ?? 0;
 
+    // thời gian phát sinh
+    const numOfDaysIncurred = samplePlantingSchedule?.numOfDaysIncurred ?? 0;
+
     // tính sản lượng dự kiến = 80% * sản lượng trung bình * số cây trồng thực tế
     this.quantityExpected = 0.8 * averageYield * actualNumberOfPlants;
 
@@ -166,6 +169,20 @@ async function customPlantingSchedule(this: any, doc: any, next: any, type: "sav
         this.harvestDate = periodsPSD[i].dateEnd;
       }
     }
+
+    // tạo hồ sơ sản xuất
+    let dateStartProductionDocument = doc.dateStartProductionDocument;
+    let dateEndProductionDocument = doc.dateEndProductionDocument;
+
+    if (
+      typeof dateEndProductionDocument == "number" &&
+      typeof dateStartProductionDocument == "number" &&
+      dateEndProductionDocument < dateStartProductionDocument
+    ) {
+      return next(Error("Ngày nhập hồ sơ sản xuất không hợp lệ!"));
+    }
+
+    console.log(numOfDaysIncurred);
 
     next();
   } catch (error) {

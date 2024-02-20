@@ -1,0 +1,8 @@
+id,name,measureType
+unit,Unit,unit
+weight,Weight,weight
+time,Working Time,time
+length,Length / Distance,length
+volume,Volume,volume
+unsorted,Unsorted,unsorted
+pcs,PCS,pcs
