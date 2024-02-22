@@ -27,7 +27,7 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
     "moment": "^2.29.4",
-    "mongoose": "^8.0.1",
+    "mongoose": "^8.1.3",
     "morgan": "^1.10.0",
     "next": "^14.0.3",
     "next-client-cookies": "^1.1.0",

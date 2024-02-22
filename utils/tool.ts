@@ -1,5 +1,4 @@
 import { StoreApp } from "@/store/store";
-import { AxiosError } from "axios";
 import { StoreApi } from "zustand";
 import { translate } from "./translate";
 import dayjs from "dayjs";
