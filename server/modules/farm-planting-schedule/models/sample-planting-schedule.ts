@@ -40,6 +40,4 @@ samplePlantingScheduleSchema.pre("deleteMany", { query: true }, async function (
   } catch (error) {
     logger({ message: error, name: "samplePlantingScheduleSchema.pre" });
   }
-  // const datas = await SamplePeriod.find({ idSamplePlantingSchedule: res._id });
-  // console.log(datas);
 });

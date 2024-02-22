@@ -11,6 +11,8 @@ import { getItemInArray } from "@/utils/tool";
 import TableView from "@/app/components/data-view/table-view/table-view";
 import PageHeader from "@/app/components/body/page-header";
 import dayjs from "dayjs";
+import { filterModelTable } from "@/app/components/data-view/table-view/filters/filter-model";
+import { filterRangeDateUnitTable } from "@/app/components/data-view/table-view/filters/filter-range-date";
 
 const ViewForm = (
   store: StoreApi<StoreApp>,
@@ -108,15 +110,13 @@ const Page = () => {
           getItemInArray(dataIds?.["planting-schedule"] ?? [], record.idPlantingSchedule, "_id");
         return <div>{data?.code ?? ""}</div>;
       },
-      filters: [
-        ...(dataIds?.["planting-schedule"] ?? []).map((e: any) => {
-          return {
-            value: e._id,
-            text: e.code,
-          };
-        }),
-      ],
-      filterSearch: true,
+      ...filterModelTable({
+        fields: ["_id", "code"],
+        keySelect: "_id",
+        keyView: "code",
+        model: "planting-schedule",
+        searchKeys: ["code"],
+      }),
     },
     {
       title: translate({ store, source: "Number of days" }),
@@ -131,6 +131,9 @@ const Page = () => {
       render: (value, record, index) => {
         return <>{record.dateStart && dayjs.unix(record.dateStart).format("DD/MM/YYYY")}</>;
       },
+      key: "dateStart",
+      dataIndex: "dateStart",
+      ...filterRangeDateUnitTable({}),
     },
     {
       title: translate({ store, source: "Date end" }),
@@ -139,6 +142,9 @@ const Page = () => {
       render: (value, record, index) => {
         return <>{record.dateEnd && dayjs.unix(record.dateEnd).format("DD/MM/YYYY")}</>;
       },
+      key: "dateEnd",
+      dataIndex: "dateEnd",
+      ...filterRangeDateUnitTable({}),
     },
     {
       title: translate({ store, source: "Is start" }),
@@ -147,6 +153,20 @@ const Page = () => {
       align: "center",
       render: (value, record, index) => {
         return <Checkbox checked={record.isStart} />;
+      },
+      key: "isStart",
+      filters: [
+        {
+          text: "True",
+          value: true,
+        },
+        {
+          text: "False",
+          value: false,
+        },
+      ],
+      onFilter: (value, record) => {
+        return value === record.isStart;
       },
     },
     { title: "", key: "none" },

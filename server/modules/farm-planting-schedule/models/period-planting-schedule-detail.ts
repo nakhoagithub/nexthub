@@ -55,7 +55,6 @@ export const periodPlantingScheduleDetailSchema = new mongoose.Schema(
 
 // periodPlantingScheduleDetailSchema.pre("updateOne", async function (next) {
 //   const updateData = (this as any)._update;
-//   console.log("pre");
 //   await customPeriodPlantingScheduleDetailSchema.call(this, updateData, next, "update");
 // });
 

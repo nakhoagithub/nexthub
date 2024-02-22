@@ -69,7 +69,6 @@ const ModalCustom = ({
           }
         }
       } catch (error) {
-        console.log(error);
         let { message, content } = apiResultCode({ error: error, store });
         useApp.notification.error({
           message: message,

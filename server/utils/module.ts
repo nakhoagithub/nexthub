@@ -273,8 +273,6 @@ export async function uninstallModule(id: string) {
       }
     }
 
-    console.log(2);
-
     await Module.updateOne({ id: id }, { installable: false });
     result = true;
   } catch (error) {

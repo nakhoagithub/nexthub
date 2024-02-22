@@ -12,9 +12,11 @@ export const productionDocumentSchema = new mongoose.Schema(
     idArea: { type: mongoose.Types.ObjectId, ref: "area" },
     idPlantingSchedule: { type: mongoose.Types.ObjectId, ref: "planting-schedule" },
     codePlantingSchedule: { type: String },
-    contentWorkDiary: { type: String },
-    contentGardenCheckDiary: { type: String },
-    contentDiseaseManagement: { type: String },
+    contentWorkDiary: { type: String, default: "" },
+    contentGardenCheckDiary: { type: String, default: "" },
+    contentDiseaseManagement: { type: String, default: "" },
   },
   { timestamps: true, versionKey: false, collection: collectionName }
 );
+
+productionDocumentSchema.index({ dateUnix: 1 });

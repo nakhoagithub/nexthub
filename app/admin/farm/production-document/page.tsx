@@ -2,7 +2,7 @@
 import { Checkbox, DatePicker, Form, FormInstance, Input, InputNumber, Select, Space, Tabs } from "antd";
 const { Option } = Select;
 import { ColumnsType } from "antd/es/table";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { translate } from "@/utils/translate";
 import { StoreContext } from "@/app/components/context-provider";
 import TextArea from "antd/es/input/TextArea";
@@ -10,9 +10,11 @@ import { StoreApi } from "zustand";
 import { StoreApp } from "@/store/store";
 import { getItemInArray } from "@/utils/tool";
 import PageHeader from "@/app/components/body/page-header";
-import { getDatas } from "@/utils/crud";
 import dayjs from "dayjs";
-import { useForm } from "antd/es/form/Form";
+import TableView from "@/app/components/data-view/table-view/table-view";
+import { filterSearchTable } from "@/app/components/data-view/table-view/filters/filter-search";
+import { filterRangeDateUnitTable } from "@/app/components/data-view/table-view/filters/filter-range-date";
+import { filterModelTable } from "@/app/components/data-view/table-view/filters/filter-model";
 
 const ViewForm = (
   store: StoreApi<StoreApp>,
@@ -86,136 +88,86 @@ const ViewForm = (
 
 const Page = () => {
   const store = useContext(StoreContext);
-  const [loading, setLoading] = useState(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [dataIds, setDataIds] = useState<any>();
-  const [areas, setAreas] = useState<any[]>([]);
-  const [plantingSchedules, setPlantingSchedules] = useState<any[]>([]);
-  const [daysInMonth, setDaysInMonth] = useState<number[]>([]);
-  const [form] = useForm();
-  const [month, setMonth] = useState<dayjs.Dayjs | undefined>(undefined);
 
-  async function fetchData() {
-    setLoading(true);
-    let areaResp = await getDatas({ model: "area", fields: ["name", "_id"] });
-    setAreas(areaResp?.datas ?? []);
-    let planResp = await getDatas({ model: "planting-schedule", fields: ["code", "_id"] });
-    setPlantingSchedules(planResp?.datas ?? []);
-    setLoading(false);
-  }
-
-  function onChangeMonth(value: any) {
-    let monthDayjs = dayjs(value);
-    setMonth(monthDayjs);
-    let daysInMonth = [];
-    for (var i = 0; i < monthDayjs.daysInMonth(); i++) {
-      daysInMonth.push(i + 1);
-    }
-    setDaysInMonth(daysInMonth);
-  }
-
-  function initMonth() {
-    let date = dayjs();
-    form.setFieldValue("month", date);
-    onChangeMonth(date);
-  }
-
-  useEffect(() => {
-    fetchData();
-    initMonth();
-  }, []);
+  const columns: ColumnsType<any> = [
+    {
+      title: translate({ store, source: "Season code" }),
+      dataIndex: "codePlantingSchedule",
+      width: 200,
+      fixed: "left",
+      ...filterSearchTable(),
+    },
+    {
+      title: translate({ store, source: "Date" }),
+      width: 120,
+      align: "center",
+      render: (value: any, record: any, index: number) => {
+        return <>{record.dateUnix && dayjs.unix(record.dateUnix).format("DD/MM/YYYY")}</>;
+      },
+      fixed: "left",
+      dataIndex: "dateUnix",
+      sorter: true,
+      ...filterRangeDateUnitTable({}),
+    },
+    {
+      title: translate({ store, source: "Area" }),
+      width: 200,
+      render: (value, record, index) => {
+        let area = record.idArea && getItemInArray(dataIds?.["area"] ?? [], record.idArea, "_id");
+        return <div>{area && `${area?.name ?? ""}`}</div>;
+      },
+      dataIndex: "idArea",
+      ...filterModelTable({
+        model: "area",
+        searchKeys: ["name", "id"],
+        fields: ["name"],
+        keyView: "name",
+        keySelect: "_id",
+      }),
+    },
+    {
+      title: translate({ store, source: "Work diary" }),
+      dataIndex: "contentWorkDiary",
+      width: 500,
+    },
+    {
+      title: translate({ store, source: "Garden check diary" }),
+      dataIndex: "contentGardenCheckDiary",
+      width: 500,
+    },
+    {
+      title: translate({ store, source: "Disease management" }),
+      dataIndex: "contentDiseaseManagement",
+      width: 500,
+    },
+    { title: "", key: "none" },
+  ];
 
   return (
     <div>
       <PageHeader title="Production document" />
       <div className="page-content">
-        <Form layout="vertical" form={form}>
-          <Space wrap>
-            <Form.Item
-              style={{ minWidth: 300 }}
-              label={translate({ source: "Planting schedule", store })}
-              name="idPlantingSchedule"
-            >
-              <Select
-                showSearch
-                allowClear
-                onClear={() => {
-                  // form.setFieldValue("idArea", "");
-                }}
-                filterOption={(input: string, option: any) => {
-                  return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
-                }}
-              >
-                {plantingSchedules.map((e: any) => (
-                  <Option key={e._id} label={e.code}>
-                    <span>{`${e.code}`}</span>
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-            <Form.Item style={{ minWidth: 300 }} label={translate({ source: "Area", store })} name="idArea">
-              <Select
-                showSearch
-                allowClear
-                onClear={() => {
-                  // form.setFieldValue("idArea", "");
-                }}
-                filterOption={(input: string, option: any) => {
-                  return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
-                }}
-              >
-                {areas.map((e: any) => (
-                  <Option key={e._id} label={e.name}>
-                    <span>{`${e.name}`}</span>
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-
-            <Form.Item style={{ minWidth: 140 }} label={translate({ source: "Date", store })} name="date">
-              <Select
-                showSearch
-                allowClear
-                onClear={() => {
-                  // form.setFieldValue("idArea", "");
-                }}
-                filterOption={(input: string, option: any) => {
-                  return (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
-                }}
-              >
-                {daysInMonth.map((e: any) => (
-                  <Option key={e} label={e}>
-                    <span>{`Ngày ${e}`}</span>
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-
-            <Form.Item label={translate({ source: "Month", store })} name="month">
-              <DatePicker format={"MM/YYYY"} picker="month" onChange={onChangeMonth} />
-            </Form.Item>
-          </Space>
-        </Form>
-      </div>
-      <div className="page-content">
-        <Tabs
-          type="card"
-          items={[
+        <TableView
+          model={"production-document"}
+          columnsTable={columns}
+          formLayout={({ store, form, onFinish, viewType }) => ViewForm(store, form, onFinish, viewType, dataIds)}
+          selectedRowKeys={selectedRowKeys}
+          setSelectedRowKeys={setSelectedRowKeys}
+          pageSize={20}
+          ids={[
             {
-              key: "work-diary",
-              label: translate({ source: "Work diary", store }),
-              children: <></>,
-            },
-            {
-              key: "garden-check-diary",
-              label: translate({ source: "Garden check diary", store }),
-              children: <></>,
-            },
-            {
-              key: "disease-management",
-              label: translate({ source: "Disease management", store }),
-              children: <></>,
+              area: {
+                fields: ["_id", "name"],
+                filter: { active: true },
+              },
             },
           ]}
+          dataIdsCallback={(value) => setDataIds(value)}
+          hideActionCreate
+          hideActionUpdate
+          hideActionDelete
         />
       </div>
     </div>

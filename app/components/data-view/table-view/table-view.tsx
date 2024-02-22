@@ -29,6 +29,7 @@ const TableView = ({
   pageSize,
   hideActionUpdate,
   hideActionCreate,
+  hideActionDelete,
   formLayout,
   customValuesFinish,
   customValuesInit,
@@ -57,6 +58,7 @@ const TableView = ({
   pageSize?: number;
   hideActionUpdate?: boolean;
   hideActionCreate?: boolean;
+  hideActionDelete?: boolean;
   formLayout?: ({
     store,
     form,
@@ -164,13 +166,50 @@ const TableView = ({
   /**
    * Lắng nghe thay đổi khi chọn record
    */
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+  const onSelectChange = (newSelectedRowKeys: React.Key[], selectedRows: any[], info: any) => {
+    let dataCurrentKeys = datas.map((e) => (updateField ? e[`${updateField}`] : e._id));
+    // setSelectedRowKeys([...newSelectedRowKeys]);
+    let newCustomSelectedRowKeys: React.Key[] = [...selectedRowKeys];
+    if (info?.type === "all") {
+      if (newSelectedRowKeys.length > 0) {
+        newSelectedRowKeys.forEach((key) => {
+          let check = selectedRowKeys.find((e) => e === key);
+
+          if (!check) {
+            newCustomSelectedRowKeys.push(key);
+          }
+        });
+      } else {
+        const result = newCustomSelectedRowKeys.filter((item) => !dataCurrentKeys.includes(item));
+        newCustomSelectedRowKeys = result;
+      }
+      setSelectedRowKeys(newCustomSelectedRowKeys);
+    }
+  };
+
+  /**
+   * Hàm select item table
+   */
+  const onSelectTable = (record: any, selected: boolean, selectedRows: any[]) => {
+    let check = selectedRowKeys.find((e) => e === (updateField ? record[`${updateField}`] : record._id));
+    let indexCheck = selectedRowKeys.findIndex((e) => e === (updateField ? record[`${updateField}`] : record._id));
+    let newSelectedRowKeys: React.Key[] = [...selectedRowKeys];
+    if (selected) {
+      if (!check || selectedRowKeys.length === 0) {
+        newSelectedRowKeys.push(updateField ? record[`${updateField}`] : record._id);
+      }
+    } else {
+      if (check) {
+        newSelectedRowKeys.splice(indexCheck, 1);
+      }
+    }
     setSelectedRowKeys(newSelectedRowKeys);
   };
 
   const rowSelection: TableRowSelection<any> = {
     selectedRowKeys,
     onChange: onSelectChange,
+    onSelect: onSelectTable,
     columnWidth: "40px",
   };
 
@@ -497,18 +536,22 @@ const TableView = ({
           <Space wrap>
             <Button icon={<ReloadOutlined />} loading={loadingReload} onClick={onReload} />
 
+            {selectedRowKeys.length > 0 && (
+              <Button type="dashed" onClick={() => setSelectedRowKeys([])}>
+                Clear selected: {selectedRowKeys.length}
+              </Button>
+            )}
+
             {!(hideActionCreate === true) && accessRightModel?.create && (
               <Button icon={<PlusOutlined />} onClick={onCreate} type="primary">
                 New
               </Button>
             )}
-
-            {accessRightModel?.delete && selectedRowKeys.length > 0 && (
+            {!(hideActionDelete === true) && accessRightModel?.delete && selectedRowKeys.length > 0 && (
               <Button icon={<DeleteOutlined />} onClick={onDelete} danger>
                 Delete
               </Button>
             )}
-
             {actions !== undefined && actions(selectedRowKeys).map((e, index) => <div key={index}>{e}</div>)}
           </Space>
         </div>
@@ -525,7 +568,7 @@ const TableView = ({
         size={size ?? "small"}
         rowSelection={rowSelection}
         bordered={bordered ?? true}
-        rowKey={(record) => record?._id}
+        rowKey={(record) => (updateField ? record[`${updateField}`] : record._id)}
         columns={newColumnsTable}
         dataSource={datas}
         loading={loadingReload || loading}

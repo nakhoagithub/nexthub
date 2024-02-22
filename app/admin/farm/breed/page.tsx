@@ -12,6 +12,8 @@ import { StoreApp } from "@/store/store";
 import { getItemInArray } from "@/utils/tool";
 import TableView from "@/app/components/data-view/table-view/table-view";
 import PageHeader from "@/app/components/body/page-header";
+import { filterSearchTable } from "@/app/components/data-view/table-view/filters/filter-search";
+import { filterModelTable } from "@/app/components/data-view/table-view/filters/filter-model";
 
 const ViewForm = (
   store: StoreApi<StoreApp>,
@@ -87,7 +89,12 @@ const ViewForm = (
         <TextArea />
       </Form.Item>
 
-      <Form.Item label={translate({ store, source: "Active" })} name="active" valuePropName="checked" initialValue={true}>
+      <Form.Item
+        label={translate({ store, source: "Active" })}
+        name="active"
+        valuePropName="checked"
+        initialValue={true}
+      >
         <Checkbox defaultChecked={true}>Active</Checkbox>
       </Form.Item>
     </Form>
@@ -106,6 +113,8 @@ const Page = () => {
       title: "Code",
       dataIndex: "code",
       width: 100,
+      key: "code",
+      ...filterSearchTable(),
     },
     {
       key: "idOrg",
@@ -113,21 +122,22 @@ const Page = () => {
       width: 200,
       render: (value, record, index) => {
         let org = record.idOrg && getItemInArray(dataIds?.["org"] ?? [], record.idOrg);
-        return <div>{org && org.shortName}</div>;
+        return <div>{org && `${org.shortName} - ${org.name}`}</div>;
       },
-      filters: [
-        ...(dataIds?.["org"] ?? []).map((e: any) => {
-          return {
-            text: e.shortName,
-            value: e._id,
-          };
-        }),
-      ],
+      ...filterModelTable({
+        fields: ["name"],
+        keySelect: "_id",
+        keyView: "name",
+        model: "org",
+        searchKeys: ["name", "shortName"],
+      }),
     },
     {
       title: "Name",
       dataIndex: "name",
       width: 160,
+      key: "name",
+      ...filterSearchTable(),
     },
     {
       title: "Breed Category",
@@ -141,6 +151,15 @@ const Page = () => {
           </div>
         );
       },
+      dataIndex: "idBreedCategory",
+      key: "idBreedCategory",
+      ...filterModelTable({
+        fields: ["name"],
+        keySelect: "_id",
+        keyView: "name",
+        model: "breed-category",
+        searchKeys: ["name"],
+      }),
     },
     {
       title: "Description",

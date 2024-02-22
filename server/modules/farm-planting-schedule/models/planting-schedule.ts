@@ -45,6 +45,7 @@ async function customPlantingSchedule(this: any, doc: any, next: any, type: "sav
     const PPSD = mongoose.model("period-planting-schedule-detail");
     const SPS = mongoose.model("sample-planting-schedule");
     const SPPS = mongoose.model("sample-period-planting-schedule");
+    const ProductionDocument = mongoose.model("production-document");
 
     // kiểm tra lịch trình tồn tại thông qua `code`
     const plantingSchedule = await PS.findOne({ code: doc?.code });
@@ -205,6 +206,39 @@ async function customPlantingSchedule(this: any, doc: any, next: any, type: "sav
         this.dateEndProductionDocument = dateEPD;
       }
     }
+
+    // tạo production document (hồ sơ sản xuất)
+    if (this.dateStartProductionDocument && this.dateEndProductionDocument) {
+      let dateSPD = this.dateStartProductionDocument;
+      let dateEPD = this.dateEndProductionDocument;
+      for (var iDate = dateSPD; iDate <= dateEPD; iDate += 86400) {
+        let dateMoment = moment.unix(iDate);
+        let newProductionDocument = {
+          day: dateMoment.date(),
+          month: dateMoment.month() + 1,
+          year: dateMoment.year(),
+          dateUnix: iDate,
+          idArea: doc.idArea,
+          idPlantingSchedule: doc._id,
+          codePlantingSchedule: doc.code,
+          contentWorkDiary: "",
+          contentGardenCheckDiary: "",
+          contentDiseaseManagement: "",
+        };
+        await ProductionDocument.updateOne(
+          { dateUnix: newProductionDocument.dateUnix, idPlantingSchedule: newProductionDocument.idPlantingSchedule },
+          newProductionDocument,
+          { upsert: true }
+        );
+      }
+
+      // xóa những production document (hồ sơ sản xuất) có thời gian khác thời gian của lịch vụ
+      await ProductionDocument.deleteMany({
+        idPlantingSchedule: doc._id,
+        $or: [{ dateUnix: { $gt: dateEPD } }, { dateUnix: { $lt: dateSPD } }],
+      });
+    }
+
     next();
   } catch (error) {
     logger({ message: error, name: "customPlantingSchedule" });
@@ -226,12 +260,14 @@ plantingScheduleSchema.pre("deleteMany", { query: true }, async function (next) 
   try {
     const PlantingScheduleDetail = mongoose.model("planting-schedule-detail");
     const PeriodPlantingScheduleDetail = mongoose.model("period-planting-schedule-detail");
+    const ProductionDocument = mongoose.model("production-document");
     let query: any = this.getFilter();
     let ids = query?._id?.["$in"];
     if (Array.isArray(ids)) {
       for (var id of ids) {
         await PlantingScheduleDetail.deleteMany({ idPlantingSchedule: id });
         await PeriodPlantingScheduleDetail.deleteMany({ idPlantingSchedule: id });
+        await ProductionDocument.deleteMany({ idPlantingSchedule: id });
       }
     }
 

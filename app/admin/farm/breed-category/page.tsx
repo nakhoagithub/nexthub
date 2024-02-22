@@ -11,6 +11,7 @@ import { StoreApi } from "zustand";
 import { StoreApp } from "@/store/store";
 import TableView from "@/app/components/data-view/table-view/table-view";
 import PageHeader from "@/app/components/body/page-header";
+import { filterSearchTable } from "@/app/components/data-view/table-view/filters/filter-search";
 
 const ViewForm = (
   store: StoreApi<StoreApp>,
@@ -50,7 +51,12 @@ const ViewForm = (
       <Form.Item label="Description" name="description">
         <TextArea />
       </Form.Item>
-      <Form.Item label={translate({ store, source: "Active" })} name="active" valuePropName="checked" initialValue={true}>
+      <Form.Item
+        label={translate({ store, source: "Active" })}
+        name="active"
+        valuePropName="checked"
+        initialValue={true}
+      >
         <Checkbox defaultChecked={true}>Active</Checkbox>
       </Form.Item>
     </Form>
@@ -69,6 +75,7 @@ const Page = () => {
       title: "Name",
       dataIndex: "name",
       width: 160,
+      ...filterSearchTable(),
     },
     {
       title: "Description",

@@ -11,9 +11,10 @@ import { StoreApp } from "@/store/store";
 import { getItemInArray } from "@/utils/tool";
 import TableView from "@/app/components/data-view/table-view/table-view";
 import PageHeader from "@/app/components/body/page-header";
-import moment from "moment";
 import dayjs from "dayjs";
-import FilterDropdown from "@/app/components/data-view/table-view/filter-dropdown";
+import { filterModelTable } from "@/app/components/data-view/table-view/filters/filter-model";
+import { filterSearchTable } from "@/app/components/data-view/table-view/filters/filter-search";
+import { filterRangeDateUnitTable } from "@/app/components/data-view/table-view/filters/filter-range-date";
 
 const ViewForm = (
   store: StoreApi<StoreApp>,
@@ -275,6 +276,8 @@ const Page = () => {
       width: 200,
       align: "center",
       fixed: "left",
+      key: "code",
+      ...filterSearchTable(),
     },
     {
       title: translate({ store, source: "Seeding day" }),
@@ -283,6 +286,9 @@ const Page = () => {
       render: (value, record, index) => {
         return <>{record.seedingDate && dayjs.unix(record.seedingDate).format("DD/MM/YYYY")}</>;
       },
+      key: "seedingDate",
+      dataIndex: "seedingDate",
+      ...filterRangeDateUnitTable({}),
     },
     {
       title: translate({ store, source: "Harvest date" }),
@@ -291,29 +297,16 @@ const Page = () => {
       render: (value, record, index) => {
         return <>{record.harvestDate && dayjs.unix(record.harvestDate).format("DD/MM/YYYY")}</>;
       },
-      // filters: [
-      //   ...a.map((e, index) => {
-      //     return {
-      //       value: e,
-      //       text: `${index}`,
-      //     };
-      //   }),
-      // ],
-      // filterDropdown: (props) => FilterDropdown({ props }),
+      key: "harvestDate",
+      dataIndex: "harvestDate",
+      ...filterRangeDateUnitTable({}),
     },
     {
       title: translate({ store, source: "Year" }),
       dataIndex: "year",
       width: 100,
       align: "center",
-      filters: [
-        ...(dataDistincts?.["planting-schedule-year"] ?? []).map((e: any) => {
-          return {
-            value: e,
-            text: e,
-          };
-        }),
-      ],
+      ...filterSearchTable(),
     },
     {
       key: "idFarm",
@@ -323,19 +316,13 @@ const Page = () => {
         let farm = record.idFarm && getItemInArray(dataIds?.["farm"] ?? [], record.idFarm, "_id");
         return <div>{farm && (farm?.name ?? "")}</div>;
       },
-      filters: [
-        {
-          text: "Không",
-          value: null,
-        },
-        ...(dataIds?.["farm"] ?? []).map((e: any) => {
-          return {
-            text: e.name,
-            value: e._id,
-          };
-        }),
-      ],
-      filterSearch: true,
+      ...filterModelTable({
+        fields: ["name"],
+        keySelect: "_id",
+        keyView: "name",
+        model: "farm",
+        searchKeys: ["name"],
+      }),
     },
     {
       key: "idArea",
@@ -345,15 +332,14 @@ const Page = () => {
         let area = record.idArea && getItemInArray(dataIds?.["area"] ?? [], record.idArea, "_id");
         return <div>{area && (area?.name ?? "")}</div>;
       },
-      filters: [
-        ...(dataIds?.["area"] ?? []).map((e: any) => {
-          return {
-            text: e.name,
-            value: e._id,
-          };
-        }),
-      ],
-      filterSearch: true,
+      dataIndex: "idArea",
+      ...filterModelTable({
+        model: "area",
+        searchKeys: ["name", "id"],
+        fields: ["name"],
+        keyView: "name",
+        keySelect: "_id",
+      }),
     },
     {
       key: "idBreed",
@@ -363,15 +349,13 @@ const Page = () => {
         let breed = record.idBreed && getItemInArray(dataIds?.["breed"] ?? [], record.idBreed, "_id");
         return <div>{breed && `${breed?.code} - ${breed?.name}`}</div>;
       },
-      filters: [
-        ...(dataIds?.["breed"] ?? []).map((e: any) => {
-          return {
-            text: e.name,
-            value: e._id,
-          };
-        }),
-      ],
-      filterSearch: true,
+      ...filterModelTable({
+        model: "breed",
+        searchKeys: ["name", "code"],
+        fields: ["name", "code"],
+        keyView: "name",
+        keySelect: "_id",
+      }),
     },
     {
       title: translate({ store, source: "Number of seasons" }),
@@ -410,7 +394,7 @@ const Page = () => {
     },
     { title: "", key: "none" },
     {
-      key: "status",
+      dataIndex: "status",
       title: translate({ store, source: "Status" }),
       width: 160,
       align: "center",

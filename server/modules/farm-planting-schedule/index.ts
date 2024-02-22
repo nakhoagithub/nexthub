@@ -6,8 +6,6 @@ import { samplePeriodPlantingScheduleSchema } from "../farm-planting-schedule/mo
 import { samplePlantingScheduleSchema } from "../farm-planting-schedule/models/sample-planting-schedule";
 import { productionDocumentSchema } from "./models/production-document";
 
-console.log(__filename);
-
 createModule({
   module: {
     id: "farm-planting-schedule",

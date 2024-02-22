@@ -2,6 +2,16 @@ import { StoreApp } from "@/store/store";
 import { AxiosError } from "axios";
 import { StoreApi } from "zustand";
 import { translate } from "./translate";
+import dayjs from "dayjs";
+import mongoose from "mongoose";
+
+function isNumber(value: string): boolean {
+  if (!isNaN(Number(value))) {
+    return true; // là số
+  } else {
+    return false; // không phải số
+  }
+}
 
 export const getParamFilter = (params: any) => {
   let newResult: any = { sort: {}, filter: {} };
@@ -19,12 +29,45 @@ export const getParamFilter = (params: any) => {
 
   if (Object.keys(params?.filters ?? {}).length > 0) {
     let newFilters: any = {};
+    let newFiltersAND: any[] = [];
+    // for (var filter in params?.filters ?? {}) {
+    //   if (params?.filters[filter]) {
+    //     newFilters = { ...newFilters, [filter]: { $in: params?.filters[filter] } };
+    //   }
+    // }
+
     for (var filter in params?.filters ?? {}) {
-      if (params?.filters[filter]) {
-        newFilters = { ...newFilters, [filter]: { $in: params?.filters[filter] } };
+      if (Array.isArray(params?.filters[filter])) {
+        let newAnd: any = { $or: [] };
+        let arrayDataFilter = params?.filters[filter];
+
+        for (var data of arrayDataFilter) {
+          if (data != "") {
+            if (isNumber(data)) {
+              newAnd.$or.push({ [filter]: data });
+            } else if (Array.isArray(data)) {
+              console.log(1);
+              // check data là mảng ngày
+              if (data.length == 2 && dayjs(data[0]).isValid() && dayjs(data[1]).isValid()) {
+                newFiltersAND.push({ [filter]: { $gte: dayjs(data[0]).startOf("day").unix() } });
+                newFiltersAND.push({ [filter]: { $lte: dayjs(data[1]).startOf("day").unix() } });
+              }
+            } else if (typeof data === "string" && data.length === 24 && mongoose.Types.ObjectId.isValid(data)) {
+              newAnd.$or.push({ [filter]: data });
+            } else {
+              newAnd.$or.push({ [filter]: { $regex: data, $options: "i" } });
+            }
+          }
+        }
+        if (Array.isArray(newAnd.$or) && newAnd.$or.length > 0) {
+          newFiltersAND.push(newAnd);
+        }
       }
     }
 
+    if (newFiltersAND.length > 0) {
+      newFilters = { ...newFilters, $and: newFiltersAND };
+    }
     newResult = { ...newResult, filter: newFilters };
   }
 

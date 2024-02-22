@@ -10,6 +10,7 @@ import { StoreApp } from "@/store/store";
 import { getItemInArray } from "@/utils/tool";
 import TableView from "@/app/components/data-view/table-view/table-view";
 import PageHeader from "@/app/components/body/page-header";
+import { filterModelTable } from "@/app/components/data-view/table-view/filters/filter-model";
 
 const ViewForm = (
   store: StoreApi<StoreApp>,
@@ -66,7 +67,7 @@ const ViewForm = (
           initialValue={1}
           rules={[{ required: true, message: translate({ store: store, source: "This field cannot be left blank" }) }]}
         >
-          <InputNumber min={0} /> 
+          <InputNumber min={0} />
         </Form.Item>
       </Space>
 
@@ -102,15 +103,14 @@ const Page = () => {
           getItemInArray(dataIds?.["sample-planting-schedule"] ?? [], record.idSamplePlantingSchedule, "_id");
         return <div>{data?.name ?? ""}</div>;
       },
-      filters: [
-        ...(dataIds?.["sample-planting-schedule"] ?? []).map((e: any) => {
-          return {
-            value: e._id,
-            text: e.name,
-          };
-        }),
-      ],
-      filterSearch: true,
+      dataIndex: "idSamplePlantingSchedule",
+      ...filterModelTable({
+        fields: ["name"],
+        keySelect: "_id",
+        keyView: "name",
+        model: "sample-planting-schedule",
+        searchKeys: ["name"],
+      }),
     },
     {
       title: translate({ store, source: "Sort index" }),

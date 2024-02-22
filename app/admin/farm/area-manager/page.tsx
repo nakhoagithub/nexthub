@@ -14,6 +14,8 @@ import { StoreApp } from "@/store/store";
 import { getItemInArray } from "@/utils/tool";
 import TableView from "@/app/components/data-view/table-view/table-view";
 import PageHeader from "@/app/components/body/page-header";
+import { filterSearchTable } from "@/app/components/data-view/table-view/filters/filter-search";
+import { filterModelTable } from "@/app/components/data-view/table-view/filters/filter-model";
 
 const ViewForm = (
   store: StoreApi<StoreApp>,
@@ -85,7 +87,12 @@ const ViewForm = (
         <InputNumber min={1} value={1} />
       </Form.Item>
 
-      <Form.Item label={translate({ store, source: "Active" })} name="active" valuePropName="checked" initialValue={true}>
+      <Form.Item
+        label={translate({ store, source: "Active" })}
+        name="active"
+        valuePropName="checked"
+        initialValue={true}
+      >
         <Checkbox defaultChecked={true}>Active</Checkbox>
       </Form.Item>
     </Form>
@@ -101,6 +108,8 @@ const Page = () => {
       title: "ID",
       dataIndex: "id",
       width: 100,
+      key: "id",
+      ...filterSearchTable(),
     },
     {
       title: translate({ store, source: "Farm" }),
@@ -108,11 +117,22 @@ const Page = () => {
       render: (value, record, index) => {
         return <div>{record.idFarm && getItemInArray(dataIds?.["farm"] ?? [], record.idFarm, "_id")?.name}</div>;
       },
+      dataIndex: "idFarm",
+      key: "idFarm",
+      ...filterModelTable({
+        fields: ["name"],
+        keySelect: "_id",
+        keyView: "name",
+        model: "farm",
+        searchKeys: ["name"],
+      }),
     },
     {
       title: translate({ store, source: "Name" }),
       dataIndex: "name",
       width: 200,
+      key: "name",
+      ...filterSearchTable(),
     },
     {
       title: translate({ store, source: "Description" }),
