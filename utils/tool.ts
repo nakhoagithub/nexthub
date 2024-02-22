@@ -51,7 +51,7 @@ export const getParamFilter = (params: any) => {
                 newFiltersAND.push({ [filter]: { $gte: dayjs(data[0]).startOf("day").unix() } });
                 newFiltersAND.push({ [filter]: { $lte: dayjs(data[1]).startOf("day").unix() } });
               }
-            } else if (typeof data === "string" && data.length === 24 && mongoose.Types.ObjectId.isValid(data)) {
+            } else if (typeof data === "string" && data.length === 24 && mongoose.Types.ObjectId.isValid(data)) { 
               newAnd.$or.push({ [filter]: data });
             } else {
               newAnd.$or.push({ [filter]: { $regex: data, $options: "i" } });
