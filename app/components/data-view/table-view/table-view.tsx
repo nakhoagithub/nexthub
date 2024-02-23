@@ -82,6 +82,7 @@ const TableView = ({
       api?: string;
       fields: string[];
       filter?: any;
+      sort?: any;
     };
   }[];
   dataIdsCallback?: (value: any) => void;
@@ -328,6 +329,11 @@ const TableView = ({
               filter = idsKey[model].filter;
             }
 
+            let sort: any = {};
+            if (idsKey[model].sort) {
+              sort = idsKey[model].sort;
+            }
+
             let api: string;
             if (idsKey[model]?.api) {
               api = idsKey[model].api!;
@@ -336,7 +342,10 @@ const TableView = ({
             const {
               data: { datas, code, total },
             } = await app.get(
-              api! ?? `/api/db/${model}?fields=${idsKey[model].fields}&filter=${JSON.stringify(filter)}`
+              api! ??
+                `/api/db/${model}?fields=${idsKey[model].fields}&filter=${JSON.stringify(filter)}&sort=${JSON.stringify(
+                  sort
+                )}`
             );
 
             if (code === 200) {

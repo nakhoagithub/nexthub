@@ -1,0 +1,5 @@
+id,name,description,url,idParent,isGroup,sequence,state,active
+hr,Human Resource,Human Resource,/admin/hr,null,false,2,normal,true
+hr.employee,Employee,Employee,/admin/hr/employee,hr,false,1,normal,true
+hr.employee.department,Department,Department,/admin/hr/department,hr,false,2,normal,true
+hr.job.position,Job position,Job position,/admin/hr/job-position,hr,false,3,normal,true

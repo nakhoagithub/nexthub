@@ -4,7 +4,9 @@ import { plantingScheduleSchema } from "../farm-planting-schedule/models/plantin
 import { plantingScheduleDetailSchema } from "../farm-planting-schedule/models/planting-schedule-detail";
 import { samplePeriodPlantingScheduleSchema } from "../farm-planting-schedule/models/sample-period-planting-schedule";
 import { samplePlantingScheduleSchema } from "../farm-planting-schedule/models/sample-planting-schedule";
-import { productionDocumentSchema } from "./models/production-document";
+import { productionDocumentDiseaseMamagementSchema } from "./models/production-document-disease-management";
+import { productionDocumentGardenCheckDiarySchema } from "./models/production-document-garden-check-diary";
+import { productionDocumentWorkDiarySchema } from "./models/production-document-work-diary";
 
 createModule({
   module: {
@@ -60,9 +62,19 @@ createModule({
       schema: periodPlantingScheduleDetailSchema,
     },
     {
-      name: "Production document",
-      modelName: "production-document",
-      schema: productionDocumentSchema,
+      name: "Production document work diary",
+      modelName: "production-document-work-diary",
+      schema: productionDocumentWorkDiarySchema,
+    },
+    {
+      name: "Production document garden check diary",
+      modelName: "production-document-garden-check-diary",
+      schema: productionDocumentGardenCheckDiarySchema,
+    },
+    {
+      name: "Production document disease management",
+      modelName: "production-document-disease-management",
+      schema: productionDocumentDiseaseMamagementSchema,
     },
   ],
 });

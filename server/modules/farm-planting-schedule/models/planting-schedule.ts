@@ -45,7 +45,9 @@ async function customPlantingSchedule(this: any, doc: any, next: any, type: "sav
     const PPSD = mongoose.model("period-planting-schedule-detail");
     const SPS = mongoose.model("sample-planting-schedule");
     const SPPS = mongoose.model("sample-period-planting-schedule");
-    const ProductionDocument = mongoose.model("production-document");
+    const ProductionDocumentWorkDiary = mongoose.model("production-document-work-diary");
+    const ProductionDocumentGardenCheckDiary = mongoose.model("production-document-garden-check-diary");
+    const ProductionDocumentDiseaseManagement = mongoose.model("production-document-disease-management");
 
     // kiểm tra lịch trình tồn tại thông qua `code`
     const plantingSchedule = await PS.findOne({ code: doc?.code });
@@ -221,11 +223,19 @@ async function customPlantingSchedule(this: any, doc: any, next: any, type: "sav
           idArea: doc.idArea,
           idPlantingSchedule: doc._id,
           codePlantingSchedule: doc.code,
-          contentWorkDiary: "",
-          contentGardenCheckDiary: "",
-          contentDiseaseManagement: "",
+          content: "",
         };
-        await ProductionDocument.updateOne(
+        await ProductionDocumentWorkDiary.updateOne(
+          { dateUnix: newProductionDocument.dateUnix, idPlantingSchedule: newProductionDocument.idPlantingSchedule },
+          newProductionDocument,
+          { upsert: true }
+        );
+        await ProductionDocumentGardenCheckDiary.updateOne(
+          { dateUnix: newProductionDocument.dateUnix, idPlantingSchedule: newProductionDocument.idPlantingSchedule },
+          newProductionDocument,
+          { upsert: true }
+        );
+        await ProductionDocumentDiseaseManagement.updateOne(
           { dateUnix: newProductionDocument.dateUnix, idPlantingSchedule: newProductionDocument.idPlantingSchedule },
           newProductionDocument,
           { upsert: true }
@@ -233,7 +243,15 @@ async function customPlantingSchedule(this: any, doc: any, next: any, type: "sav
       }
 
       // xóa những production document (hồ sơ sản xuất) có thời gian khác thời gian của lịch vụ
-      await ProductionDocument.deleteMany({
+      await ProductionDocumentWorkDiary.deleteMany({
+        idPlantingSchedule: doc._id,
+        $or: [{ dateUnix: { $gt: dateEPD } }, { dateUnix: { $lt: dateSPD } }],
+      });
+      await ProductionDocumentGardenCheckDiary.deleteMany({
+        idPlantingSchedule: doc._id,
+        $or: [{ dateUnix: { $gt: dateEPD } }, { dateUnix: { $lt: dateSPD } }],
+      });
+      await ProductionDocumentDiseaseManagement.deleteMany({
         idPlantingSchedule: doc._id,
         $or: [{ dateUnix: { $gt: dateEPD } }, { dateUnix: { $lt: dateSPD } }],
       });
@@ -260,14 +278,18 @@ plantingScheduleSchema.pre("deleteMany", { query: true }, async function (next) 
   try {
     const PlantingScheduleDetail = mongoose.model("planting-schedule-detail");
     const PeriodPlantingScheduleDetail = mongoose.model("period-planting-schedule-detail");
-    const ProductionDocument = mongoose.model("production-document");
+    const ProductionDocumentWorkDiary = mongoose.model("production-document-work-diary");
+    const ProductionDocumentGardenCheckDiary = mongoose.model("production-document-garden-check-diary");
+    const ProductionDocumentDiseaseManagement = mongoose.model("production-document-disease-management");
     let query: any = this.getFilter();
     let ids = query?._id?.["$in"];
     if (Array.isArray(ids)) {
       for (var id of ids) {
         await PlantingScheduleDetail.deleteMany({ idPlantingSchedule: id });
         await PeriodPlantingScheduleDetail.deleteMany({ idPlantingSchedule: id });
-        await ProductionDocument.deleteMany({ idPlantingSchedule: id });
+        await ProductionDocumentWorkDiary.deleteMany({ idPlantingSchedule: id });
+        await ProductionDocumentGardenCheckDiary.deleteMany({ idPlantingSchedule: id });
+        await ProductionDocumentDiseaseManagement.deleteMany({ idPlantingSchedule: id });
       }
     }
 
