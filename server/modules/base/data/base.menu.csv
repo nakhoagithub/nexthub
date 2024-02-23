@@ -4,7 +4,7 @@ setting,Setting,,,null,false,1000,normal,true
 setting.manager,Manager,,,setting,false,1,normal,true
 setting.manager.user,User,,/admin/setting/manager/user,setting.manager,false,1,normal,true
 setting.manager.org,Org,,/admin/setting/manager/org,setting.manager,false,2,normal,true
-setting.manager.group,Group,,/admin/setting/manager/group,setting.manager,false,2,normal,true
+setting.manager.group,Group,,/admin/setting/manager/group,setting.manager,false,3,normal,true
 setting.technical,Technical,,,setting,false,2,normal,true
 setting.technical.security,Security,,,setting.technical,true,1,normal,true
 setting.technical.security.access_right,Access Rights,,/admin/setting/technical/security/access-right,setting.technical.security,false,1,normal,true

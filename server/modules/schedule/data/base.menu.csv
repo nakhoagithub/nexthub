@@ -1,0 +1,5 @@
+id,name,description,url,idParent,isGroup,sequence,state,active
+setting.schedule,Schedule,,,setting,false,4,normal,true
+setting.schedule.cron,CronJob,,/admin/setting/schedule/crobjob,setting.schedule,false,1,normal,true
+setting.schedule.cron.action,CronJob action,,/admin/setting/schedule/cronjob-action,setting.schedule,false,2,normal,true
+setting.schedule.cron.action.history,Cronjob action history,,/admin/setting/schedule/cronjob-action-history,setting.schedule,false,3,normal,true

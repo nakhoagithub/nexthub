@@ -6,5 +6,8 @@
     "dev-pro": "cross-env NODE_ENV=production nodemon ./server.ts",
     "build": "tsc",
     "start": "cross-env NODE_ENV=production node ./build/server.js"
+  },
+  "devDependencies": {
+    "@types/node-schedule": "^2.1.6"
   }
 }

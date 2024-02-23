@@ -8,8 +8,9 @@ import mongoose from "mongoose";
 import { logger } from "./utils/logger";
 import plugin from "./plugin";
 import "./src/index";
-import { autoImportModule } from "./utils/module";
 import next from "next";
+import { autoImportModule } from "./utils/module";
+import { createCronjob } from "./utils/workers/worker";
 
 var whitelist = [
   "http://localhost",
@@ -83,6 +84,7 @@ async function main() {
     });
 
     await autoImportModule();
+    await createCronjob();
   } catch (error) {
     logger({ message: error, name: "server.ts" });
   }
