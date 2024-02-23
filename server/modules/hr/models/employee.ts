@@ -42,6 +42,7 @@ export const hrEmployeeSchema = new mongoose.Schema(
     },
     idUser: { type: mongoose.Types.ObjectId, ref: "user", comment: "ID của tài khoản người dùng." },
     idsOrg: { type: [mongoose.Types.ObjectId], ref: "org", comment: "ID(s) của tổ chức." },
+    isManager: { type: Boolean, comment: "Xác định người này là quản lý" },
     seq: { type: Number, comment: "Dùng để sắp xếp." },
     active: { type: Boolean, default: true },
   },

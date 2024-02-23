@@ -188,6 +188,10 @@ const ViewForm = (
         <InputNumber />
       </Form.Item>
 
+      <Form.Item label={translate({ store, source: "Is manager" })} name="isManager" valuePropName="checked">
+        <Checkbox>{translate({ source: "Is manager", store })}</Checkbox>
+      </Form.Item>
+
       <Form.Item
         label={translate({ store, source: "Active" })}
         name="active"
@@ -347,6 +351,14 @@ const Page = () => {
               ""}
           </>
         );
+      },
+    },
+    {
+      title: translate({ source: "Is manager", store }),
+      width: 100,
+      align: "center",
+      render: (value, record, index) => {
+        return <Checkbox checked={record.isManager} />;
       },
     },
     {
