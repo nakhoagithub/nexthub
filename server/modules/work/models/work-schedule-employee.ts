@@ -1,26 +1,26 @@
 import mongoose from "mongoose";
 
-const collectionName = "work.schedule";
+const collectionName = "work.schedule.employee";
 
-export const workScheduleSchema = new mongoose.Schema(
+export const workScheduleEmployeeSchema = new mongoose.Schema(
   {
     dateStart: { type: Number, comment: "Ngày bắt đầu của khoảng thời gian sắp xếp ca làm việc theo tháng." },
     dateEnd: { type: Number, comment: "Ngày kết thúc của khoảng thời gian sắp xếp ca làm việc theo tháng." },
-    workingTimeHour: { type: String, comment: "Thời gian làm việc (giờ)" }, // ví dụ: 8 giờ
+    workingTimeHour: { type: String, comment: "Thời gian làm việc (giờ)" },
     month: { type: Number, comment: "Tháng của lịch công việc" },
     daysInMonth: { type: Number, comment: "Số ngày của tháng" },
     year: { type: Number, comment: "Năm của lịch công việc" },
-    idsWorkScheduleEmployee: {
+    idEmployee: {
       type: mongoose.Types.ObjectId,
-      ref: "work-schedule-employee",
-      comment: "ID(s) của bảng work-schedule-employee để xác định tháng này có nhân viên nào làm việc.",
+      ref: "hr-employee",
+      comment: "ID của bảng hr-employee để xác định nhân viên làm việc.",
     },
-    idOrg: {
+    idWorkSchedule: {
       type: mongoose.Types.ObjectId,
-      ref: "org",
-      comment: `Liên kết đến bảng org để xác định tổ chức nào sẽ có lịch trình làm việc này.`,
+      ref: "work-schedule",
+      comment: `Liên kết đến bảng work-schedule để xác định làm việc này thuộc tổ chức nào và tháng nào.`,
     },
-    active: { type: Boolean, default: true },
+    idWorkScheduleEmployeeDetail: { type: mongoose.Types.ObjectId, ref: "work-schedule-employee-detail" },
   },
   { timestamps: true, versionKey: false, collection: collectionName }
 );
