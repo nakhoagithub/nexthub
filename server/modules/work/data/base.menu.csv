@@ -1,3 +1,0 @@
-id,name,description,url,idParent,isGroup,sequence,state,active
-work,Work,Work,/admin/work,null,false,3,normal,true
-work.schedule,Work schedule,Work schedule,/admin/work/schedule,work,false,1,normal,true

@@ -9,7 +9,7 @@ createModule({
     filename: __filename,
     name: "Human Resource (HR)",
     version: "1.0",
-    description: "Module quản lý nhân sự.",
+    description: "Module quản lý nhân sự/nhân viên.",
     author: "Anh Khoa",
     depends: [],
     datas: [
